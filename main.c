@@ -1,8 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <errno.h>
 #include <string.h>
 #include "log.h"
+#include "decoder.h"
 
 struct context
 {
@@ -41,8 +43,33 @@ int main(int argc, char *argv[])
     ctx->length = ftell(ctx->fp);
     rewind(ctx->fp);
 
+    h264_decoder_handle decoder;
+    struct h264_decoder_config cfg = {};
+    int ret = h264_decoder_create(&decoder, &cfg);
+    if (ret != H264_SUCCESS)
+    {
+        log_("h264_decoder_create failed: %d\n", ret);
+        return -1;
+    }
+
+    int size = 1024;
+    uint8_t *buffer = calloc(size, sizeof(uint8_t));
+    while (!feof(ctx->fp))
+    {
+        fread(buffer, sizeof(uint8_t), size, ctx->fp);
+        struct h264_stream stream = {buffer, size};
+        ret = h264_decoder_send_stream(decoder, &stream);
+        if (ret < 0)
+        {
+            log_("h264_decoder_send_stream failed: %d\n", ret);
+            break;
+        }
+    }
+
+    h264_decoder_debug(decoder);
+
 error:
-    if(!ctx)
+    if (!ctx)
         return 0;
     if (ctx->fp)
         fclose(ctx->fp);
