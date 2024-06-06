@@ -4,7 +4,8 @@
 #include <errno.h>
 #include <stdbool.h>
 #include "decoder.h"
-#include "log.h"
+#include "common/h264.h"
+#include "common/log.h"
 
 // NALU: Network Abstraction Layer Unit
 // EBSP: Encapsulated Byte Sequence Packets
@@ -53,28 +54,27 @@ enum
 };
 
 // 处理nalu信息
-struct h264_nalu
+struct h264_NALU
 {
-    uint8_t *buffer;
-    size_t size;
+    struct NAL_unit m;
 
     int index; // 调试用的序号
-    int count_rbsp_trailing_bits;
+    // int count_rbsp_trailing_bits;
 
-    // parse
-    union
-    {
-        struct
-        {
-            uint8_t nal_unit_type : 5;      // 0-4
-            uint8_t nal_ref_idc : 2;        // 5-6
-            uint8_t forbidden_zero_bit : 1; // 7
-        } m;
-        uint8_t byte;
-    } byte_0;
+    // // parse
+    // union
+    // {
+    //     struct
+    //     {
+    //         uint8_t nal_unit_type : 5;      // 0-4
+    //         uint8_t nal_ref_idc : 2;        // 5-6
+    //         uint8_t forbidden_zero_bit : 1; // 7
+    //     };
+    //     uint8_t byte;
+    // } header;
 
-    struct h264_nalu *prev;
-    struct h264_nalu *next;
+    struct h264_NALU *prev;
+    struct h264_NALU *next;
 };
 
 struct h264_decoder_context
@@ -85,7 +85,7 @@ struct h264_decoder_context
     size_t pending_size;
 
     // head指向第一个nalu，rear指向最后一个nalu，proc指向处理过的最后一个nalu
-    struct h264_nalu *nalus_head, *nalus_rear, *nalu_proc;
+    struct h264_NALU *nalus_head, *nalus_rear, *nalu_proc;
     int count_nalus;
 };
 
@@ -106,7 +106,7 @@ static int split_nalu(struct h264_decoder_context *ctx)
 {
     if (ctx->pending_size < NALU_STARTCODE_LEN)
     {
-        log_("wait more stream (%lu < %d)\n", ctx->pending_size, NALU_STARTCODE_LEN);
+        log_warn("wait more stream (%lu < %d)", ctx->pending_size, NALU_STARTCODE_LEN);
         return H264_WAIT_MORE_STREAM;
     }
 
@@ -125,11 +125,11 @@ static int split_nalu(struct h264_decoder_context *ctx)
     // 将所有完整的nalu提取出来，保存在双向链表中
     for (int i = 1; i < count_nalu_offsets; ++i)
     {
-        struct h264_nalu *nalu = calloc(1, sizeof(struct h264_nalu));
-        nalu->size = nalu_offsets[i] - nalu_offsets[i - 1];
-        nalu->buffer = calloc(nalu->size, sizeof(uint8_t));
+        struct h264_NALU *nalu = calloc(1, sizeof(struct h264_NALU));
+        nalu->m.size = nalu_offsets[i] - nalu_offsets[i - 1];
+        nalu->m.buffer = calloc(nalu->m.size, sizeof(uint8_t));
         nalu->index = ctx->count_nalus++;
-        memcpy(nalu->buffer, ctx->pending_buffer + nalu_offsets[i - 1], nalu->size);
+        memcpy(nalu->m.buffer, ctx->pending_buffer + nalu_offsets[i - 1], nalu->m.size);
 
         if (ctx->nalus_head == NULL)
         {
@@ -160,53 +160,61 @@ static int split_nalu(struct h264_decoder_context *ctx)
 }
 
 // ebsp是去掉startcode
-static int get_ebsp(int startcode_len, struct h264_nalu *nalu)
-{
-    nalu->size -= startcode_len;
-    memcpy(nalu->buffer, nalu->buffer + startcode_len, nalu->size);
-    // nalu->buffer = realloc(nalu->buffer, nalu->size); // 有必要吗
-    return H264_SUCCESS;
-}
+// static int get_ebsp(int startcode_len, struct h264_nalu *nalu)
+// {
+//     nalu->size -= startcode_len;
+//     memcpy(nalu->buffer, nalu->buffer + startcode_len, nalu->size);
+//     // nalu->buffer = realloc(nalu->buffer, nalu->size); // 有必要吗
+//     return H264_SUCCESS;
+// }
 
-// rbsp是去掉防竞争字节：00 00 [03] 00/01/02/03中的[03]
-static int get_rbsp(struct h264_nalu *nalu)
-{
-    uint8_t epb_prefix[] = {0x00, 0x00, 0x03};
-    for (int i = 0; i < nalu->size - 3; ++i)
-    {
-        if (check_code(nalu->buffer + i, epb_prefix, 3))
-        {
-            if (nalu->buffer[i + 3] == 0x00 || nalu->buffer[i + 3] == 0x01 || nalu->buffer[i + 3] == 0x02 || nalu->buffer[i + 3] == 0x03)
-            {
-                // log_("[%d]before:\t%02x %02x %02x %02x %02x\n", nalu->index, nalu->buffer[i + 0], nalu->buffer[i + 1], nalu->buffer[i + 2], nalu->buffer[i + 3], nalu->buffer[i + 4]);
-                nalu->size -= 1;
-                memcpy(nalu->buffer + i + 2, nalu->buffer + i + 3, nalu->size - (i + 2));
-            }
-            // log_("[%d]after:\t%02x %02x %02x %02x\n", nalu->index, nalu->buffer[i + 0], nalu->buffer[i + 1], nalu->buffer[i + 2], nalu->buffer[i + 3]);
-        }
-    }
-    return H264_SUCCESS;
-}
+// // rbsp是去掉防竞争字节：00 00 [03] 00/01/02/03中的[03]
+// static int get_rbsp(struct h264_nalu *nalu)
+// {
+//     uint8_t epb_prefix[] = {0x00, 0x00, 0x03};
+//     for (int i = 0; i < nalu->size - 3; ++i)
+//     {
+//         if (check_code(nalu->buffer + i, epb_prefix, 3))
+//         {
+//             if (nalu->buffer[i + 3] == 0x00 || nalu->buffer[i + 3] == 0x01 || nalu->buffer[i + 3] == 0x02 || nalu->buffer[i + 3] == 0x03)
+//             {
+//                 log_debug("[%d]before:\t%02x %02x %02x %02x %02x", nalu->index, nalu->buffer[i + 0], nalu->buffer[i + 1], nalu->buffer[i + 2], nalu->buffer[i + 3], nalu->buffer[i + 4]);
+//                 nalu->size -= 1;
+//                 memcpy(nalu->buffer + i + 2, nalu->buffer + i + 3, nalu->size - (i + 2));
+//             }
+//             log_debug("[%d]after:\t%02x %02x %02x %02x", nalu->index, nalu->buffer[i + 0], nalu->buffer[i + 1], nalu->buffer[i + 2], nalu->buffer[i + 3]);
+//         }
+//     }
+//     return H264_SUCCESS;
+// }
 
-static int get_sodb(struct h264_nalu *nalu)
-{
-    uint8_t last_byte = nalu->buffer[nalu->size - 1];
+// static int get_sodb(struct h264_nalu *nalu)
+// {
+//     uint8_t last_byte = nalu->buffer[nalu->size - 1];
 
-    for (int i = 1; i <= 8; ++i)
-    {
-        if (((last_byte >> i) & 0x01) == 0x01)
-        {
-            nalu->count_rbsp_trailing_bits = i;
-            break;
-        }
-    }
-    return H264_SUCCESS;
+//     for (int i = 1; i <= 8; ++i)
+//     {
+//         if (((last_byte >> i) & 0x01) == 0x01)
+//         {
+//             nalu->count_rbsp_trailing_bits = i;
+//             break;
+//         }
+//     }
+//     return H264_SUCCESS;
+// }
+
+static void read_nal_unit(struct NAL_unit *nal)
+{
+    uint8_t *ptr = nal->buffer + NALU_STARTCODE_LEN;
+    size_t num_bytes_in_NAL_unit = nal->size;
+
+    
 }
 
 // 对每个nalu进行解析
 static int parse_nalu(struct h264_decoder_context *ctx)
 {
-    struct h264_nalu *nalu = NULL;
+    struct h264_NALU *nalu = NULL;
     if (ctx->nalu_proc == NULL)
     {
         nalu = ctx->nalus_head;
@@ -219,14 +227,26 @@ static int parse_nalu(struct h264_decoder_context *ctx)
     for (; nalu != NULL; nalu = nalu->next)
     {
         // 此处，nalu还是原始数据
-        get_ebsp(NALU_STARTCODE_LEN, nalu);
+        // get_ebsp(NALU_STARTCODE_LEN, nalu);
         // 此处，nalu被去掉了startcode
-        get_rbsp(nalu);
-        // 此处，nalu被去掉了防竞争字节
-        get_sodb(nalu);
-        // 此处，计算得到了最后的补齐用的bit长度，buffer本身没有被修改
-        nalu->byte_0.byte = nalu->buffer[0];
-        // log_("nalu %d size: %ld\n", nalu->index, nalu->size);
+        // get_rbsp(nalu);
+        // // 此处，nalu被去掉了防竞争字节
+        // get_sodb(nalu);
+        // // 此处，计算得到了最后的补齐用的bit长度，buffer本身没有被修改
+        // nalu->header.byte = nalu->buffer[0];
+        // // 此处，nalu的第一个字节得到了解析
+        // switch (nalu->header.nal_unit_type)
+        // {
+        // case H264_NAL_SLICE:
+        //     break;
+        // case H264_NAL_SPS:
+        //     break;
+        // case H264_NAL_PPS:
+        //     break;
+        // default:
+        //     log_error("unhandled nal unit type: %d", nalu->header.nal_unit_type);
+        //     break;
+        // }
     }
 
     ctx->nalu_proc = ctx->nalus_rear;
@@ -239,14 +259,14 @@ static int process(struct h264_decoder_context *ctx)
     int ret = split_nalu(ctx);
     if (ret != H264_SUCCESS)
     {
-        log_("split_nalu failed\n");
+        log_error("split_nalu failed");
         return ret;
     }
 
     ret = parse_nalu(ctx);
     if (ret != H264_SUCCESS)
     {
-        log_("parse_nalu failed\n");
+        log_error("parse_nalu failed");
         return ret;
     }
 
@@ -257,14 +277,14 @@ int h264_decoder_create(h264_decoder_handle *h, struct h264_decoder_config *cfg)
 {
     if (!h || !cfg)
     {
-        log_("invalid argument\n");
+        log_error("invalid argument");
         return H264_INVALID_ARGUMENT;
     }
 
     struct h264_decoder_context *ctx = calloc(1, sizeof(struct h264_decoder_context));
     if (!ctx)
     {
-        log_("calloc failed: %s\n", strerror(errno));
+        log_error("calloc failed: %s", strerror(errno));
         return H264_MEM_ALLOC_FAILED;
     }
 
@@ -291,7 +311,7 @@ int h264_decoder_send_stream(h264_decoder_handle h, struct h264_stream *stream)
     struct h264_decoder_context *ctx = h;
     if (!h)
     {
-        log_("invalid argument\n");
+        log_error("invalid argument");
         return H264_INVALID_ARGUMENT;
     }
 
@@ -308,17 +328,17 @@ void h264_decoder_debug(h264_decoder_handle h)
     struct h264_decoder_context *ctx = h;
     if (!h)
     {
-        log_("invalid argument\n");
+        log_error("invalid argument");
         return;
     }
 
-    struct h264_nalu *nalu = ctx->nalus_head;
+    struct h264_NALU *nalu = ctx->nalus_head;
 
     while (nalu)
     {
-        log_("index: %d, size: %lu, rbsp_trailing_bits: %d\n", nalu->index, nalu->size, nalu->count_rbsp_trailing_bits);
-        log_("byte[0]: %02x, forbidden_zero_bit: %d, nal_ref_idc: %d, nal_unit_type: %d\n",
-            nalu->byte_0.byte, nalu->byte_0.m.forbidden_zero_bit, nalu->byte_0.m.nal_ref_idc, nalu->byte_0.m.nal_unit_type);
+        // log_info("index: %d, size: %lu, rbsp_trailing_bits: %d", nalu->index, nalu->size, nalu->count_rbsp_trailing_bits);
+        // log_info("header: %02x, forbidden_zero_bit: %d, nal_ref_idc: %d, nal_unit_type: %d",
+        //     nalu->header.byte, nalu->header.forbidden_zero_bit, nalu->header.nal_ref_idc, nalu->header.nal_unit_type);
 
         nalu = nalu->next;
     }

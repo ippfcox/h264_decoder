@@ -3,8 +3,8 @@
 #include <stdint.h>
 #include <errno.h>
 #include <string.h>
-#include "log.h"
-#include "decoder.h"
+#include "common/log.h"
+#include "decoder/decoder.h"
 
 struct context
 {
@@ -14,15 +14,17 @@ struct context
 
 void usage(const char *name)
 {
-    log_("%s <filename>\n", name);
+    fprintf(stderr, "%s <filename>\n", name);
 }
 
 int main(int argc, char *argv[])
 {
+    set_log_level(LOG_LEVEL_INFO);
+
     struct context *ctx = calloc(1, sizeof(struct context));
     if (!ctx)
     {
-        log_("calloc failed: %s\n", strerror(errno));
+        log_error("calloc failed: %s", strerror(errno));
         return -1;
     }
 
@@ -35,7 +37,7 @@ int main(int argc, char *argv[])
     ctx->fp = fopen(argv[1], "rb");
     if (!ctx->fp)
     {
-        log_("fopen `%s` failed: %s\n", argv[1], strerror(errno));
+        log_error("fopen `%s` failed: %s", argv[1], strerror(errno));
         goto error;
     }
 
@@ -48,7 +50,7 @@ int main(int argc, char *argv[])
     int ret = h264_decoder_create(&decoder, &cfg);
     if (ret != H264_SUCCESS)
     {
-        log_("h264_decoder_create failed: %d\n", ret);
+        log_error("h264_decoder_create failed: %d", ret);
         return -1;
     }
 
@@ -61,7 +63,7 @@ int main(int argc, char *argv[])
         ret = h264_decoder_send_stream(decoder, &stream);
         if (ret < 0)
         {
-            log_("h264_decoder_send_stream failed: %d\n", ret);
+            log_error("h264_decoder_send_stream failed: %d", ret);
             break;
         }
     }

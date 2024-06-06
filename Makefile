@@ -3,24 +3,29 @@
 EXE_NAME = $(notdir $(CURDIR)).out
 COMPILE_PREFIX ?= 
 
-CFLAGS  = 
+CFLAGS  = -I.
 CFLAGS += -g
 
 LDFLAGS  = 
 
-OBJS_C = $(addsuffix .o,$(wildcard *.c))
-OBJS_CPP = $(addsuffix .o,$(wildcard *.cpp))
+SRC_DIRS = . common decoder
+
+OBJS_C = $(addsuffix .o, $(wildcard $(addsuffix /*.c, $(SRC_DIRS))))
+OBJS_CPP = $(addsuffix .o, $(wildcard $(addsuffix /*.cpp, $(SRC_DIRS))))
 
 all: $(EXE_NAME)
 
 $(EXE_NAME): $(OBJS_C) $(OBJS_CPP)
-	$(COMPILE_PREFIX)g++ $^ $(LDFLAGS) -o $(EXE_NAME)
+	@$(COMPILE_PREFIX)g++ $^ $(LDFLAGS) -o $(EXE_NAME)
+	@echo [LD] $@
 
 $(OBJS_C): %.c.o: %.c
-	$(COMPILE_PREFIX)gcc -c $(CFLAGS) $< -o $@ 
+	@$(COMPILE_PREFIX)gcc -c $(CFLAGS) $< -o $@
+	@echo [CC] $<
 
 $(OBJS_CPP): %.cpp.o: %.cpp
-	$(COMPILE_PREFIX)g++ -c $(CFLAGS) $< -o $@ 
+	@$(COMPILE_PREFIX)g++ -c $(CFLAGS) $< -o $@
+	@echo [CXX] $<
 
 clean:
 	rm -f $(EXE_NAME)
