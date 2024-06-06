@@ -7,6 +7,8 @@ extern "C"
 #include <stdbool.h>
 #include <stdint.h>
 
+#define make_mask_8(n) ((0x01 << (n)) - 0x01)
+
     // 7.2
 
     // - 如果比特流中的当前位置在字节边界上，即比特流中的下一个比特是一个字节的第
