@@ -5,6 +5,7 @@
 #include <stdbool.h>
 #include "decoder.h"
 #include "common/h264.h"
+#include "common/misc.h"
 #include "common/log.h"
 
 // NALU: Network Abstraction Layer Unit
@@ -203,12 +204,35 @@ static int split_nalu(struct h264_decoder_context *ctx)
 //     return H264_SUCCESS;
 // }
 
+// 7.3.1 NAL unit syntax
 static void read_nal_unit(struct NAL_unit *nal)
 {
     uint8_t *ptr = nal->buffer + NALU_STARTCODE_LEN;
-    size_t num_bytes_in_NAL_unit = nal->size;
+    int bit_offset = 0;
+    size_t NumBytesInNALunit = nal->size;
 
-    
+    uint8_t forbidden_zero_bit = read_bits(ptr, NumBytesInNALunit, &bit_offset, 1);
+    uint8_t nal_ref_idc = read_bits(ptr, NumBytesInNALunit, &bit_offset, 2);
+    uint8_t nal_unit_type = read_bits(ptr, NumBytesInNALunit, &bit_offset, 5);
+
+    int NumBytesInRBSP = 0;
+    int nalUnitHeaderBytes = 1;
+
+    if (nal_unit_type == H264_NAL_PREFIX || nal_unit_type = H264_NAL_EXTEN_SLICE || nal_unit_type == H264_NAL_DEPTH_EXTEN_SLICE)
+    {
+        if (nal_unit_type != H264_NAL_DEPTH_EXTEN_SLICE)
+        {
+            // svc_extension_flag: u(1)
+        }
+        else
+        {
+            // avc_3d_extension_flag: u(1)
+        }
+        // TODO
+    }
+    // TODO
+
+    log_info("fzb: %u, nri: %u, nut: %u", forbidden_zero_bit, nal_ref_idc, nal_unit_type);
 }
 
 // 对每个nalu进行解析
@@ -226,6 +250,7 @@ static int parse_nalu(struct h264_decoder_context *ctx)
 
     for (; nalu != NULL; nalu = nalu->next)
     {
+        read_nal_unit(&nalu->m);
         // 此处，nalu还是原始数据
         // get_ebsp(NALU_STARTCODE_LEN, nalu);
         // 此处，nalu被去掉了startcode
