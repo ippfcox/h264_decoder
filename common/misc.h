@@ -4,10 +4,12 @@ extern "C"
 {
 #endif // __cplusplus
 
+#include <stdio.h>
 #include <stdbool.h>
 #include <stdint.h>
 
-#define make_mask_8(n) ((0x01 << (n)) - 0x01)
+// 0~64bit
+#define make_mask(n) (n == 64 ? ~0UL : (1UL << (n)) - 1)
 
     // 7.2
 
@@ -40,11 +42,11 @@ extern "C"
     // 该函数在不推进比特流指针的情况下提供比特流中的下 n 个比特供比较使用。提供
     // 对比特流中下 n 个比特的查看，n 是其参数。在附录 B 指定的字节流中使用时，
     // 如果字节流中剩余的比特少于 n，比特流中返回值为 0。
-    uint8_t next_bits(int n);
+    uint64_t next_bits(uint8_t *buffer, size_t size, int bit_offset, int n);
 
     // 读取比特流中的下 n 个比特，并将比特流指针前进 n 个比特位置。当 n 等于 0
     // 时，read_bits(n) 指定返回值等于 0，并且不前进比特流指针。
-    uint8_t read_bits(uint8_t *buffer, int *bit_offset, int n);
+    uint64_t read_bits(uint8_t *buffer, size_t size, int *bit_offset, int n);
 
 #ifdef __cplusplus
 }
