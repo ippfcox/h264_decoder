@@ -19,7 +19,7 @@ void usage(const char *name)
 
 int main(int argc, char *argv[])
 {
-    set_log_level(LOG_LEVEL_INFO);
+    set_log_level(LOG_LEVEL_DEBUG);
 
     struct context *ctx = calloc(1, sizeof(struct context));
     if (!ctx)
