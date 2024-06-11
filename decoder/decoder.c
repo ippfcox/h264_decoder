@@ -5,6 +5,7 @@
 #include <stdbool.h>
 #include "decoder.h"
 #include "nal_unit.h"
+#include "seq_parameter_set.h"
 #include "common/misc.h"
 #include "common/log.h"
 
@@ -182,27 +183,20 @@ static int parse_nalu(struct h264_decoder_context *ctx)
     for (; nalu != NULL; nalu = nalu->next)
     {
         read_nal_unit(&nalu->m);
-        // 此处，nalu还是原始数据
-        // get_ebsp(NALU_STARTCODE_LEN, nalu);
-        // 此处，nalu被去掉了startcode
-        // get_rbsp(nalu);
-        // // 此处，nalu被去掉了防竞争字节
-        // get_sodb(nalu);
-        // // 此处，计算得到了最后的补齐用的bit长度，buffer本身没有被修改
-        // nalu->header.byte = nalu->buffer[0];
-        // // 此处，nalu的第一个字节得到了解析
-        // switch (nalu->header.nal_unit_type)
-        // {
-        // case H264_NAL_SLICE:
-        //     break;
-        // case H264_NAL_SPS:
-        //     break;
-        // case H264_NAL_PPS:
-        //     break;
-        // default:
-        //     log_error("unhandled nal unit type: %d", nalu->header.nal_unit_type);
-        //     break;
-        // }
+        switch (nalu->m.header.nal_unit_type)
+        {
+        case H264_NAL_SLICE:
+            break;
+        case H264_NAL_SPS:
+            read_seq_parameter_set_rbsp(&nalu->m);
+            exit(0);
+            break;
+        case H264_NAL_PPS:
+            break;
+        default:
+            log_error("unhandled nal unit type: %d", nalu->m.header.nal_unit_type);
+            break;
+        }
     }
 
     ctx->nalu_proc = ctx->nalus_rear;
