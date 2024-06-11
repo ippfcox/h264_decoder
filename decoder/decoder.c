@@ -6,6 +6,7 @@
 #include "decoder.h"
 #include "nal_unit.h"
 #include "seq_parameter_set.h"
+#include "pic_parameter_set.h"
 #include "common/misc.h"
 #include "common/log.h"
 
@@ -189,9 +190,10 @@ static int parse_nalu(struct h264_decoder_context *ctx)
             break;
         case H264_NAL_SPS:
             read_seq_parameter_set_rbsp(&nalu->m);
-            exit(0);
             break;
         case H264_NAL_PPS:
+            read_pic_paramster_set_rbsp(&nalu->m);
+            exit(0);
             break;
         default:
             log_error("unhandled nal unit type: %d", nalu->m.header.nal_unit_type);

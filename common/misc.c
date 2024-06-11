@@ -1,6 +1,11 @@
 #include <math.h>
 #include "misc.h"
 
+bool more_rbsp_data()
+{
+    return false;
+}
+
 // size: byte, bit_offset: bit, n: bit
 uint64_t next_bits(uint8_t *buffer, size_t size, int bit_offset, int n)
 {
