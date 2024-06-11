@@ -11,33 +11,35 @@ void read_nal_unit(struct NAL_unit *nal)
     int bit_offset = 0;
     nal->NumBytesInNALunit = nal->size;
 
-    nal->forbidden_zero_bit = read_bits(ptr, nal->NumBytesInNALunit, &bit_offset, 1); // f(1) 0
+    nal->header.forbidden_zero_bit = read_bits(ptr, nal->NumBytesInNALunit, &bit_offset, 1); // f(1) 0
     // check forced 0
-    nal->nal_ref_idc = read_bits(ptr, nal->NumBytesInNALunit, &bit_offset, 2);   // u(2)
-    nal->nal_unit_type = read_bits(ptr, nal->NumBytesInNALunit, &bit_offset, 5); // u(5)
+    nal->header.nal_ref_idc = read_bits(ptr, nal->NumBytesInNALunit, &bit_offset, 2);   // u(2)
+    nal->header.nal_unit_type = read_bits(ptr, nal->NumBytesInNALunit, &bit_offset, 5); // u(5)
 
     nal->NumBytesInRBSP = 0;
     nal->nalUnitHeaderBytes = 1;
 
-    if (nal->nal_unit_type == H264_NAL_PREFIX || nal->nal_unit_type == H264_NAL_EXTEN_SLICE || nal->nal_unit_type == H264_NAL_DEPTH_EXTEN_SLICE)
+    if (nal->header.nal_unit_type == H264_NAL_PREFIX ||
+        nal->header.nal_unit_type == H264_NAL_EXTEN_SLICE ||
+        nal->header.nal_unit_type == H264_NAL_DEPTH_EXTEN_SLICE)
     {
-        nal->svc_extension_flag = 0;
-        nal->avc_3d_extension_flag = 0;
-        if (nal->nal_unit_type != H264_NAL_DEPTH_EXTEN_SLICE)
+        nal->header.svc_extension_flag = 0;
+        nal->header.avc_3d_extension_flag = 0;
+        if (nal->header.nal_unit_type != H264_NAL_DEPTH_EXTEN_SLICE)
         {
-            nal->svc_extension_flag = read_bits(ptr, nal->NumBytesInNALunit, &bit_offset, 1); // u(1)
+            nal->header.svc_extension_flag = read_bits(ptr, nal->NumBytesInNALunit, &bit_offset, 1); // u(1)
         }
         else
         {
-            nal->avc_3d_extension_flag = read_bits(ptr, nal->NumBytesInNALunit, &bit_offset, 1); // u(1)
+            nal->header.avc_3d_extension_flag = read_bits(ptr, nal->NumBytesInNALunit, &bit_offset, 1); // u(1)
         }
 
-        if (nal->svc_extension_flag)
+        if (nal->header.svc_extension_flag)
         {
             // [TODO] nal_unit_header_svc_extension() // specified in Annex G
             nal->nalUnitHeaderBytes += 3;
         }
-        else if (nal->avc_3d_extension_flag)
+        else if (nal->header.avc_3d_extension_flag)
         {
             // [TODO] nal_unit_header_3davc_extension() // specified in Annex J
             nal->nalUnitHeaderBytes += 2;
@@ -72,7 +74,7 @@ void read_nal_unit(struct NAL_unit *nal)
         nal->NumBytesInNALunit,
         nal->nalUnitHeaderBytes,
         nal->NumBytesInRBSP,
-        nal->forbidden_zero_bit, nal->nal_ref_idc, nal->nal_unit_type,
-        nal->svc_extension_flag, nal->avc_3d_extension_flag,
+        nal->header.forbidden_zero_bit, nal->header.nal_ref_idc, nal->header.nal_unit_type,
+        nal->header.svc_extension_flag, nal->header.avc_3d_extension_flag,
         nal->emulation_prevention_three_byte);
 }
