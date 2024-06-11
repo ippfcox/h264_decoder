@@ -1,3 +1,4 @@
+#include <math.h>
 #include "misc.h"
 
 // size: byte, bit_offset: bit, n: bit
@@ -46,4 +47,27 @@ uint64_t read_bits(uint8_t *buffer, size_t size, int *bit_offset, int n)
     *bit_offset += n;
 
     return next_bits(buffer, size, *bit_offset - n, n);
+}
+
+// 9.1 Parsing process for Exp-Golomb codes
+// (9-1)
+// (9-2)
+// Table 9-1
+// Table 9-2
+uint64_t read_ue_v(uint8_t *buffer, size_t size, int *bit_offset)
+{
+    int leadingZeroBits = -1;
+    for (uint8_t b = 0; !b; leadingZeroBits++)
+        b = read_bits(buffer, size, bit_offset, 1);
+
+    return pow(2, leadingZeroBits) - 1 + read_bits(buffer, size, bit_offset, leadingZeroBits);
+}
+
+// 9.1.1 Mapping process for signed Exp-Golomb codes
+// Table 9-3
+int32_t read_se_v(uint8_t *buffer, size_t size, int *bit_offset)
+{
+    uint64_t codeNum = read_ue_v(buffer, size, bit_offset);
+
+    return codeNum % 2 == 0 ? -1 * (codeNum >> 2) : codeNum >> 2;
 }

@@ -48,6 +48,9 @@ extern "C"
     // 时，read_bits(n) 指定返回值等于 0，并且不前进比特流指针。
     uint64_t read_bits(uint8_t *buffer, size_t size, int *bit_offset, int n);
 
+    uint64_t read_ue_v(uint8_t *buffer, size_t size, int *bit_offset);
+    int32_t read_se_v(uint8_t *buffer, size_t size, int *bit_offset);
+
 #ifdef __cplusplus
 }
 #endif // __cplusplus
