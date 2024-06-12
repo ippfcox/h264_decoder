@@ -12,6 +12,8 @@ extern "C"
 
     void read_nal_unit(struct NAL_unit *nal);
 
+    void dump_nal_unit(FILE *fp, struct NAL_unit *nal);
+
 #ifdef __cplusplus
 }
 #endif // __cplusplus

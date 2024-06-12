@@ -23,8 +23,6 @@ struct h264_NALU
 {
     struct NAL_unit m;
 
-    int index; // 调试用的序号
-
     struct h264_NALU *prev;
     struct h264_NALU *next;
 };
@@ -39,6 +37,8 @@ struct h264_decoder_context
     // head指向第一个nalu，rear指向最后一个nalu，proc指向处理过的最后一个nalu
     struct h264_NALU *nalus_head, *nalus_rear, *nalu_proc;
     int count_nalus;
+
+    FILE *fp_dump_info;
 };
 
 // 判断给定buffer在offset位置是否是一个startcode
@@ -80,7 +80,7 @@ static int split_nalu(struct h264_decoder_context *ctx)
         struct h264_NALU *nalu = calloc(1, sizeof(struct h264_NALU));
         nalu->m.size = nalu_offsets[i] - nalu_offsets[i - 1];
         nalu->m.buffer = calloc(nalu->m.size, sizeof(uint8_t));
-        nalu->index = ctx->count_nalus++;
+        nalu->m.index = ctx->count_nalus++;
         memcpy(nalu->m.buffer, ctx->pending_buffer + nalu_offsets[i - 1], nalu->m.size);
 
         if (ctx->nalus_head == NULL)
@@ -136,12 +136,13 @@ static int parse_nalu(struct h264_decoder_context *ctx)
             break;
         case H264_NAL_PPS:
             read_pic_paramster_set_rbsp(&nalu->m);
-            exit(0);
             break;
         default:
             logerror("unhandled nal unit type: %d", nalu->m.header.nal_unit_type);
             break;
         }
+
+        dump_nal_unit(ctx->fp_dump_info, &nalu->m);
     }
 
     ctx->nalu_proc = ctx->nalus_rear;
@@ -184,6 +185,8 @@ int h264_decoder_create(h264_decoder_handle *h, struct h264_decoder_config *cfg)
     }
 
     // [TODO] check config
+
+    ctx->fp_dump_info = fopen("debug_dump.txt", "w");
 
     ctx->cfg = *cfg;
 

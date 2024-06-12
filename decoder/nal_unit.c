@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include "common/misc.h"
 #include "nal_unit.h"
+#include "seq_parameter_set.h"
 #include "common/log.h"
 
 // 7.3.1 NAL unit syntax
@@ -77,4 +78,18 @@ void read_nal_unit(struct NAL_unit *nal)
         nal->header.forbidden_zero_bit, nal->header.nal_ref_idc, nal->header.nal_unit_type,
         nal->header.svc_extension_flag, nal->header.avc_3d_extension_flag,
         nal->emulation_prevention_three_byte);
+}
+
+void dump_nal_unit(FILE *fp, struct NAL_unit *nal)
+{
+    logwarn("here");
+    switch (nal->header.nal_unit_type)
+    {
+    case H264_NAL_SPS:
+        dump_seq_parameter_set(fp, nal);
+        break;
+    default:
+        fprintf(fp, "nal #%d info is not supported now\n", nal->index);
+        break;
+    }
 }

@@ -106,3 +106,8 @@ void read_seq_parameter_set(struct NAL_unit *nal)
         sps->frame_crop_bottom_offset,
         sps->vui_parameters_present_flag);
 }
+
+void dump_seq_parameter_set(FILE *fp, struct NAL_unit *nal)
+{
+    fprintf(fp, "nal #%d\n   sps\n", nal->index);
+}

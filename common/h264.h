@@ -117,6 +117,7 @@ extern "C"
         // 原始数据
         uint8_t *buffer;
         size_t size;
+        int index;
 
         size_t NumBytesInNALunit; // == size
 
