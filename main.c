@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
     struct context *ctx = calloc(1, sizeof(struct context));
     if (!ctx)
     {
-        log_error("calloc failed: %s", strerror(errno));
+        logerror("calloc failed: %s", strerror(errno));
         return -1;
     }
 
@@ -37,7 +37,7 @@ int main(int argc, char *argv[])
     ctx->fp = fopen(argv[1], "rb");
     if (!ctx->fp)
     {
-        log_error("fopen `%s` failed: %s", argv[1], strerror(errno));
+        logerror("fopen `%s` failed: %s", argv[1], strerror(errno));
         goto error;
     }
 
@@ -50,7 +50,7 @@ int main(int argc, char *argv[])
     int ret = h264_decoder_create(&decoder, &cfg);
     if (ret != H264_SUCCESS)
     {
-        log_error("h264_decoder_create failed: %d", ret);
+        logerror("h264_decoder_create failed: %d", ret);
         return -1;
     }
 
@@ -63,7 +63,7 @@ int main(int argc, char *argv[])
         ret = h264_decoder_send_stream(decoder, &stream);
         if (ret < 0)
         {
-            log_error("h264_decoder_send_stream failed: %d", ret);
+            logerror("h264_decoder_send_stream failed: %d", ret);
             break;
         }
     }

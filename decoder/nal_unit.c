@@ -70,7 +70,7 @@ void read_nal_unit(struct NAL_unit *nal)
     }
     nal->rbsp_byte = realloc(nal->rbsp_byte, nal->NumBytesInRBSP);
 
-    log_debug("NBINALu: %u, nUHB: %lu, NBIRBSP: %lu, (%u, %u, %u), (%u, %u), (%u)",
+    logdebug("NBINALu: %u, nUHB: %lu, NBIRBSP: %lu, (%u, %u, %u), (%u, %u), (%u)",
         nal->NumBytesInNALunit,
         nal->nalUnitHeaderBytes,
         nal->NumBytesInRBSP,

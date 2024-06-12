@@ -75,7 +75,7 @@ void read_seq_parameter_set(struct NAL_unit *nal)
         // [TODO]
     }
 
-    log_debug("profile: %u, (%u, %u, %u, %u, %u, %u), z: %u, level: %u, sps_id: %u, mfnm4: %u, poct: %u, mpoclm4: %u, dpoazf: %u",
+    logdebug("profile: %u, (%u, %u, %u, %u, %u, %u), z: %u, level: %u, sps_id: %u, mfnm4: %u, poct: %u, mpoclm4: %u, dpoazf: %u",
         sps->profile_idc,
         sps->constraint_set0_flag,
         sps->constraint_set1_flag,
@@ -91,7 +91,7 @@ void read_seq_parameter_set(struct NAL_unit *nal)
         sps->log2_max_pic_order_cnt_lsb_minus4,
         sps->delta_pic_order_always_zero_flag);
 
-    log_debug("mnrf: %lu, gifnva: %u, pw: %lu, ph: %lu, mbs_o: %u, m_ada: %u, 8x8: %u, cr: %u, (%lu, %lu, %lu, %lu), vui: %u",
+    logdebug("mnrf: %lu, gifnva: %u, pw: %lu, ph: %lu, mbs_o: %u, m_ada: %u, 8x8: %u, cr: %u, (%lu, %lu, %lu, %lu), vui: %u",
         sps->max_num_ref_frames,
         sps->gaps_in_frame_num_value_allowed_flag,
         sps->pic_width_in_mbs_minus1,

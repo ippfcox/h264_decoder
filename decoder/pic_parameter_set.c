@@ -76,5 +76,5 @@ void read_pic_paramster_set_rbsp(struct NAL_unit *nal)
         pps->second_chroma_qp_index_offset = read_se_v(nal->rbsp_byte, nal->NumBytesInRBSP, &bit_offset);
     }
 
-    log_debug("chroma_qp_index_offset: %d, %d", pps->chroma_qp_index_offset, pps->deblocking_filter_control_present_flag);
+    logdebug("chroma_qp_index_offset: %d, %d", pps->chroma_qp_index_offset, pps->deblocking_filter_control_present_flag);
 }

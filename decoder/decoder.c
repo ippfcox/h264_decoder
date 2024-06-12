@@ -71,7 +71,7 @@ static int split_nalu(struct h264_decoder_context *ctx)
 {
     if (ctx->pending_size < NALU_STARTCODE_LEN)
     {
-        log_warn("wait more stream (%lu < %d)", ctx->pending_size, NALU_STARTCODE_LEN);
+        logwarn("wait more stream (%lu < %d)", ctx->pending_size, NALU_STARTCODE_LEN);
         return H264_WAIT_MORE_STREAM;
     }
 
@@ -143,11 +143,11 @@ static int split_nalu(struct h264_decoder_context *ctx)
 //         {
 //             if (nalu->buffer[i + 3] == 0x00 || nalu->buffer[i + 3] == 0x01 || nalu->buffer[i + 3] == 0x02 || nalu->buffer[i + 3] == 0x03)
 //             {
-//                 log_debug("[%d]before:\t%02x %02x %02x %02x %02x", nalu->index, nalu->buffer[i + 0], nalu->buffer[i + 1], nalu->buffer[i + 2], nalu->buffer[i + 3], nalu->buffer[i + 4]);
+//                 logdebug("[%d]before:\t%02x %02x %02x %02x %02x", nalu->index, nalu->buffer[i + 0], nalu->buffer[i + 1], nalu->buffer[i + 2], nalu->buffer[i + 3], nalu->buffer[i + 4]);
 //                 nalu->size -= 1;
 //                 memcpy(nalu->buffer + i + 2, nalu->buffer + i + 3, nalu->size - (i + 2));
 //             }
-//             log_debug("[%d]after:\t%02x %02x %02x %02x", nalu->index, nalu->buffer[i + 0], nalu->buffer[i + 1], nalu->buffer[i + 2], nalu->buffer[i + 3]);
+//             logdebug("[%d]after:\t%02x %02x %02x %02x", nalu->index, nalu->buffer[i + 0], nalu->buffer[i + 1], nalu->buffer[i + 2], nalu->buffer[i + 3]);
 //         }
 //     }
 //     return H264_SUCCESS;
@@ -196,7 +196,7 @@ static int parse_nalu(struct h264_decoder_context *ctx)
             exit(0);
             break;
         default:
-            log_error("unhandled nal unit type: %d", nalu->m.header.nal_unit_type);
+            logerror("unhandled nal unit type: %d", nalu->m.header.nal_unit_type);
             break;
         }
     }
@@ -211,14 +211,14 @@ static int process(struct h264_decoder_context *ctx)
     int ret = split_nalu(ctx);
     if (ret != H264_SUCCESS)
     {
-        log_error("split_nalu failed");
+        logerror("split_nalu failed");
         return ret;
     }
 
     ret = parse_nalu(ctx);
     if (ret != H264_SUCCESS)
     {
-        log_error("parse_nalu failed");
+        logerror("parse_nalu failed");
         return ret;
     }
 
@@ -229,14 +229,14 @@ int h264_decoder_create(h264_decoder_handle *h, struct h264_decoder_config *cfg)
 {
     if (!h || !cfg)
     {
-        log_error("invalid argument");
+        logerror("invalid argument");
         return H264_INVALID_ARGUMENT;
     }
 
     struct h264_decoder_context *ctx = calloc(1, sizeof(struct h264_decoder_context));
     if (!ctx)
     {
-        log_error("calloc failed: %s", strerror(errno));
+        logerror("calloc failed: %s", strerror(errno));
         return H264_MEM_ALLOC_FAILED;
     }
 
@@ -263,7 +263,7 @@ int h264_decoder_send_stream(h264_decoder_handle h, struct h264_stream *stream)
     struct h264_decoder_context *ctx = h;
     if (!h)
     {
-        log_error("invalid argument");
+        logerror("invalid argument");
         return H264_INVALID_ARGUMENT;
     }
 
@@ -280,7 +280,7 @@ void h264_decoder_debug(h264_decoder_handle h)
     struct h264_decoder_context *ctx = h;
     if (!h)
     {
-        log_error("invalid argument");
+        logerror("invalid argument");
         return;
     }
 
@@ -288,8 +288,8 @@ void h264_decoder_debug(h264_decoder_handle h)
 
     while (nalu)
     {
-        // log_info("index: %d, size: %lu, rbsp_trailing_bits: %d", nalu->index, nalu->size, nalu->count_rbsp_trailing_bits);
-        // log_info("header: %02x, forbidden_zero_bit: %d, nal_ref_idc: %d, nal_unit_type: %d",
+        // loginfo("index: %d, size: %lu, rbsp_trailing_bits: %d", nalu->index, nalu->size, nalu->count_rbsp_trailing_bits);
+        // loginfo("header: %02x, forbidden_zero_bit: %d, nal_ref_idc: %d, nal_unit_type: %d",
         //     nalu->header.byte, nalu->header.forbidden_zero_bit, nalu->header.nal_ref_idc, nalu->header.nal_unit_type);
 
         nalu = nalu->next;

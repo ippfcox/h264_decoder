@@ -18,35 +18,35 @@ extern "C"
     void set_log_level(enum log_level level);
     void log_(enum log_level level, const char *file, int line, const char *func, const char *fmt, ...);
 
-#define log_debug(fmt, ...)                                                      \
+#define logdebug(fmt, ...)                                                      \
     do                                                                           \
     {                                                                            \
         log_(LOG_LEVEL_DEBUG, __FILE__, __LINE__, __func__, fmt, ##__VA_ARGS__); \
     }                                                                            \
     while (0);
 
-#define log_info(fmt, ...)                                                      \
+#define loginfo(fmt, ...)                                                      \
     do                                                                          \
     {                                                                           \
         log_(LOG_LEVEL_INFO, __FILE__, __LINE__, __func__, fmt, ##__VA_ARGS__); \
     }                                                                           \
     while (0);
 
-#define log_warn(fmt, ...)                                                      \
+#define logwarn(fmt, ...)                                                      \
     do                                                                          \
     {                                                                           \
         log_(LOG_LEVEL_WARN, __FILE__, __LINE__, __func__, fmt, ##__VA_ARGS__); \
     }                                                                           \
     while (0);
 
-#define log_error(fmt, ...)                                                      \
+#define logerror(fmt, ...)                                                      \
     do                                                                           \
     {                                                                            \
         log_(LOG_LEVEL_ERROR, __FILE__, __LINE__, __func__, fmt, ##__VA_ARGS__); \
     }                                                                            \
     while (0);
 
-#define log_fatal(fmt, ...)                                                      \
+#define logfatal(fmt, ...)                                                      \
     do                                                                           \
     {                                                                            \
         log_(LOG_LEVEL_FATAL, __FILE__, __LINE__, __func__, fmt, ##__VA_ARGS__); \
