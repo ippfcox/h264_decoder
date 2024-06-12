@@ -24,19 +24,6 @@ struct h264_NALU
     struct NAL_unit m;
 
     int index; // 调试用的序号
-    // int count_rbsp_trailing_bits;
-
-    // // parse
-    // union
-    // {
-    //     struct
-    //     {
-    //         uint8_t nal_unit_type : 5;      // 0-4
-    //         uint8_t nal_ref_idc : 2;        // 5-6
-    //         uint8_t forbidden_zero_bit : 1; // 7
-    //     };
-    //     uint8_t byte;
-    // } header;
 
     struct h264_NALU *prev;
     struct h264_NALU *next;
@@ -123,50 +110,6 @@ static int split_nalu(struct h264_decoder_context *ctx)
 
     return H264_SUCCESS;
 }
-
-// ebsp是去掉startcode
-// static int get_ebsp(int startcode_len, struct h264_nalu *nalu)
-// {
-//     nalu->size -= startcode_len;
-//     memcpy(nalu->buffer, nalu->buffer + startcode_len, nalu->size);
-//     // nalu->buffer = realloc(nalu->buffer, nalu->size); // 有必要吗
-//     return H264_SUCCESS;
-// }
-
-// // rbsp是去掉防竞争字节：00 00 [03] 00/01/02/03中的[03]
-// static int get_rbsp(struct h264_nalu *nalu)
-// {
-//     uint8_t epb_prefix[] = {0x00, 0x00, 0x03};
-//     for (int i = 0; i < nalu->size - 3; ++i)
-//     {
-//         if (check_code(nalu->buffer + i, epb_prefix, 3))
-//         {
-//             if (nalu->buffer[i + 3] == 0x00 || nalu->buffer[i + 3] == 0x01 || nalu->buffer[i + 3] == 0x02 || nalu->buffer[i + 3] == 0x03)
-//             {
-//                 logdebug("[%d]before:\t%02x %02x %02x %02x %02x", nalu->index, nalu->buffer[i + 0], nalu->buffer[i + 1], nalu->buffer[i + 2], nalu->buffer[i + 3], nalu->buffer[i + 4]);
-//                 nalu->size -= 1;
-//                 memcpy(nalu->buffer + i + 2, nalu->buffer + i + 3, nalu->size - (i + 2));
-//             }
-//             logdebug("[%d]after:\t%02x %02x %02x %02x", nalu->index, nalu->buffer[i + 0], nalu->buffer[i + 1], nalu->buffer[i + 2], nalu->buffer[i + 3]);
-//         }
-//     }
-//     return H264_SUCCESS;
-// }
-
-// static int get_sodb(struct h264_nalu *nalu)
-// {
-//     uint8_t last_byte = nalu->buffer[nalu->size - 1];
-
-//     for (int i = 1; i <= 8; ++i)
-//     {
-//         if (((last_byte >> i) & 0x01) == 0x01)
-//         {
-//             nalu->count_rbsp_trailing_bits = i;
-//             break;
-//         }
-//     }
-//     return H264_SUCCESS;
-// }
 
 // 对每个nalu进行解析
 static int parse_nalu(struct h264_decoder_context *ctx)
