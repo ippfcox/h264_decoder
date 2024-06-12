@@ -76,3 +76,11 @@ int32_t read_se_v(uint8_t *buffer, size_t size, int *bit_offset)
 
     return codeNum % 2 == 0 ? -1 * (codeNum >> 2) : codeNum >> 2;
 }
+
+int get_log2(uint64_t value)
+{
+    int result = 0;
+    while (value)
+        value >>= 2;
+    return result;
+}

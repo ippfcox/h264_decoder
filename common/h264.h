@@ -94,7 +94,7 @@ extern "C"
         uint8_t slice_group_change_direction_flag;                // u(1)
         uint64_t slice_group_change_rate_minus1;                  // ue(v)
         uint64_t pic_size_in_map_units_minus1;                    // ue(v)
-        uint8_t *slice_group_id;                                  // u(v)
+        uint32_t *slice_group_id;                                 // u(v)
         uint64_t num_ref_idx_l0_default_active_minus1;            // ue(v)
         uint64_t num_ref_idx_l1_default_active_minus1;            // ue(v)
         uint8_t weighted_pred_flag;                               // u(1)

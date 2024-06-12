@@ -46,10 +46,11 @@ void read_pic_paramster_set_rbsp(struct NAL_unit *nal)
         else if (pps->slice_group_map_type == 6)
         {
             pps->pic_size_in_map_units_minus1 = read_ue_v(nal->rbsp_byte, nal->NumBytesInRBSP, &bit_offset);
-            // pps->slice_group_id = calloc(pps->pic_size_in_map_units_minus1, )
+            int v = get_log2(pps->num_slice_groups_minus1 + 1);
+            pps->slice_group_id = calloc(pps->pic_size_in_map_units_minus1, sizeof(uint32_t));
             for (int i = 0; i < pps->pic_size_in_map_units_minus1; ++i)
             {
-                // uint8_t *slice_group_id;                        // u(v)
+                pps->slice_group_id[i] = read_bits(nal->rbsp_byte, nal->NumBytesInRBSP, &bit_offset, v);
             }
         }
     }
