@@ -82,14 +82,14 @@ void read_nal_unit(struct NAL_unit *nal)
 
 void dump_nal_unit(FILE *fp, struct NAL_unit *nal)
 {
-    logwarn("here");
+    fprintf(fp, "nal #%d %s(%d)\n", nal->index, nal_type_name(nal->header.nal_unit_type), nal->header.nal_unit_type);
     switch (nal->header.nal_unit_type)
     {
     case H264_NAL_SPS:
         dump_seq_parameter_set(fp, nal);
         break;
     default:
-        fprintf(fp, "nal #%d info is not supported now\n", nal->index);
+        fprintf(fp, "    not supported now\n\n");
         break;
     }
 }

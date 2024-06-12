@@ -9,7 +9,7 @@ extern "C"
 #include <stdint.h>
 
     // Table 7-1 - NAL unit type codes
-    enum
+    enum H264_NAL_TYPE
     {
         H264_NAL_UNSPECIFIED = 0,
         H264_NAL_SLICE = 1,

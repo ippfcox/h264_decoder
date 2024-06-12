@@ -7,9 +7,12 @@ extern "C"
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include "h264.h"
 
 // 0~64bit
 #define make_mask(n) (n == 64 ? ~0UL : (1UL << (n)) - 1)
+
+    const char *nal_type_name(enum H264_NAL_TYPE type);
 
     // 7.2
 

@@ -109,5 +109,37 @@ void read_seq_parameter_set(struct NAL_unit *nal)
 
 void dump_seq_parameter_set(FILE *fp, struct NAL_unit *nal)
 {
-    fprintf(fp, "nal #%d\n   sps\n", nal->index);
+    fprintf(fp, "", nal->rbsp.sps);
+    fprintf(fp, "    seq_parameter_set_data() {\n");
+    fprintf(fp, "        profile_idc: %u\n", nal->rbsp.sps.profile_idc);
+    fprintf(fp, "        constraint_set0_flag: %u\n", nal->rbsp.sps.constraint_set0_flag);
+    fprintf(fp, "        constraint_set1_flag: %u\n", nal->rbsp.sps.constraint_set1_flag);
+    fprintf(fp, "        constraint_set2_flag: %u\n", nal->rbsp.sps.constraint_set2_flag);
+    fprintf(fp, "        constraint_set3_flag: %u\n", nal->rbsp.sps.constraint_set3_flag);
+    fprintf(fp, "        constraint_set4_flag: %u\n", nal->rbsp.sps.constraint_set4_flag);
+    fprintf(fp, "        constraint_set5_flag: %u\n", nal->rbsp.sps.constraint_set5_flag);
+    fprintf(fp, "        reserved_zero_2bits: %u\n", nal->rbsp.sps.reserved_zero_2bits);
+    fprintf(fp, "        level_idc: %u\n", nal->rbsp.sps.level_idc);
+    fprintf(fp, "        seq_parameter_set_id: %lu\n", nal->rbsp.sps.seq_parameter_set_id);
+    fprintf(fp, "        if (nal->rbsp.sps.profile_idc== 100 || nal->rbsp.sps.profile_idc== 110 ||\n");
+    fprintf(fp, "            nal->rbsp.sps.profile_idc== 122 || nal->rbsp.sps.profile_idc== 244 || nal->rbsp.sps.profile_idc== 44 ||\n");
+    fprintf(fp, "            nal->rbsp.sps.profile_idc== 83 || nal->rbsp.sps.profile_idc== 86 || nal->rbsp.sps.profile_idc== 118 ||\n");
+    fprintf(fp, "            nal->rbsp.sps.profile_idc== 128 || nal->rbsp.sps.profile_idc== 138 || nal->rbsp.sps.profile_idc== 139 ||\n");
+    fprintf(fp, "            nal->rbsp.sps.profile_idc== 134 || nal->rbsp.sps.profile_idc== 135) {\n");
+    if (nal->rbsp.sps.profile_idc == 100 || nal->rbsp.sps.profile_idc == 110 ||
+        nal->rbsp.sps.profile_idc == 122 || nal->rbsp.sps.profile_idc == 244 || nal->rbsp.sps.profile_idc == 44 ||
+        nal->rbsp.sps.profile_idc == 83 || nal->rbsp.sps.profile_idc == 86 || nal->rbsp.sps.profile_idc == 118 ||
+        nal->rbsp.sps.profile_idc == 128 || nal->rbsp.sps.profile_idc == 138 || nal->rbsp.sps.profile_idc == 139 ||
+        nal->rbsp.sps.profile_idc == 134 || nal->rbsp.sps.profile_idc == 135)
+    {
+        fprintf(fp, "            [TODO]\n");
+    }
+    else
+    {
+        fprintf(fp, "            N/A\n");
+    }
+    fprintf(fp, "        }\n");
+    fprintf(fp, "        log2_max_frame_num_minus4: %lu\n", nal->rbsp.sps.log2_max_frame_num_minus4);
+    fprintf(fp, "        pic_order_cnt_type: %lu\n", nal->rbsp.sps.pic_order_cnt_type);
+    fprintf(fp, "    }\n\n");
 }
