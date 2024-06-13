@@ -8,6 +8,7 @@
 #include "seq_parameter_set.h"
 #include "pic_parameter_set.h"
 #include "supplemental_enhancement_information.h"
+#include "slice.h"
 #include "common/misc.h"
 #include "common/log.h"
 
@@ -131,8 +132,10 @@ static int parse_nalu(struct h264_decoder_context *ctx)
         switch (nalu->m.header.nal_unit_type)
         {
         case H264_NAL_SLICE:
+            read_slice_header(&nalu->m);
             break;
         case H264_NAL_IDR_SLICE:
+            read_slice_header(&nalu->m);
             break;
         case H264_NAL_SEI:
             read_sei_rbsp(&nalu->m);
