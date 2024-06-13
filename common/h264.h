@@ -122,6 +122,38 @@ extern "C"
         int count_messages;
     };
 
+    struct slice
+    {
+        struct
+        {
+            uint32_t first_mb_in_slice;
+            uint32_t slice_type;
+            uint32_t pic_parameter_set_id;
+            uint8_t colour_plane_id : 2;
+            uint32_t frame_num;
+            uint8_t field_pic_flag : 1;
+            uint8_t bottom_field_flag : 1;
+            uint32_t idr_pic_id;
+            uint32_t pic_order_cnt_lsb;
+            int32_t delta_pic_order_cnt_bottom;
+            int32_t delta_pic_order_cnt[2];
+            uint32_t redundant_pic_cnt;
+            uint8_t direct_spatial_mv_pred_flag : 1;
+            uint8_t num_ref_idx_active_override_flag : 1;
+            uint32_t num_ref_idx_l0_active_minus1;
+            uint32_t num_ref_idx_l1_active_minus1;
+
+            uint32_t cabac_init_idc;
+            int32_t slice_qp_delta;
+            uint8_t sp_for_switch_flag : 1;
+            int32_t slice_qs_delta;
+            uint32_t disable_deblocking_filter_idc;
+            int32_t slice_alpha_c0_offset_div2;
+            int32_t slice_beta_offset_div2;
+            uint32_t slice_group_change_cycle;
+        } header;
+    };
+
     // nal = startcode+nalu header+rbsp
     struct NAL_unit
     {
@@ -154,6 +186,7 @@ extern "C"
                 struct seq_parameter_set sps;
                 struct pic_parameter_set pps;
                 struct sei sei;
+                struct slice slice;
             };
         } rbsp;
         size_t NumBytesInRBSP; // rbsp size
