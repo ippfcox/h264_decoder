@@ -88,7 +88,7 @@ void dump_seq_parameter_set(FILE *fp, struct NAL_unit *nal)
     fprintf(fp, "        constraint_set5_flag: %u\n", nal->rbsp.sps.constraint_set5_flag);
     fprintf(fp, "        reserved_zero_2bits: %u\n", nal->rbsp.sps.reserved_zero_2bits);
     fprintf(fp, "        level_idc: %u\n", nal->rbsp.sps.level_idc);
-    fprintf(fp, "        seq_parameter_set_id: %lu\n", nal->rbsp.sps.seq_parameter_set_id);
+    fprintf(fp, "        seq_parameter_set_id: %u\n", nal->rbsp.sps.seq_parameter_set_id);
     fprintf(fp, "        if (nal->rbsp.sps.profile_idc== 100 || nal->rbsp.sps.profile_idc== 110 ||\n");
     fprintf(fp, "            nal->rbsp.sps.profile_idc== 122 || nal->rbsp.sps.profile_idc== 244 || nal->rbsp.sps.profile_idc== 44 ||\n");
     fprintf(fp, "            nal->rbsp.sps.profile_idc== 83 || nal->rbsp.sps.profile_idc== 86 || nal->rbsp.sps.profile_idc== 118 ||\n");
@@ -107,12 +107,12 @@ void dump_seq_parameter_set(FILE *fp, struct NAL_unit *nal)
         fprintf(fp, "            N/A\n");
     }
     fprintf(fp, "        }\n");
-    fprintf(fp, "        log2_max_frame_num_minus4: %lu\n", nal->rbsp.sps.log2_max_frame_num_minus4);
-    fprintf(fp, "        pic_order_cnt_type: %lu\n", nal->rbsp.sps.pic_order_cnt_type);
+    fprintf(fp, "        log2_max_frame_num_minus4: %u\n", nal->rbsp.sps.log2_max_frame_num_minus4);
+    fprintf(fp, "        pic_order_cnt_type: %u\n", nal->rbsp.sps.pic_order_cnt_type);
     fprintf(fp, "        if (pic_order_cnt_type == 0)\n");
     if (nal->rbsp.sps.pic_order_cnt_type == 0)
     {
-        fprintf(fp, "            log2_max_pic_order_cnt_lsb_minus4: %lu", nal->rbsp.sps.log2_max_pic_order_cnt_lsb_minus4);
+        fprintf(fp, "            log2_max_pic_order_cnt_lsb_minus4: %u", nal->rbsp.sps.log2_max_pic_order_cnt_lsb_minus4);
     }
     else
     {
@@ -124,7 +124,7 @@ void dump_seq_parameter_set(FILE *fp, struct NAL_unit *nal)
         fprintf(fp, "            delta_pic_order_always_zero_flag: %u\n", nal->rbsp.sps.delta_pic_order_always_zero_flag);
         fprintf(fp, "            offset_for_non_ref_pic: %d\n", nal->rbsp.sps.offset_for_non_ref_pic);
         fprintf(fp, "            offset_for_top_to_bottom_field: %d\n", nal->rbsp.sps.offset_for_top_to_bottom_field);
-        fprintf(fp, "            num_ref_frames_in_pic_order_cnt_cycle: %lu\n", nal->rbsp.sps.num_ref_frames_in_pic_order_cnt_cycle);
+        fprintf(fp, "            num_ref_frames_in_pic_order_cnt_cycle: %u\n", nal->rbsp.sps.num_ref_frames_in_pic_order_cnt_cycle);
         fprintf(fp, "            for (i = 0; i < num_ref_frames_in_pic_order_cnt_cycle; i++)\n");
         for (int i = 0; i < nal->rbsp.sps.num_ref_frames_in_pic_order_cnt_cycle; ++i)
         {
@@ -136,10 +136,10 @@ void dump_seq_parameter_set(FILE *fp, struct NAL_unit *nal)
         fprintf(fp, "            N/A\n");
     }
     fprintf(fp, "        }\n");
-    fprintf(fp, "        max_num_ref_frames: %lu\n", nal->rbsp.sps.max_num_ref_frames);
+    fprintf(fp, "        max_num_ref_frames: %u\n", nal->rbsp.sps.max_num_ref_frames);
     fprintf(fp, "        gaps_in_frame_num_value_allowed_flag: %u\n", nal->rbsp.sps.gaps_in_frame_num_value_allowed_flag);
-    fprintf(fp, "        pic_width_in_mbs_minus1: %lu\n", nal->rbsp.sps.pic_width_in_mbs_minus1);
-    fprintf(fp, "        pic_height_in_map_units_minus1: %lu\n", nal->rbsp.sps.pic_height_in_map_units_minus1);
+    fprintf(fp, "        pic_width_in_mbs_minus1: %u\n", nal->rbsp.sps.pic_width_in_mbs_minus1);
+    fprintf(fp, "        pic_height_in_map_units_minus1: %u\n", nal->rbsp.sps.pic_height_in_map_units_minus1);
     fprintf(fp, "        frame_mbs_only_flag: %u\n", nal->rbsp.sps.frame_mbs_only_flag);
     fprintf(fp, "        if (!frame_mbs_only_flag)\n");
     if (!nal->rbsp.sps.frame_mbs_only_flag)
@@ -155,10 +155,10 @@ void dump_seq_parameter_set(FILE *fp, struct NAL_unit *nal)
     fprintf(fp, "        if (frame_cropping_flag) {\n");
     if (nal->rbsp.sps.frame_cropping_flag)
     {
-        fprintf(fp, "            frame_crop_left_offset: %lu\n", nal->rbsp.sps.frame_crop_left_offset);
-        fprintf(fp, "            frame_crop_right_offset: %lu\n", nal->rbsp.sps.frame_crop_right_offset);
-        fprintf(fp, "            frame_crop_top_offset: %lu\n", nal->rbsp.sps.frame_crop_top_offset);
-        fprintf(fp, "            frame_crop_bottom_offset: %lu\n", nal->rbsp.sps.frame_crop_bottom_offset);
+        fprintf(fp, "            frame_crop_left_offset: %u\n", nal->rbsp.sps.frame_crop_left_offset);
+        fprintf(fp, "            frame_crop_right_offset: %u\n", nal->rbsp.sps.frame_crop_right_offset);
+        fprintf(fp, "            frame_crop_top_offset: %u\n", nal->rbsp.sps.frame_crop_top_offset);
+        fprintf(fp, "            frame_crop_bottom_offset: %u\n", nal->rbsp.sps.frame_crop_bottom_offset);
     }
     else
     {
