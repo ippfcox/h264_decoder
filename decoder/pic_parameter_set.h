@@ -9,6 +9,8 @@ extern "C"
 
     void read_pic_paramster_set_rbsp(struct NAL_unit *nal);
 
+    void dump_pic_parameter_set(FILE *fp, struct NAL_unit *nal);
+
 #ifdef __cplusplus
 }
 #endif // __cplusplus
