@@ -74,42 +74,10 @@ void read_seq_parameter_set(struct NAL_unit *nal)
     {
         // [TODO]
     }
-
-    logdebug("profile: %u, (%u, %u, %u, %u, %u, %u), z: %u, level: %u, sps_id: %u, mfnm4: %u, poct: %u, mpoclm4: %u, dpoazf: %u",
-        sps->profile_idc,
-        sps->constraint_set0_flag,
-        sps->constraint_set1_flag,
-        sps->constraint_set2_flag,
-        sps->constraint_set3_flag,
-        sps->constraint_set4_flag,
-        sps->constraint_set5_flag,
-        sps->reserved_zero_2bits,
-        sps->level_idc,
-        sps->seq_parameter_set_id,
-        sps->log2_max_frame_num_minus4,
-        sps->pic_order_cnt_type,
-        sps->log2_max_pic_order_cnt_lsb_minus4,
-        sps->delta_pic_order_always_zero_flag);
-
-    logdebug("mnrf: %lu, gifnva: %u, pw: %lu, ph: %lu, mbs_o: %u, m_ada: %u, 8x8: %u, cr: %u, (%lu, %lu, %lu, %lu), vui: %u",
-        sps->max_num_ref_frames,
-        sps->gaps_in_frame_num_value_allowed_flag,
-        sps->pic_width_in_mbs_minus1,
-        sps->pic_height_in_map_units_minus1,
-        sps->frame_mbs_only_flag,
-        sps->mb_adaptive_frame_field_flag,
-        sps->direct_8x8_inference_flag,
-        sps->frame_cropping_flag,
-        sps->frame_crop_left_offset,
-        sps->frame_crop_right_offset,
-        sps->frame_crop_top_offset,
-        sps->frame_crop_bottom_offset,
-        sps->vui_parameters_present_flag);
 }
 
 void dump_seq_parameter_set(FILE *fp, struct NAL_unit *nal)
 {
-    fprintf(fp, "", nal->rbsp.sps);
     fprintf(fp, "    seq_parameter_set_data() {\n");
     fprintf(fp, "        profile_idc: %u\n", nal->rbsp.sps.profile_idc);
     fprintf(fp, "        constraint_set0_flag: %u\n", nal->rbsp.sps.constraint_set0_flag);
@@ -141,5 +109,64 @@ void dump_seq_parameter_set(FILE *fp, struct NAL_unit *nal)
     fprintf(fp, "        }\n");
     fprintf(fp, "        log2_max_frame_num_minus4: %lu\n", nal->rbsp.sps.log2_max_frame_num_minus4);
     fprintf(fp, "        pic_order_cnt_type: %lu\n", nal->rbsp.sps.pic_order_cnt_type);
+    fprintf(fp, "        if (pic_order_cnt_type == 0)\n");
+    if (nal->rbsp.sps.pic_order_cnt_type == 0)
+    {
+        fprintf(fp, "            log2_max_pic_order_cnt_lsb_minus4: %lu", nal->rbsp.sps.log2_max_pic_order_cnt_lsb_minus4);
+    }
+    else
+    {
+        fprintf(fp, "            N/A\n");
+    }
+    fprintf(fp, "        else if (pic_order_cnt_type == 1) {\n");
+    if (nal->rbsp.sps.pic_order_cnt_type == 1)
+    {
+        fprintf(fp, "            delta_pic_order_always_zero_flag: %u\n", nal->rbsp.sps.delta_pic_order_always_zero_flag);
+        fprintf(fp, "            offset_for_non_ref_pic: %d\n", nal->rbsp.sps.offset_for_non_ref_pic);
+        fprintf(fp, "            offset_for_top_to_bottom_field: %d\n", nal->rbsp.sps.offset_for_top_to_bottom_field);
+        fprintf(fp, "            num_ref_frames_in_pic_order_cnt_cycle: %lu\n", nal->rbsp.sps.num_ref_frames_in_pic_order_cnt_cycle);
+        fprintf(fp, "            for (i = 0; i < num_ref_frames_in_pic_order_cnt_cycle; i++)\n");
+        for (int i = 0; i < nal->rbsp.sps.num_ref_frames_in_pic_order_cnt_cycle; ++i)
+        {
+            fprintf(fp, "                offset_for_ref_frame[%d]: %d\n", i, nal->rbsp.sps.offset_for_ref_frame[i]);
+        }
+    }
+    else
+    {
+        fprintf(fp, "            N/A\n");
+    }
+    fprintf(fp, "        }\n");
+    fprintf(fp, "        max_num_ref_frames: %lu\n", nal->rbsp.sps.max_num_ref_frames);
+    fprintf(fp, "        gaps_in_frame_num_value_allowed_flag: %u\n", nal->rbsp.sps.gaps_in_frame_num_value_allowed_flag);
+    fprintf(fp, "        pic_width_in_mbs_minus1: %lu\n", nal->rbsp.sps.pic_width_in_mbs_minus1);
+    fprintf(fp, "        pic_height_in_map_units_minus1: %lu\n", nal->rbsp.sps.pic_height_in_map_units_minus1);
+    fprintf(fp, "        frame_mbs_only_flag: %u\n", nal->rbsp.sps.frame_mbs_only_flag);
+    fprintf(fp, "        if (!frame_mbs_only_flag)\n");
+    if (!nal->rbsp.sps.frame_mbs_only_flag)
+    {
+        fprintf(fp, "            mb_adaptive_frame_field_flag: %u\n", nal->rbsp.sps.mb_adaptive_frame_field_flag);
+    }
+    else
+    {
+        fprintf(fp, "            N/A\n");
+    }
+    fprintf(fp, "        direct_8x8_inference_flag: %u\n", nal->rbsp.sps.direct_8x8_inference_flag);
+    fprintf(fp, "        frame_cropping_flag: %u\n", nal->rbsp.sps.frame_cropping_flag);
+    fprintf(fp, "        if (frame_cropping_flag) {\n");
+    if (nal->rbsp.sps.frame_cropping_flag)
+    {
+        fprintf(fp, "            frame_crop_left_offset: %lu\n", nal->rbsp.sps.frame_crop_left_offset);
+        fprintf(fp, "            frame_crop_right_offset: %lu\n", nal->rbsp.sps.frame_crop_right_offset);
+        fprintf(fp, "            frame_crop_top_offset: %lu\n", nal->rbsp.sps.frame_crop_top_offset);
+        fprintf(fp, "            frame_crop_bottom_offset: %lu\n", nal->rbsp.sps.frame_crop_bottom_offset);
+    }
+    else
+    {
+        fprintf(fp, "            N/A\n");
+    }
+    fprintf(fp, "        }\n");
+    fprintf(fp, "        vui_parameters_present_flag: %u\n", nal->rbsp.sps.vui_parameters_present_flag);
+    fprintf(fp, "        if (vui_parameters_present_flag)\n");
+    fprintf(fp, "            [TODO] vui_parameters()\n");
     fprintf(fp, "    }\n\n");
 }
