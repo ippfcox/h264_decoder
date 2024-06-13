@@ -3,6 +3,7 @@
 #include "nal_unit.h"
 #include "seq_parameter_set.h"
 #include "pic_parameter_set.h"
+#include "supplemental_enhancement_information.h"
 #include "common/log.h"
 
 // 7.3.1 NAL unit syntax
@@ -91,6 +92,9 @@ void dump_nal_unit(FILE *fp, struct NAL_unit *nal)
         break;
     case H264_NAL_PPS:
         dump_pic_parameter_set(fp, nal);
+        break;
+    case H264_NAL_SEI:
+        dump_sei_rbsp(fp, nal);
         break;
     default:
         fprintf(fp, "    not supported now\n\n");

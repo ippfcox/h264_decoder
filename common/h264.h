@@ -111,6 +111,17 @@ extern "C"
         int32_t second_chroma_qp_index_offset;                    // se(v)
     };
 
+    struct sei_message
+    {
+        // TODO
+    };
+
+    struct sei
+    {
+        struct sei_message *messages;
+        int count_messages;
+    };
+
     // nal = startcode+nalu header+rbsp
     struct NAL_unit
     {
@@ -142,6 +153,7 @@ extern "C"
             {
                 struct seq_parameter_set sps;
                 struct pic_parameter_set pps;
+                struct sei sei;
             };
         } rbsp;
         size_t NumBytesInRBSP; // rbsp size

@@ -7,6 +7,7 @@
 #include "nal_unit.h"
 #include "seq_parameter_set.h"
 #include "pic_parameter_set.h"
+#include "supplemental_enhancement_information.h"
 #include "common/misc.h"
 #include "common/log.h"
 
@@ -134,6 +135,7 @@ static int parse_nalu(struct h264_decoder_context *ctx)
         case H264_NAL_IDR_SLICE:
             break;
         case H264_NAL_SEI:
+            read_sei_rbsp(&nalu->m);
             break;
         case H264_NAL_SPS:
             read_seq_parameter_set_rbsp(&nalu->m);
