@@ -16,7 +16,7 @@
 // SODB: String Of Data Bits
 // EPB: Emulation Prevention Bytes
 
-uint8_t startcode[NALU_STARTCODE_LEN] = {0x00, 0x00, 0x00, 0x01};
+uint8_t startcode[NALU_STARTCODE_LEN] = {0x00, 0x00, 0x01};
 
 // 处理nalu信息
 struct h264_NALU
@@ -130,6 +130,10 @@ static int parse_nalu(struct h264_decoder_context *ctx)
         switch (nalu->m.header.nal_unit_type)
         {
         case H264_NAL_SLICE:
+            break;
+        case H264_NAL_IDR_SLICE:
+            break;
+        case H264_NAL_SEI:
             break;
         case H264_NAL_SPS:
             read_seq_parameter_set_rbsp(&nalu->m);

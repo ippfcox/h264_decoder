@@ -8,7 +8,7 @@ extern "C"
 
 #include "common/h264.h"
 
-#define NALU_STARTCODE_LEN 4 // [TODO] 暂时认为startcode长度为4
+#define NALU_STARTCODE_LEN 3 // [TODO] 暂时认为startcode长度为3
 
     void read_nal_unit(struct NAL_unit *nal);
 
