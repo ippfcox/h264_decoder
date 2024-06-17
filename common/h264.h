@@ -45,6 +45,20 @@ extern "C"
         H264_NAL_UNSPECIFIED31 = 31,
     };
 
+    enum H264_SLICE_TYPE
+    {
+        H264_SLICE_P = 0,
+        H264_SLICE_B = 1,
+        H264_SLICE_I = 2,
+        H264_SLICE_SP = 3,
+        H264_SLICE_SI = 4,
+        H264_SLICE_P2 = 5,
+        H264_SLICE_B2 = 6,
+        H264_SLICE_I2 = 7,
+        H264_SLICE_SP2 = 8,
+        H264_SLICE_SI2 = 9,
+    };
+
     struct seq_parameter_set
     {
         uint8_t profile_idc;                              // u(8)
@@ -186,6 +200,8 @@ extern "C"
         size_t nalUnitHeaderBytes; // header size;
 
         uint8_t emulation_prevention_three_byte; // f(8)
+
+        struct seq_parameter_set *sps; // 当前有效的sps
 
         uint8_t *rbsp_byte; // rbsp data
         struct
