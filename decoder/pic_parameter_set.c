@@ -79,8 +79,6 @@ void read_pic_paramster_set_rbsp(struct NAL_unit *nal)
         }
         pps->second_chroma_qp_index_offset = se_v();
     }
-
-    logdebug("chroma_qp_index_offset: %d, %d", pps->chroma_qp_index_offset, pps->deblocking_filter_control_present_flag);
 }
 
 void dump_pic_parameter_set(FILE *fp, struct NAL_unit *nal)
