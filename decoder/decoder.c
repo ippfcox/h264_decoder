@@ -36,6 +36,9 @@ struct h264_decoder_context
     uint8_t *pending_buffer;
     size_t pending_size;
 
+    struct seq_parameter_set *curr_sps;
+    struct pic_parameter_set *curr_pps;
+
     // head指向第一个nalu，rear指向最后一个nalu，proc指向处理过的最后一个nalu
     struct h264_NALU *nalus_head, *nalus_rear, *nalu_proc;
     int count_nalus;
@@ -132,19 +135,21 @@ static int parse_nalu(struct h264_decoder_context *ctx)
         switch (nalu->m.header.nal_unit_type)
         {
         case H264_NAL_SLICE:
-            read_slice_header(&nalu->m);
+            read_slice_header(ctx->curr_sps, &nalu->m);
             break;
         case H264_NAL_IDR_SLICE:
-            read_slice_header(&nalu->m);
+            read_slice_header(ctx->curr_sps, &nalu->m);
             break;
         case H264_NAL_SEI:
             read_sei_rbsp(&nalu->m);
             break;
         case H264_NAL_SPS:
             read_seq_parameter_set_rbsp(&nalu->m);
+            ctx->curr_sps = &nalu->m.rbsp.sps;
             break;
         case H264_NAL_PPS:
             read_pic_paramster_set_rbsp(&nalu->m);
+            ctx->curr_pps = &nalu->m.rbsp.pps;
             break;
         default:
             logerror("unhandled nal unit type: %d", nalu->m.header.nal_unit_type);

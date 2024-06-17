@@ -7,9 +7,9 @@ extern "C"
 
 #include "common/h264.h"
 
-    void read_slice_header(struct NAL_unit *nal);
+    void read_slice_header(struct seq_parameter_set *sps, struct NAL_unit *nal);
 
-    void dump_slice_header(FILE *fp, struct NAL_unit*nal);
+    void dump_slice_header(FILE *fp, struct NAL_unit *nal);
 
 #ifdef __cplusplus
 }

@@ -32,7 +32,34 @@ void read_seq_parameter_set(struct NAL_unit *nal)
         sps->profile_idc == 128 || sps->profile_idc == 138 || sps->profile_idc == 139 ||
         sps->profile_idc == 134 || sps->profile_idc == 135)
     {
-        // [TODO]
+        sps->chroma_format_idc = read_ue_v(nal->rbsp_byte, nal->NumBytesInRBSP, &bit_offset);
+        if (sps->chroma_format_idc == 3)
+        {
+            sps->separate_colour_plane_flag = read_bits(nal->rbsp_byte, nal->NumBytesInRBSP, &bit_offset, 1);
+        }
+        sps->bit_depth_luma_minus8 = read_ue_v(nal->rbsp_byte, nal->NumBytesInRBSP, &bit_offset);
+        sps->bit_depth_chroma_minus8 = read_ue_v(nal->rbsp_byte, nal->NumBytesInRBSP, &bit_offset);
+        sps->qpprime_y_zero_transform_bypass_flag = read_bits(nal->rbsp_byte, nal->NumBytesInRBSP, &bit_offset, 1);
+        sps->seq_scaling_matrix_present_flag = read_bits(nal->rbsp_byte, nal->NumBytesInRBSP, &bit_offset, 1);
+        if (sps->seq_scaling_matrix_present_flag)
+        {
+            sps->seq_scaling_list_present_flag = calloc((sps->chroma_format_idc != 3 ? 8 : 12), sizeof(uint8_t));
+            for (int i = 0; i < (sps->chroma_format_idc != 3 ? 8 : 12); ++i)
+            {
+                sps->seq_scaling_list_present_flag[i] = read_bits(nal->rbsp_byte, nal->NumBytesInRBSP, &bit_offset, 1);
+                if (sps->seq_scaling_list_present_flag[i])
+                {
+                    if (i < 6)
+                    {
+                        // [TODO]
+                    }
+                    else
+                    {
+                        // [TODO]
+                    }
+                }
+            }
+        }
     }
     sps->log2_max_frame_num_minus4 = read_ue_v(nal->rbsp_byte, nal->NumBytesInRBSP, &bit_offset);
     sps->pic_order_cnt_type = read_ue_v(nal->rbsp_byte, nal->NumBytesInRBSP, &bit_offset);
