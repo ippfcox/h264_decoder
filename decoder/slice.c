@@ -1,17 +1,21 @@
 #include "common/misc.h"
 #include "slice.h"
 
+#define u_n(n) read_bits(nal->rbsp_byte, nal->NumBytesInRBSP, &bit_offset, (n))
+#define ue_v() read_ue_v(nal->rbsp_byte, nal->NumBytesInRBSP, &bit_offset)
+#define se_v() read_se_v(nal->rbsp_byte, nal->NumBytesInRBSP, &bit_offset)
+
 void read_slice_header(struct seq_parameter_set *sps, struct NAL_unit *nal)
 {
     int bit_offset = 0;
     struct slice_header *slice_header = &nal->rbsp.slice.header;
 
-    slice_header->first_mb_in_slice = read_ue_v(nal->rbsp_byte, nal->NumBytesInRBSP, &bit_offset);
-    slice_header->slice_type = read_ue_v(nal->rbsp_byte, nal->NumBytesInRBSP, &bit_offset);
-    slice_header->pic_parameter_set_id = read_ue_v(nal->rbsp_byte, nal->NumBytesInRBSP, &bit_offset);
+    slice_header->first_mb_in_slice = ue_v();
+    slice_header->slice_type = ue_v();
+    slice_header->pic_parameter_set_id = ue_v();
     if (sps->separate_colour_plane_flag == 1)
     {
-        slice_header->colour_plane_id = read_bits(nal->rbsp_byte, nal->NumBytesInRBSP, &bit_offset, 2);
+        slice_header->colour_plane_id = u_n(2);
     }
     // [TODO]
 }
