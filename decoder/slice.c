@@ -98,64 +98,34 @@ void read_slice_header(struct seq_parameter_set *sps, struct pic_parameter_set *
 
 void dump_slice_header(FILE *fp, struct NAL_unit *nal)
 {
-    fprintf(fp, "    slice_header() {\n");
-    fprintf(fp, "        first_mb_in_slice: %u\n", nal->rbsp.slice.header.first_mb_in_slice);
-    fprintf(fp, "        slice_type: %u\n", nal->rbsp.slice.header.slice_type);
-    fprintf(fp, "        pic_parameter_set_id: %u\n", nal->rbsp.slice.header.pic_parameter_set_id);
-    fprintf(fp, "        if (separate_colour_plane_flag == 1)\n");
-    if (nal->sps->separate_colour_plane_flag)
-        fprintf(fp, "            colour_plane_id: %u\n", nal->rbsp.slice.header.colour_plane_id);
-    else
-        fprintf(fp, "            N/A\n");
-    fprintf(fp, "        frame_num: %u\n", nal->rbsp.slice.header.frame_num);
-    fprintf(fp, "        if (!frame_mbs_only_flag) {\n");
-    if (!nal->sps->frame_mbs_only_flag)
-    {
-        fprintf(fp, "            field_pic_flag: %u\n", nal->rbsp.slice.header.field_pic_flag);
-        fprintf(fp, "            if (field_pic_flag)\n");
-        if (nal->rbsp.slice.header.field_pic_flag)
-            fprintf(fp, "                bottom_field_flag: %u\n", nal->rbsp.slice.header.bottom_field_flag);
-        else
-            fprintf(fp, "                N/A\n");
-    }
-    else
-    {
-        fprintf(fp, "            N/A\n");
-    }
-    fprintf(fp, "        }\n");
-    fprintf(fp, "        if (IdrPicFlag)\n");
-    if (nal->header.nal_unit_type == H264_NAL_IDR_SLICE)
-        fprintf(fp, "            idr_pic_id: %u\n", nal->rbsp.slice.header.idr_pic_id);
-    else
-        fprintf(fp, "            N/A\n");
-    fprintf(fp, "        if (pic_order_cnt_type == 0) {\n");
+#define dump(name, placeholder) fprintf(fp, "    %s: %" placeholder "\n", #name, nal->rbsp.slice.header.name)
 
-    fprintf(fp, "        }\n");
+    dump(first_mb_in_slice, "u");
+    dump(slice_type, "u");
+    dump(pic_parameter_set_id, "u");
+    dump(colour_plane_id, "u");
+    dump(frame_num, "u");
+    dump(field_pic_flag, "u");
+    dump(bottom_field_flag, "u");
+    dump(idr_pic_id, "u");
+    dump(pic_order_cnt_lsb, "u");
+    dump(delta_pic_order_cnt_bottom, "d");
+    for (int i = 0; i < 2; ++i)
+        dump(delta_pic_order_cnt[i], "d");
+    dump(redundant_pic_cnt, "u");
+    dump(direct_spatial_mv_pred_flag, "u");
+    dump(num_ref_idx_active_override_flag, "u");
+    dump(num_ref_idx_l0_active_minus1, "u");
+    dump(num_ref_idx_l1_active_minus1, "u");
 
-    fprintf(fp, "        if (pic_order_cnt_type = = 1 && !delta_pic_order_always_zero_flag) {\n");
-    fprintf(fp, "        }\n");
+    dump(cabac_init_idc, "u");
+    dump(slice_qp_delta, "d");
+    dump(sp_for_switch_flag, "u");
+    dump(slice_qs_delta, "d");
+    dump(disable_deblocking_filter_idc, "u");
+    dump(slice_alpha_c0_offset_div2, "d");
+    dump(slice_beta_offset_div2, "d");
+    dump(slice_group_change_cycle, "u");
 
-    fprintf(fp, "        if (redundant_pic_cnt_present_flag)\n");
-
-    fprintf(fp, "        if (slice_type = = B)\n");
-
-    fprintf(fp, "        if (slice_type = = P | | slice_type = = SP | | slice_type = = B) {\n");
-    fprintf(fp, "        }\n");
-
-    fprintf(fp, "        if (nal_unit_type = = 20 | | nal_unit_type = = 21) {\n");
-    fprintf(fp, "        }\n");
-    
-    fprintf(fp, "        if () {\n");
-    fprintf(fp, "        }\n");
-    fprintf(fp, "        if () {\n");
-    fprintf(fp, "        }\n");
-    fprintf(fp, "        if () {\n");
-    fprintf(fp, "        }\n");
-    fprintf(fp, "        if () {\n");
-    fprintf(fp, "        }\n");
-    fprintf(fp, "        if () {\n");
-    fprintf(fp, "        }\n");
-    // fprintf(fp, "        \n");
-    // fprintf(fp, "        \n");
-    fprintf(fp, "    }\n");
+    fprintf(fp, "\n");
 }

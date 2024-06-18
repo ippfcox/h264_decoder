@@ -83,99 +83,46 @@ void read_pic_paramster_set_rbsp(struct NAL_unit *nal)
 
 void dump_pic_parameter_set(FILE *fp, struct NAL_unit *nal)
 {
-    fprintf(fp, "    pic_parameter_set_rbsp() {\n");
-    fprintf(fp, "        pic_parameter_set_id: %u\n", nal->rbsp.pps.pic_parameter_set_id);
-    fprintf(fp, "        seq_parameter_set_id: %u\n", nal->rbsp.pps.seq_parameter_set_id);
-    fprintf(fp, "        entropy_coding_mode_flag: %u\n", nal->rbsp.pps.entropy_coding_mode_flag);
-    fprintf(fp, "        bottom_field_pic_order_in_frame_present_flag: %u\n", nal->rbsp.pps.bottom_field_pic_order_in_frame_present_flag);
-    fprintf(fp, "        num_slice_groups_minus1: %u\n", nal->rbsp.pps.num_slice_groups_minus1);
-    fprintf(fp, "        if (num_slice_groups_minus1 > 0) {\n");
-    if (nal->rbsp.pps.num_slice_groups_minus1 > 0)
+#define dump(name, placeholder) fprintf(fp, "    %s: %" placeholder "\n", #name, nal->rbsp.pps.name)
+
+    dump(pic_parameter_set_id, "u");
+    dump(seq_parameter_set_id, "u");
+    dump(entropy_coding_mode_flag, "u");
+    dump(bottom_field_pic_order_in_frame_present_flag, "u");
+    dump(num_slice_groups_minus1, "u");
+    dump(slice_group_map_type, "u");
+    if (nal->rbsp.pps.run_length_minus1)
+        for (int iGroup = 0; iGroup <= nal->rbsp.pps.num_slice_groups_minus1; ++iGroup)
+            dump(run_length_minus1[iGroup], "u");
+    if (nal->rbsp.pps.top_left && nal->rbsp.pps.bottom_right)
+        for (int iGroup = 0; iGroup <= nal->rbsp.pps.num_slice_groups_minus1; ++iGroup)
+        {
+            dump(top_left[iGroup], "u");
+            dump(bottom_right[iGroup], "u");
+        }
+    dump(slice_group_change_direction_flag, "u");
+    dump(slice_group_change_rate_minus1, "u");
+    dump(pic_size_in_map_units_minus1, "u");
+    if (nal->rbsp.pps.slice_group_id)
+        for (int i = 0; i < nal->rbsp.pps.pic_size_in_map_units_minus1; ++i)
+            dump(slice_group_id[i], "u");
+    dump(num_ref_idx_l0_default_active_minus1, "u");
+    dump(num_ref_idx_l1_default_active_minus1, "u");
+    dump(weighted_pred_flag, "u");
+    dump(weighted_bipred_idc, "u");
+    dump(pic_init_qp_minus26, "d");
+    dump(pic_init_qs_minus26, "d");
+    dump(chroma_qp_index_offset, "d");
+    dump(deblocking_filter_control_present_flag, "u");
+    dump(constrained_intra_pred_flag, "u");
+    dump(redundant_pic_cnt_present_flag, "u");
+    dump(transform_8x8_mode_flag, "u");
+    dump(pic_scaling_matrix_present_flag, "u");
+    if (nal->rbsp.pps.pic_scaling_list_present_flag)
     {
-        fprintf(fp, "            slice_group_map_type: %u\n", nal->rbsp.pps.slice_group_map_type);
-        fprintf(fp, "            if (slice_group_map_type == 0)\n");
-        if (nal->rbsp.pps.slice_group_map_type == 0)
-        {
-            fprintf(fp, "                for(iGroup = 0; iGroup <= num_slice_groups_minus1; iGroup++)\n");
-            for (int iGroup = 0; iGroup <= nal->rbsp.pps.num_slice_groups_minus1; iGroup++)
-            {
-                fprintf(fp, "                    run_length_minus1[%d]: %u\n", iGroup, nal->rbsp.pps.run_length_minus1[iGroup]);
-            }
-        }
-        else
-        {
-            fprintf(fp, "                N/A\n");
-        }
-        fprintf(fp, "            else if (slice_group_map_type == 2)\n");
-        if (nal->rbsp.pps.slice_group_map_type == 2)
-        {
-            fprintf(fp, "                for(iGroup = 0; iGroup <= num_slice_groups_minus1; iGroup++) {\n");
-            for (int iGroup = 0; iGroup <= nal->rbsp.pps.num_slice_groups_minus1; iGroup++)
-            {
-                fprintf(fp, "                    top_left[%d]: %u\n", iGroup, nal->rbsp.pps.top_left[iGroup]);
-                fprintf(fp, "                    bottom_right[%d]: %u\n", iGroup, nal->rbsp.pps.bottom_right[iGroup]);
-            }
-            fprintf(fp, "                }\n");
-        }
-        else
-        {
-            fprintf(fp, "                N/A\n");
-        }
-        fprintf(fp, "            else if (slice_group_map_type == 3 ||\n");
-        fprintf(fp, "                     slice_group_map_type == 4 ||\n");
-        fprintf(fp, "                     slice_group_map_type == 5) {\n");
-        if (nal->rbsp.pps.slice_group_map_type == 3 ||
-            nal->rbsp.pps.slice_group_map_type == 4 ||
-            nal->rbsp.pps.slice_group_map_type == 5)
-        {
-            fprintf(fp, "                slice_group_change_direction_flag: %u\n", nal->rbsp.pps.slice_group_change_direction_flag);
-            fprintf(fp, "                slice_group_change_rate_minus1: %u\n", nal->rbsp.pps.slice_group_change_rate_minus1);
-        }
-        else
-        {
-            fprintf(fp, "                N/A\n");
-        }
-        fprintf(fp, "            } else if (slice_group_map_type == 6) {\n");
-        if (nal->rbsp.pps.slice_group_map_type == 6)
-        {
-            fprintf(fp, "                pic_size_in_map_units_minus1: %u\n", nal->rbsp.pps.pic_size_in_map_units_minus1);
-            fprintf(fp, "                for (i = 0; i <= pic_size_in_map_units_minus1; i++)\n");
-            for (int i = 0; i <= nal->rbsp.pps.pic_size_in_map_units_minus1; i++)
-            {
-                fprintf(fp, "                    slice_group_id[%d]: %u\n", i, nal->rbsp.pps.slice_group_id[i]);
-            }
-        }
-        else
-        {
-            fprintf(fp, "                N/A\n");
-        }
-        fprintf(fp, "            }\n");
+        // uint8_t *pic_scaling_list_present_flag;
     }
-    else
-    {
-        fprintf(fp, "            N/A\n");
-    }
-    fprintf(fp, "        }\n");
-    fprintf(fp, "        num_ref_idx_l0_default_active_minus1: %u\n", nal->rbsp.pps.num_ref_idx_l0_default_active_minus1);
-    fprintf(fp, "        num_ref_idx_l1_default_active_minus1: %u\n", nal->rbsp.pps.num_ref_idx_l1_default_active_minus1);
-    fprintf(fp, "        weighted_pred_flag: %d\n", nal->rbsp.pps.weighted_pred_flag);
-    fprintf(fp, "        weighted_bipred_idc: %d\n", nal->rbsp.pps.weighted_bipred_idc);
-    fprintf(fp, "        pic_init_qp_minus26: %d\n", nal->rbsp.pps.pic_init_qp_minus26);
-    fprintf(fp, "        pic_init_qs_minus26: %d\n", nal->rbsp.pps.pic_init_qs_minus26);
-    fprintf(fp, "        chroma_qp_index_offset: %d\n", nal->rbsp.pps.chroma_qp_index_offset);
-    fprintf(fp, "        deblocking_filter_control_present_flag: %d\n", nal->rbsp.pps.deblocking_filter_control_present_flag);
-    fprintf(fp, "        constrained_intra_pred_flag: %d\n", nal->rbsp.pps.constrained_intra_pred_flag);
-    fprintf(fp, "        redundant_pic_cnt_present_flag: %d\n", nal->rbsp.pps.redundant_pic_cnt_present_flag);
-    fprintf(fp, "        if (more_rbsp_data()) {\n");
-    if (more_rbsp_data())
-    {
-        fprintf(fp, "            [TODO]\n");
-    }
-    else
-    {
-        fprintf(fp, "            N/A\n");
-    }
-    fprintf(fp, "        }\n");
-    fprintf(fp, "        rbsp_trailing_bits()\n");
-    fprintf(fp, "    }\n\n");
+    dump(second_chroma_qp_index_offset, "d");
+
+    fprintf(fp, "\n");
 }

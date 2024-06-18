@@ -109,95 +109,50 @@ void read_seq_parameter_set(struct NAL_unit *nal)
 
 void dump_seq_parameter_set(FILE *fp, struct NAL_unit *nal)
 {
-    fprintf(fp, "    seq_parameter_set_data() {\n");
-    fprintf(fp, "        profile_idc: %u\n", nal->rbsp.sps.profile_idc);
-    fprintf(fp, "        constraint_set0_flag: %u\n", nal->rbsp.sps.constraint_set0_flag);
-    fprintf(fp, "        constraint_set1_flag: %u\n", nal->rbsp.sps.constraint_set1_flag);
-    fprintf(fp, "        constraint_set2_flag: %u\n", nal->rbsp.sps.constraint_set2_flag);
-    fprintf(fp, "        constraint_set3_flag: %u\n", nal->rbsp.sps.constraint_set3_flag);
-    fprintf(fp, "        constraint_set4_flag: %u\n", nal->rbsp.sps.constraint_set4_flag);
-    fprintf(fp, "        constraint_set5_flag: %u\n", nal->rbsp.sps.constraint_set5_flag);
-    fprintf(fp, "        reserved_zero_2bits: %u\n", nal->rbsp.sps.reserved_zero_2bits);
-    fprintf(fp, "        level_idc: %u\n", nal->rbsp.sps.level_idc);
-    fprintf(fp, "        seq_parameter_set_id: %u\n", nal->rbsp.sps.seq_parameter_set_id);
-    fprintf(fp, "        if (nal->rbsp.sps.profile_idc== 100 || nal->rbsp.sps.profile_idc== 110 ||\n");
-    fprintf(fp, "            nal->rbsp.sps.profile_idc== 122 || nal->rbsp.sps.profile_idc== 244 || nal->rbsp.sps.profile_idc== 44 ||\n");
-    fprintf(fp, "            nal->rbsp.sps.profile_idc== 83 || nal->rbsp.sps.profile_idc== 86 || nal->rbsp.sps.profile_idc== 118 ||\n");
-    fprintf(fp, "            nal->rbsp.sps.profile_idc== 128 || nal->rbsp.sps.profile_idc== 138 || nal->rbsp.sps.profile_idc== 139 ||\n");
-    fprintf(fp, "            nal->rbsp.sps.profile_idc== 134 || nal->rbsp.sps.profile_idc== 135) {\n");
-    if (nal->rbsp.sps.profile_idc == 100 || nal->rbsp.sps.profile_idc == 110 ||
-        nal->rbsp.sps.profile_idc == 122 || nal->rbsp.sps.profile_idc == 244 || nal->rbsp.sps.profile_idc == 44 ||
-        nal->rbsp.sps.profile_idc == 83 || nal->rbsp.sps.profile_idc == 86 || nal->rbsp.sps.profile_idc == 118 ||
-        nal->rbsp.sps.profile_idc == 128 || nal->rbsp.sps.profile_idc == 138 || nal->rbsp.sps.profile_idc == 139 ||
-        nal->rbsp.sps.profile_idc == 134 || nal->rbsp.sps.profile_idc == 135)
-    {
-        fprintf(fp, "            [TODO]\n");
-    }
-    else
-    {
-        fprintf(fp, "            N/A\n");
-    }
-    fprintf(fp, "        }\n");
-    fprintf(fp, "        log2_max_frame_num_minus4: %u\n", nal->rbsp.sps.log2_max_frame_num_minus4);
-    fprintf(fp, "        pic_order_cnt_type: %u\n", nal->rbsp.sps.pic_order_cnt_type);
-    fprintf(fp, "        if (pic_order_cnt_type == 0)\n");
-    if (nal->rbsp.sps.pic_order_cnt_type == 0)
-    {
-        fprintf(fp, "            log2_max_pic_order_cnt_lsb_minus4: %u", nal->rbsp.sps.log2_max_pic_order_cnt_lsb_minus4);
-    }
-    else
-    {
-        fprintf(fp, "            N/A\n");
-    }
-    fprintf(fp, "        else if (pic_order_cnt_type == 1) {\n");
-    if (nal->rbsp.sps.pic_order_cnt_type == 1)
-    {
-        fprintf(fp, "            delta_pic_order_always_zero_flag: %u\n", nal->rbsp.sps.delta_pic_order_always_zero_flag);
-        fprintf(fp, "            offset_for_non_ref_pic: %d\n", nal->rbsp.sps.offset_for_non_ref_pic);
-        fprintf(fp, "            offset_for_top_to_bottom_field: %d\n", nal->rbsp.sps.offset_for_top_to_bottom_field);
-        fprintf(fp, "            num_ref_frames_in_pic_order_cnt_cycle: %u\n", nal->rbsp.sps.num_ref_frames_in_pic_order_cnt_cycle);
-        fprintf(fp, "            for (i = 0; i < num_ref_frames_in_pic_order_cnt_cycle; i++)\n");
+#define dump(name, placeholder) fprintf(fp, "    %s: %" placeholder "\n", #name, nal->rbsp.sps.name)
+
+    dump(profile_idc, "u");
+    dump(constraint_set0_flag, "u");
+    dump(constraint_set1_flag, "u");
+    dump(constraint_set2_flag, "u");
+    dump(constraint_set3_flag, "u");
+    dump(constraint_set4_flag, "u");
+    dump(constraint_set5_flag, "u");
+    dump(reserved_zero_2bits, "u");
+    dump(level_idc, "u");
+    dump(seq_parameter_set_id, "u");
+    dump(chroma_format_idc, "u");
+    dump(separate_colour_plane_flag, "u");
+    dump(bit_depth_luma_minus8, "u");
+    dump(bit_depth_chroma_minus8, "u");
+    dump(qpprime_y_zero_transform_bypass_flag, "u");
+    dump(seq_scaling_matrix_present_flag, "u");
+    if (nal->rbsp.sps.seq_scaling_list_present_flag)
+        for (int i = 0; i < (nal->rbsp.sps.chroma_format_idc != 3 ? 8 : 12); ++i)
+            dump(seq_scaling_list_present_flag[i], "u");
+    dump(log2_max_frame_num_minus4, "u");
+    dump(pic_order_cnt_type, "u");
+    dump(log2_max_pic_order_cnt_lsb_minus4, "u");
+    dump(delta_pic_order_always_zero_flag, "u");
+    dump(offset_for_non_ref_pic, "d");
+    dump(offset_for_top_to_bottom_field, "d");
+    dump(num_ref_frames_in_pic_order_cnt_cycle, "u");
+    if (nal->rbsp.sps.offset_for_ref_frame)
         for (int i = 0; i < nal->rbsp.sps.num_ref_frames_in_pic_order_cnt_cycle; ++i)
-        {
-            fprintf(fp, "                offset_for_ref_frame[%d]: %d\n", i, nal->rbsp.sps.offset_for_ref_frame[i]);
-        }
-    }
-    else
-    {
-        fprintf(fp, "            N/A\n");
-    }
-    fprintf(fp, "        }\n");
-    fprintf(fp, "        max_num_ref_frames: %u\n", nal->rbsp.sps.max_num_ref_frames);
-    fprintf(fp, "        gaps_in_frame_num_value_allowed_flag: %u\n", nal->rbsp.sps.gaps_in_frame_num_value_allowed_flag);
-    fprintf(fp, "        pic_width_in_mbs_minus1: %u\n", nal->rbsp.sps.pic_width_in_mbs_minus1);
-    fprintf(fp, "        pic_height_in_map_units_minus1: %u\n", nal->rbsp.sps.pic_height_in_map_units_minus1);
-    fprintf(fp, "        frame_mbs_only_flag: %u\n", nal->rbsp.sps.frame_mbs_only_flag);
-    fprintf(fp, "        if (!frame_mbs_only_flag)\n");
-    if (!nal->rbsp.sps.frame_mbs_only_flag)
-    {
-        fprintf(fp, "            mb_adaptive_frame_field_flag: %u\n", nal->rbsp.sps.mb_adaptive_frame_field_flag);
-    }
-    else
-    {
-        fprintf(fp, "            N/A\n");
-    }
-    fprintf(fp, "        direct_8x8_inference_flag: %u\n", nal->rbsp.sps.direct_8x8_inference_flag);
-    fprintf(fp, "        frame_cropping_flag: %u\n", nal->rbsp.sps.frame_cropping_flag);
-    fprintf(fp, "        if (frame_cropping_flag) {\n");
-    if (nal->rbsp.sps.frame_cropping_flag)
-    {
-        fprintf(fp, "            frame_crop_left_offset: %u\n", nal->rbsp.sps.frame_crop_left_offset);
-        fprintf(fp, "            frame_crop_right_offset: %u\n", nal->rbsp.sps.frame_crop_right_offset);
-        fprintf(fp, "            frame_crop_top_offset: %u\n", nal->rbsp.sps.frame_crop_top_offset);
-        fprintf(fp, "            frame_crop_bottom_offset: %u\n", nal->rbsp.sps.frame_crop_bottom_offset);
-    }
-    else
-    {
-        fprintf(fp, "            N/A\n");
-    }
-    fprintf(fp, "        }\n");
-    fprintf(fp, "        vui_parameters_present_flag: %u\n", nal->rbsp.sps.vui_parameters_present_flag);
-    fprintf(fp, "        if (vui_parameters_present_flag)\n");
-    fprintf(fp, "            [TODO] vui_parameters()\n");
-    fprintf(fp, "    }\n\n");
+            dump(offset_for_ref_frame[i], "d");
+    dump(max_num_ref_frames, "u");
+    dump(gaps_in_frame_num_value_allowed_flag, "u");
+    dump(pic_width_in_mbs_minus1, "u");
+    dump(pic_height_in_map_units_minus1, "u");
+    dump(frame_mbs_only_flag, "u");
+    dump(mb_adaptive_frame_field_flag, "u");
+    dump(direct_8x8_inference_flag, "u");
+    dump(frame_cropping_flag, "u");
+    dump(frame_crop_left_offset, "u");
+    dump(frame_crop_right_offset, "u");
+    dump(frame_crop_top_offset, "u");
+    dump(frame_crop_bottom_offset, "u");
+    dump(vui_parameters_present_flag, "u");
+
+    fprintf(fp, "\n");
 }
