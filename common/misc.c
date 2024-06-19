@@ -77,7 +77,7 @@ uint64_t next_bits(uint8_t *buffer, size_t size, int bit_offset, int n)
         if (n > 0)
         {
             buffer += 1;
-            result |= (*buffer >> n) & make_mask(n);
+            result |= (*buffer >> (8 - n)) & make_mask(n);
         }
 
         return result;
@@ -105,7 +105,7 @@ uint64_t read_ue_v(uint8_t *buffer, size_t size, int *bit_offset)
     for (uint8_t b = 0; !b; leadingZeroBits++)
         b = read_bits(buffer, size, bit_offset, 1);
 
-    return pow(2, leadingZeroBits) - 1 + read_bits(buffer, size, bit_offset, leadingZeroBits);
+    return (1 << leadingZeroBits) - 1 + read_bits(buffer, size, bit_offset, leadingZeroBits);
 }
 
 // 9.1.1 Mapping process for signed Exp-Golomb codes
