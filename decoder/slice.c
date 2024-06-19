@@ -1,13 +1,12 @@
 #include "common/misc.h"
 #include "slice.h"
 
-#define u_n(n) read_bits(nal->rbsp_byte, nal->NumBytesInRBSP, &bit_offset, (n))
-#define ue_v() read_ue_v(nal->rbsp_byte, nal->NumBytesInRBSP, &bit_offset)
-#define se_v() read_se_v(nal->rbsp_byte, nal->NumBytesInRBSP, &bit_offset)
+#define u_n(n) read_bits(nal->rbsp_byte, nal->NumBytesInRBSP, bit_offset, (n))
+#define ue_v() read_ue_v(nal->rbsp_byte, nal->NumBytesInRBSP, bit_offset)
+#define se_v() read_se_v(nal->rbsp_byte, nal->NumBytesInRBSP, bit_offset)
 
-void read_slice_header(struct seq_parameter_set *sps, struct pic_parameter_set *pps, struct NAL_unit *nal)
+static void read_slice_header(struct seq_parameter_set *sps, struct pic_parameter_set *pps, struct NAL_unit *nal, int *bit_offset)
 {
-    int bit_offset = 0;
     struct slice_header *slice_header = &nal->rbsp.slice.header;
     nal->sps = sps;
 
@@ -33,7 +32,7 @@ void read_slice_header(struct seq_parameter_set *sps, struct pic_parameter_set *
         if (pps->bottom_field_pic_order_in_frame_present_flag && !slice_header->field_pic_flag)
             slice_header->delta_pic_order_cnt_bottom = se_v();
     }
-    if (sps->pic_order_cnt_type == 1 && sps->delta_pic_order_always_zero_flag)
+    if (sps->pic_order_cnt_type == 1 && !sps->delta_pic_order_always_zero_flag)
     {
         slice_header->delta_pic_order_cnt[0] = se_v();
         if (pps->bottom_field_pic_order_in_frame_present_flag && !slice_header->field_pic_flag)
@@ -94,6 +93,26 @@ void read_slice_header(struct seq_parameter_set *sps, struct pic_parameter_set *
         // [TODO]
     }
     slice_header->slice_group_change_cycle = u_n(pps->num_slice_groups_minus1 + 1);
+}
+
+static void read_slice_data(struct seq_parameter_set *sps, struct pic_parameter_set *pps, struct NAL_unit *nal, int *bit_offset)
+{
+    struct slice_header *header = &nal->rbsp.slice.header;
+    struct slice_data *data = &nal->rbsp.slice.data;
+
+    if (pps->entropy_coding_mode_flag)
+        while (!byte_aligned(*bit_offset))
+            data->cabac_alignment_one_bit = u_n(1);
+
+    // (7-25)
+    bool MbaffFrameFlag = sps->mb_adaptive_frame_field_flag && !header->field_pic_flag;
+}
+
+void read_slice(struct seq_parameter_set *sps, struct pic_parameter_set *pps, struct NAL_unit *nal)
+{
+    int bit_offset = 0;
+    read_slice_header(sps, pps, nal, &bit_offset);
+    read_slice_data(sps, pps, nal, &bit_offset);
 }
 
 void dump_slice_header(FILE *fp, struct NAL_unit *nal)

@@ -43,6 +43,11 @@ const char *nal_type_name(enum H264_NAL_TYPE type)
     return nal_type_names[type];
 }
 
+bool byte_aligned(int bit_offset)
+{
+    return bit_offset % 8 == 0;
+}
+
 bool more_rbsp_data()
 {
     return false;
@@ -117,6 +122,14 @@ int32_t read_se_v(uint8_t *buffer, size_t size, int *bit_offset)
     uint64_t codeNum = read_ue_v(buffer, size, bit_offset);
 
     return codeNum % 2 == 0 ? -1 * (codeNum >> 1) : codeNum >> 1;
+}
+
+// 9.3 CABAC parsing process for slice data
+// This process is invoked when parsing syntax elements with descriptor ae(v) in clauses 7.3.4 and 7.3.5 when entropy_coding_mode_flag is equal to 1.
+uint64_t read_ae_v(uint8_t *buffer, size_t size, int *bit_offset)
+{
+    // [TODO]
+    return 0;
 }
 
 int get_log2(uint64_t value)

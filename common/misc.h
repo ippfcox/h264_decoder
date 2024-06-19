@@ -23,7 +23,7 @@ extern "C"
     // - 如果比特流中的当前位置在字节边界上，即比特流中的下一个比特是一个字节的第
     // 一个比特，则 byte_aligned() 的返回值为 TRUE。
     // - 否则，byte_aligned() 的返回值为 FALSE。
-    bool byte_aligned();
+    bool byte_aligned(int bit_offset);
 
     // 该函数仅在附录 B 指定的字节流 NAL 单元语法结构中使用，具体定义如下：
     // - 如果字节流中还有更多数据，more_data_in_byte_stream() 的返回值为 TRUE。
@@ -57,6 +57,7 @@ extern "C"
 
     uint64_t read_ue_v(uint8_t *buffer, size_t size, int *bit_offset);
     int32_t read_se_v(uint8_t *buffer, size_t size, int *bit_offset);
+    uint64_t read_ae_v(uint8_t *buffer, size_t size, int *bit_offset);
     int get_log2(uint64_t value);
 
 #ifdef __cplusplus

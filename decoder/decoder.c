@@ -135,10 +135,10 @@ static int parse_nalu(struct h264_decoder_context *ctx)
         switch (nalu->m.header.nal_unit_type)
         {
         case H264_NAL_SLICE:
-            read_slice_header(ctx->curr_sps, ctx->curr_pps, &nalu->m);
+            read_slice(ctx->curr_sps, ctx->curr_pps, &nalu->m);
             break;
         case H264_NAL_IDR_SLICE:
-            read_slice_header(ctx->curr_sps, ctx->curr_pps, &nalu->m);
+            read_slice(ctx->curr_sps, ctx->curr_pps, &nalu->m);
             break;
         case H264_NAL_SEI:
             read_sei_rbsp(&nalu->m);

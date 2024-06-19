@@ -209,9 +209,19 @@ extern "C"
         uint32_t slice_group_change_cycle;
     };
 
+    struct slice_data
+    {
+        uint8_t cabac_alignment_one_bit : 1; // f(1)
+        uint32_t mb_skip_run;                // ue(v)
+        uint32_t mb_skip_flag;               // ae(v)
+        uint32_t mb_field_decoding_flag;     // u(1) | ae(v)
+        uint32_t end_of_slice_flag;          // ae(v)
+    };
+
     struct slice
     {
         struct slice_header header;
+        struct slice_data data;
     };
 
     // nal = startcode+nalu header+rbsp
