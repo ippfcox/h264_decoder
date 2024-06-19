@@ -83,46 +83,46 @@ void read_pic_paramster_set_rbsp(struct NAL_unit *nal)
 
 void dump_pic_parameter_set(FILE *fp, struct NAL_unit *nal)
 {
-#define dump(name, placeholder) fprintf(fp, "    %s: %" placeholder "\n", #name, nal->rbsp.pps.name)
+#define dump(indents, name, placeholder) fprintf(fp, "%s%s: %" placeholder "\n", make_indents(indents), #name, nal->rbsp.pps.name)
 
-    dump(pic_parameter_set_id, "u");
-    dump(seq_parameter_set_id, "u");
-    dump(entropy_coding_mode_flag, "u");
-    dump(bottom_field_pic_order_in_frame_present_flag, "u");
-    dump(num_slice_groups_minus1, "u");
-    dump(slice_group_map_type, "u");
+    dump(1, pic_parameter_set_id, "u");
+    dump(1, seq_parameter_set_id, "u");
+    dump(1, entropy_coding_mode_flag, "u");
+    dump(1, bottom_field_pic_order_in_frame_present_flag, "u");
+    dump(1, num_slice_groups_minus1, "u");
+    dump(2, slice_group_map_type, "u");
     if (nal->rbsp.pps.run_length_minus1)
         for (int iGroup = 0; iGroup <= nal->rbsp.pps.num_slice_groups_minus1; ++iGroup)
-            dump(run_length_minus1[iGroup], "u");
+            dump(4, run_length_minus1[iGroup], "u");
     if (nal->rbsp.pps.top_left && nal->rbsp.pps.bottom_right)
         for (int iGroup = 0; iGroup <= nal->rbsp.pps.num_slice_groups_minus1; ++iGroup)
         {
-            dump(top_left[iGroup], "u");
-            dump(bottom_right[iGroup], "u");
+            dump(4, top_left[iGroup], "u");
+            dump(4, bottom_right[iGroup], "u");
         }
-    dump(slice_group_change_direction_flag, "u");
-    dump(slice_group_change_rate_minus1, "u");
-    dump(pic_size_in_map_units_minus1, "u");
+    dump(3, slice_group_change_direction_flag, "u");
+    dump(3, slice_group_change_rate_minus1, "u");
+    dump(3, pic_size_in_map_units_minus1, "u");
     if (nal->rbsp.pps.slice_group_id)
         for (int i = 0; i < nal->rbsp.pps.pic_size_in_map_units_minus1; ++i)
-            dump(slice_group_id[i], "u");
-    dump(num_ref_idx_l0_default_active_minus1, "u");
-    dump(num_ref_idx_l1_default_active_minus1, "u");
-    dump(weighted_pred_flag, "u");
-    dump(weighted_bipred_idc, "u");
-    dump(pic_init_qp_minus26, "d");
-    dump(pic_init_qs_minus26, "d");
-    dump(chroma_qp_index_offset, "d");
-    dump(deblocking_filter_control_present_flag, "u");
-    dump(constrained_intra_pred_flag, "u");
-    dump(redundant_pic_cnt_present_flag, "u");
-    dump(transform_8x8_mode_flag, "u");
-    dump(pic_scaling_matrix_present_flag, "u");
+            dump(4, slice_group_id[i], "u");
+    dump(1, num_ref_idx_l0_default_active_minus1, "u");
+    dump(1, num_ref_idx_l1_default_active_minus1, "u");
+    dump(1, weighted_pred_flag, "u");
+    dump(1, weighted_bipred_idc, "u");
+    dump(1, pic_init_qp_minus26, "d");
+    dump(1, pic_init_qs_minus26, "d");
+    dump(1, chroma_qp_index_offset, "d");
+    dump(1, deblocking_filter_control_present_flag, "u");
+    dump(1, constrained_intra_pred_flag, "u");
+    dump(1, redundant_pic_cnt_present_flag, "u");
+    dump(2, transform_8x8_mode_flag, "u");
+    dump(2, pic_scaling_matrix_present_flag, "u");
     if (nal->rbsp.pps.pic_scaling_list_present_flag)
     {
         // uint8_t *pic_scaling_list_present_flag;
     }
-    dump(second_chroma_qp_index_offset, "d");
+    dump(2, second_chroma_qp_index_offset, "d");
 
     fprintf(fp, "\n");
 }
