@@ -7,6 +7,7 @@ extern "C"
 
 #include <stdio.h>
 #include <stdint.h>
+#include <stdbool.h>
 
     // Table 7-1 - NAL unit type codes
     enum H264_NAL_TYPE
@@ -221,6 +222,7 @@ extern "C"
     struct slice
     {
         struct slice_header header;
+        bool MbaffFrameFlag;
         struct slice_data data;
     };
 

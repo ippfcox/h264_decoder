@@ -103,15 +103,29 @@ static void read_slice_data(struct seq_parameter_set *sps, struct pic_parameter_
     if (pps->entropy_coding_mode_flag)
         while (!byte_aligned(*bit_offset))
             data->cabac_alignment_one_bit = u_n(1);
-
-    // (7-25)
-    bool MbaffFrameFlag = sps->mb_adaptive_frame_field_flag && !header->field_pic_flag;
+    int CurrMbAddr = header->first_mb_in_slice * (1 + nal->rbsp.slice.MbaffFrameFlag);
+    int moreDataFlag = 1;
+    int prevMbSkipped = 0;
+    do
+    {
+        if (header->slice_type != H264_SLICE_I && header->slice_type == H264_SLICE_SI)
+            if (pps->entropy_coding_mode_flag)
+            {
+                data->mb_skip_run = ue_v();
+                prevMbSkipped = (data->mb_skip_run > 0);
+                // for (int i = 0; i < data->mb_skip_run; ++i)
+                    // CurrMbAddr = 
+            }
+    }
+    while (moreDataFlag);
 }
 
 void read_slice(struct seq_parameter_set *sps, struct pic_parameter_set *pps, struct NAL_unit *nal)
 {
     int bit_offset = 0;
     read_slice_header(sps, pps, nal, &bit_offset);
+    // (7-25)
+    nal->rbsp.slice.MbaffFrameFlag = sps->mb_adaptive_frame_field_flag && !nal->rbsp.slice.header.field_pic_flag;
     read_slice_data(sps, pps, nal, &bit_offset);
 }
 
