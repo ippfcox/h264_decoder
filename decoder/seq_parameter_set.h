@@ -8,7 +8,6 @@ extern "C"
 #include "common/h264.h"
 
     void read_seq_parameter_set_rbsp(struct NAL_unit *nal);
-    void read_seq_parameter_set(struct NAL_unit *nal);
 
     void dump_seq_parameter_set(FILE *fp, struct NAL_unit *nal);
 
