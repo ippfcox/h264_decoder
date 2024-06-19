@@ -1,6 +1,8 @@
 #include <math.h>
 #include "misc.h"
 
+char spaces64[] = "                                                                ";
+
 char *nal_type_names[] = {
     "H264_NAL_UNSPECIFIED",
     "H264_NAL_SLICE",

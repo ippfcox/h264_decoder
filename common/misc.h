@@ -12,6 +12,10 @@ extern "C"
 // 0~64bit
 #define make_mask(n) (n == 64 ? ~0UL : (1UL << (n)) - 1)
 
+    extern char spaces64[];
+// 16 tab indent
+#define make_indents(n) spaces64 + (64 - 4 * (n))
+
     const char *nal_type_name(enum H264_NAL_TYPE type);
 
     // 7.2
