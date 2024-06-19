@@ -114,7 +114,7 @@ int32_t read_se_v(uint8_t *buffer, size_t size, int *bit_offset)
 {
     uint64_t codeNum = read_ue_v(buffer, size, bit_offset);
 
-    return codeNum % 2 == 0 ? -1 * (codeNum >> 2) : codeNum >> 2;
+    return codeNum % 2 == 0 ? -1 * (codeNum >> 1) : codeNum >> 1;
 }
 
 int get_log2(uint64_t value)
