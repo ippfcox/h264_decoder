@@ -9,36 +9,36 @@
 
 下表列出了用于描述语法的伪代码示例。当出现`syntax_element`时，它表明从比特流中解析出一个语法元素，并且在比特流解析过程中，比特流指针将前进到语法元素后的下一个位置。
 
-||Category|Descriptor|
-|---|---|---|
-|/\*语句可以是具有相关语法类别和描述的语法元素，也可以是用于指定语法元素存在、类型和数量的条件表达式，如以下两个示例所示。\*/|||
-|**`syntax_element`**|3|ue(v)|
-|`conditioning statement`|||
-||||
-|/\*用花括号括起来的一组语句是复合语句，并且在功能上被视为单一语句。\*/|||
-|`{`|||
-|`    statement`|||
-|`    statement`|||
-|`    ...`|||
-|`}`|||
-|/\*“while”结构指定对`condition`是否为真进行测试，如果为真，则指定重复执行一个语句（或复合语句），直到`condition`不再为真。\*/|||
-|`while(condition)`|||
-|`    statement`|||
-||||
-|/\*“do … while”结构指定先执行一次`statement`，然后测试`condition`是否为真，如果为真，则指定重复执行该语句，直到条件不再为真。\*/|||
-|`do`|||
-|`    statement`|||
-|`while(condition)`|||
-||||
-|/\*“if … else”结构指定对条件是否为真进行测试，如果条件为真，则指定执行一个主要语句，否则，指定执行一个替代语句。如果不需要执行替代语句，则省略结构中的“else”部分和相关的替代语句。\*/|||
-|`if(condition)`|||
-|`    primary statement`|||
-|`else`|||
-|`    alternative statement`|||
-||||
-|/\*“for”结构指定首先执行一个初始语句，然后测试一个条件，如果条件为真，则指定重复执行一个主要语句，并在每次执行后执行一个后续语句，直到条件不再为真。\*/|||
-|`for(initial statement; condition; subsequent statement)`|||
-|`    primary statement`|||
+|                                                                                                                                                                                       | Category | Descriptor |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ---------- |
+| /\*语句可以是具有相关语法类别和描述的语法元素，也可以是用于指定语法元素存在、类型和数量的条件表达式，如以下两个示例所示。\*/                                                          |          |            |
+| **`syntax_element`**                                                                                                                                                                  | 3        | ue(v)      |
+| `conditioning statement`                                                                                                                                                              |          |            |
+|                                                                                                                                                                                       |          |            |
+| /\*用花括号括起来的一组语句是复合语句，并且在功能上被视为单一语句。\*/                                                                                                                |          |            |
+| `{`                                                                                                                                                                                   |          |            |
+| `    statement`                                                                                                                                                                       |          |            |
+| `    statement`                                                                                                                                                                       |          |            |
+| `    ...`                                                                                                                                                                             |          |            |
+| `}`                                                                                                                                                                                   |          |            |
+| /\*“while”结构指定对`condition`是否为真进行测试，如果为真，则指定重复执行一个语句（或复合语句），直到`condition`不再为真。\*/                                                         |          |            |
+| `while(condition)`                                                                                                                                                                    |          |            |
+| `    statement`                                                                                                                                                                       |          |            |
+|                                                                                                                                                                                       |          |            |
+| /\*“do … while”结构指定先执行一次`statement`，然后测试`condition`是否为真，如果为真，则指定重复执行该语句，直到条件不再为真。\*/                                                      |          |            |
+| `do`                                                                                                                                                                                  |          |            |
+| `    statement`                                                                                                                                                                       |          |            |
+| `while(condition)`                                                                                                                                                                    |          |            |
+|                                                                                                                                                                                       |          |            |
+| /\*“if … else”结构指定对条件是否为真进行测试，如果条件为真，则指定执行一个主要语句，否则，指定执行一个替代语句。如果不需要执行替代语句，则省略结构中的“else”部分和相关的替代语句。\*/ |          |            |
+| `if(condition)`                                                                                                                                                                       |          |            |
+| `    primary statement`                                                                                                                                                               |          |            |
+| `else`                                                                                                                                                                                |          |            |
+| `    alternative statement`                                                                                                                                                           |          |            |
+|                                                                                                                                                                                       |          |            |
+| /\*“for”结构指定首先执行一个初始语句，然后测试一个条件，如果条件为真，则指定重复执行一个主要语句，并在每次执行后执行一个后续语句，直到条件不再为真。\*/                               |          |            |
+| `for(initial statement; condition; subsequent statement)`                                                                                                                             |          |            |
+| `    primary statement`                                                                                                                                                               |          |            |
 
 ### 7.2 语法功能、类别和描述符的规定
 
@@ -133,7 +133,7 @@ Table 7-1略
 
 在文本中，编码片 NAL 单元统称为非 IDR 图像的编码片 NAL 单元或 IDR 图像的编码片 NAL 单元。变量 **IdrPicFlag** 定义如下：
 ```c
-IdrPicFlag = ( ( nal_unit_type == 5 ) ? 1 : 0 )
+IdrPicFlag = ((nal_unit_type == 5) ? 1 : 0)
 ```
 当包含某个特定图像的一片的 NAL 单元的 **nal_unit_type** 等于 5 时，该图像不应包含 **nal_unit_type** 在 1 到 4 范围内（含）的 NAL 单元。对于符合附录 A 中规定的一个或多个配置文件并使用第 2 至 9 条规定的解码过程进行解码的编码视频序列，这样的图像称为 IDR 图像。
   > **注 5** – IDR 图像不能使用片数据分区。
@@ -156,7 +156,7 @@ IdrPicFlag = ( ( nal_unit_type == 5 ) ? 1 : 0 )
 
 **DepthFlag** 的值规定如下：
 ```c
-DepthFlag = ( nal_unit_type != 21 ) ? 0 : ( avc_3d_extension_flag ? depth_flag : 1 )
+DepthFlag = (nal_unit_type != 21) ? 0 : (avc_3d_extension_flag ? depth_flag : 1)
 ```
 对于符合附录 I 中规定的一个或多个配置文件的编码视频序列，**avc_3d_extension_flag** 的值应等于 0。符合附录 I 中规定的一个或多个配置文件的解码器应忽略（从比特流中移除并丢弃）**nal_unit_type** 等于 21 且 **avc_3d_extension_flag** 等于 1 的 NAL 单元。
 
@@ -467,17 +467,17 @@ TopFieldOrderCnt 和 BottomFieldOrderCnt 通过分别调用第 8.2.1.1、8.2.1.2
 
 函数 PicOrderCnt(picX) 规定如下：
 ```c
-if( picX 是一个帧或一个互补场对 )
-  PicOrderCnt( picX ) = Min( TopFieldOrderCnt, BottomFieldOrderCnt ) of the frame or complementary field pair picX
-else if( picX 是一个顶场 )
-  PicOrderCnt( picX ) = TopFieldOrderCnt of field picX     (8-1)
-else if( picX 是一个底场 )
-  PicOrderCnt( picX ) = BottomFieldOrderCnt of field picX
+if (picX is a frame or a complementary field pair)
+  PicOrderCnt(picX) = Min(TopFieldOrderCnt, BottomFieldOrderCnt) of the frame or complementary field pair picX
+else if (picX is a top field)
+  PicOrderCnt(picX) = TopFieldOrderCnt of field picX
+else if (picX is a bottom field)
+  PicOrderCnt(picX) = BottomFieldOrderCnt of field picX
 ```
 
 然后，函数 DiffPicOrderCnt(picA, picB) 规定如下：
 ```c
-DiffPicOrderCnt( picA, picB ) = PicOrderCnt( picA ) − PicOrderCnt( picB )     (8-2)
+DiffPicOrderCnt(picA, picB) = PicOrderCnt(picA) − PicOrderCnt(picB)
 ```
 
 比特流不得包含导致在解码过程中使用的 DiffPicOrderCnt(picA, picB) 值超出 -2^15 至 2^15 - 1 范围的数据。
@@ -486,4 +486,300 @@ DiffPicOrderCnt( picA, picB ) = PicOrderCnt( picA ) − PicOrderCnt( picB )     
 
 当当前图像包含 memory_management_control_operation 等于 5 时，PicOrderCnt(CurrPic) 应大于 listD 中任何其他图像的 PicOrderCnt。
 
-[TODO] 8.2.1.1
+### 8.2.1.1 图像顺序计数类型 0 的解码过程
+
+当 `pic_order_cnt_type` 等于 0 时调用此过程。
+
+该过程的输入是解码顺序中的前一个参考图像的 `PicOrderCntMsb`，如本条款所述。
+
+该过程的输出是 `TopFieldOrderCnt` 或 `BottomFieldOrderCnt`（或两者）。
+
+变量 `prevPicOrderCntMsb` 和 `prevPicOrderCntLsb` 的派生如下：
+
+- 如果当前图像是 IDR 图像，则 `prevPicOrderCntMsb` 设置为 0，`prevPicOrderCntLsb` 设置为 0。
+- 否则（当前图像不是 IDR 图像），适用以下情况：
+  - 如果解码顺序中的前一个参考图像包含 `memory_management_control_operation` 等于 5，则适用以下情况：
+    - 如果解码顺序中的前一个参考图像不是底场，则 `prevPicOrderCntMsb` 设置为 0，`prevPicOrderCntLsb` 设置为解码顺序中的前一个参考图像的 `TopFieldOrderCnt` 的值。
+    - 否则（解码顺序中的前一个参考图像是底场），`prevPicOrderCntMsb` 设置为 0，`prevPicOrderCntLsb` 设置为 0。
+  - 否则（解码顺序中的前一个参考图像不包含 `memory_management_control_operation` 等于 5），`prevPicOrderCntMsb` 设置为解码顺序中的前一个参考图像的 `PicOrderCntMsb`，`prevPicOrderCntLsb` 设置为解码顺序中的前一个参考图像的 `pic_order_cnt_lsb` 的值。
+
+当前图像的 `PicOrderCntMsb` 按以下伪代码派生：
+
+```c
+if ((pic_order_cnt_lsb < prevPicOrderCntLsb) && ((prevPicOrderCntLsb - pic_order_cnt_lsb) >= (MaxPicOrderCntLsb / 2)))
+  PicOrderCntMsb = prevPicOrderCntMsb + MaxPicOrderCntLsb
+else if ((pic_order_cnt_lsb > prevPicOrderCntLsb) && ((pic_order_cnt_lsb - prevPicOrderCntLsb) > (MaxPicOrderCntLsb / 2)))
+  PicOrderCntMsb = prevPicOrderCntMsb - MaxPicOrderCntLsb
+else
+  PicOrderCntMsb = prevPicOrderCntMsb
+```
+
+当当前图像不是底场时，`TopFieldOrderCnt` 按如下派生：
+
+```c
+TopFieldOrderCnt = PicOrderCntMsb + pic_order_cnt_lsb
+```
+
+当当前图像不是顶场时，`BottomFieldOrderCnt` 按以下伪代码派生：
+
+```c
+if (!field_pic_flag)
+  BottomFieldOrderCnt = TopFieldOrderCnt + delta_pic_order_cnt_bottom
+else
+  BottomFieldOrderCnt = PicOrderCntMsb + pic_order_cnt_lsb
+```
+
+### 8.2.1.2 图像顺序计数类型 1 的解码过程
+
+当 `pic_order_cnt_type` 等于 1 时调用此过程。
+
+该过程的输入是解码顺序中的前一个图像的 `FrameNumOffset`，如本条款所述。
+
+该过程的输出是 `TopFieldOrderCnt` 或 `BottomFieldOrderCnt`（或两者）。
+
+`TopFieldOrderCnt` 和 `BottomFieldOrderCnt` 的值按本条款规定派生。令 `prevFrameNum` 等于解码顺序中的前一个图像的 `frame_num`。
+
+当当前图像不是 IDR 图像时，变量 `prevFrameNumOffset` 按如下派生：
+
+- 如果解码顺序中的前一个图像包含 `memory_management_control_operation` 等于 5，`prevFrameNumOffset` 设置为 0。
+- 否则（解码顺序中的前一个图像不包含 `memory_management_control_operation` 等于 5），`prevFrameNumOffset` 设置为解码顺序中的前一个图像的 `FrameNumOffset` 的值。
+  > **注** – 当 `gaps_in_frame_num_value_allowed_flag` 等于 1 时，解码顺序中的前一个图像可能是通过第 8.2.5.2 条规定的 `frame_num` 间隙解码过程推断的“非存在”帧。
+
+变量 `FrameNumOffset` 按以下伪代码派生：
+```c
+if (IdrPicFlag == 1)
+  FrameNumOffset = 0
+else if (prevFrameNum > frame_num)
+  FrameNumOffset = prevFrameNumOffset + MaxFrameNum
+else
+  FrameNumOffset = prevFrameNumOffset
+```
+
+变量 `absFrameNum` 按以下伪代码派生：
+```c
+if (num_ref_frames_in_pic_order_cnt_cycle != 0)
+  absFrameNum = FrameNumOffset + frame_num
+else
+  absFrameNum = 0
+if (nal_ref_idc == 0 && absFrameNum > 0)
+  absFrameNum = absFrameNum − 1
+```
+
+当 `absFrameNum > 0` 时，变量 `picOrderCntCycleCnt` 和 `frameNumInPicOrderCntCycle` 按如下派生：
+```c
+picOrderCntCycleCnt = (absFrameNum − 1) / num_ref_frames_in_pic_order_cnt_cycle
+frameNumInPicOrderCntCycle = (absFrameNum − 1) % num_ref_frames_in_pic_order_cnt_cycle
+```
+
+变量 `expectedPicOrderCnt` 按以下伪代码派生：
+```c
+if (absFrameNum > 0) {
+  expectedPicOrderCnt = picOrderCntCycleCnt * ExpectedDeltaPerPicOrderCntCycle
+  for (i = 0; i <= frameNumInPicOrderCntCycle; i++)
+    expectedPicOrderCnt = expectedPicOrderCnt + offset_for_ref_frame[i]
+} else
+  expectedPicOrderCnt = 0
+if (nal_ref_idc == 0)
+  expectedPicOrderCnt = expectedPicOrderCnt + offset_for_non_ref_pic
+```
+
+`TopFieldOrderCnt` 或 `BottomFieldOrderCnt` 变量按以下伪代码派生：
+```c
+if (!field_pic_flag) {
+  TopFieldOrderCnt = expectedPicOrderCnt + delta_pic_order_cnt[0]
+  BottomFieldOrderCnt = TopFieldOrderCnt + offset_for_top_to_bottom_field + delta_pic_order_cnt[1]
+} else if (!bottom_field_flag)
+  TopFieldOrderCnt = expectedPicOrderCnt + delta_pic_order_cnt[0]
+else
+  BottomFieldOrderCnt = expectedPicOrderCnt + offset_for_top_to_bottom_field + delta_pic_order_cnt[0]
+```
+
+### 8.2.1.3 图像顺序计数类型 2 的解码过程
+
+当 `pic_order_cnt_type` 等于 2 时调用此过程。
+
+该过程的输出是 `TopFieldOrderCnt` 或 `BottomFieldOrderCnt`（或两者）。
+
+令 `prevFrameNum` 等于解码顺序中的前一个图像的 `frame_num`。
+
+当当前图像不是 IDR 图像时，变量 `prevFrameNumOffset` 按如下派生：
+
+- 如果解码顺序中的前一个图像包含 `memory_management_control_operation` 等于 5，则 `prevFrameNumOffset` 设置为 0。
+- 否则（解码顺序中的前一个图像不包含 `memory_management_control_operation` 等于 5），`prevFrameNumOffset` 设置为解码顺序中的前一个图像的 `FrameNumOffset` 值。
+  > **注 1** – 当 `gaps_in_frame_num_value_allowed_flag` 等于 1 时，解码顺序中的前一个图像可能是通过第 8.2.5.2 条规定的 `frame_num` 间隙解码过程推断的“非存在”帧。
+
+变量 `FrameNumOffset` 按以下伪代码派生：
+
+```c
+if (IdrPicFlag == 1)
+  FrameNumOffset = 0
+else if (prevFrameNum > frame_num)
+  FrameNumOffset = prevFrameNumOffset + MaxFrameNum
+else
+  FrameNumOffset = prevFrameNumOffset
+```
+
+变量 `tempPicOrderCnt` 按以下伪代码派生：
+
+```c
+if (IdrPicFlag == 1)
+  tempPicOrderCnt = 0
+else if (nal_ref_idc == 0)
+  tempPicOrderCnt = 2 * (FrameNumOffset + frame_num) - 1
+else
+  tempPicOrderCnt = 2 * (FrameNumOffset + frame_num)
+```
+
+`TopFieldOrderCnt` 或 `BottomFieldOrderCnt` 变量按以下伪代码派生：
+
+```c
+if (!field_pic_flag) {
+  TopFieldOrderCnt = tempPicOrderCnt
+  BottomFieldOrderCnt = tempPicOrderCnt
+} else if (bottom_field_flag)
+  BottomFieldOrderCnt = tempPicOrderCnt
+else
+  TopFieldOrderCnt = tempPicOrderCnt
+```
+  > **注 2** – 图像顺序计数类型 2 不能用于包含连续非参考图像的编码视频序列，因为这将导致这些图像中的多个图像具有相同的 `TopFieldOrderCnt` 值或多个图像具有相同的 `BottomFieldOrderCnt` 值。
+  > **注 3** – 图像顺序计数类型 2 的输出顺序与解码顺序相同。
+
+### 8.2.2 宏块到片组映射的解码过程
+
+该过程的输入是活动图像参数集和要解码的片的片头。
+
+该过程的输出是宏块到片组映射 `MbToSliceGroupMap`。
+
+每个片开始时调用此过程。
+  > **注** – 对于图像的所有片，该过程的输出是相同的。
+
+当 `num_slice_groups_minus1` 等于 1 且 `slice_group_map_type` 等于 3、4 或 5 时，片组 0 和 1 的大小和形状由 `slice_group_change_direction_flag` 确定，如表 8-1 所示，并在第 8.2.2.4 至 8.2.2.6 条中规定。
+
+表 8-1 – 精细片组映射类型
+
+在这种情况下，按照指定的增长顺序为片组 0 分配 `MapUnitsInSliceGroup0` 片组映射单元，剩余的 `PicSizeInMapUnits - MapUnitsInSliceGroup0` 图像的片组映射单元分配给片组 1。
+
+当 `num_slice_groups_minus1` 等于 1 且 `slice_group_map_type` 等于 4 或 5 时，变量 `sizeOfUpperLeftGroup` 定义如下：
+
+```c
+sizeOfUpperLeftGroup = (slice_group_change_direction_flag ? (PicSizeInMapUnits - MapUnitsInSliceGroup0) : MapUnitsInSliceGroup0)
+```
+
+`mapUnitToSliceGroupMap` 数组按如下方式派生：
+
+- 如果 `num_slice_groups_minus1` 等于 0，片组映射单元映射为所有范围从 0 到 `PicSizeInMapUnits - 1`（含）：
+
+```c
+mapUnitToSliceGroupMap[i] = 0
+```
+
+- 否则（`num_slice_groups_minus1` 不等于 0），`mapUnitToSliceGroupMap` 派生如下：
+  - 如果 `slice_group_map_type` 等于 0，第 8.2.2.1 条中规定的 `mapUnitToSliceGroupMap` 的派生适用。
+  - 否则，如果 `slice_group_map_type` 等于 1，第 8.2.2.2 条中规定的 `mapUnitToSliceGroupMap` 的派生适用。
+  - 否则，如果 `slice_group_map_type` 等于 2，第 8.2.2.3 条中规定的 `mapUnitToSliceGroupMap` 的派生适用。
+  - 否则，如果 `slice_group_map_type` 等于 3，第 8.2.2.4 条中规定的 `mapUnitToSliceGroupMap` 的派生适用。
+  - 否则，如果 `slice_group_map_type` 等于 4，第 8.2.2.5 条中规定的 `mapUnitToSliceGroupMap` 的派生适用。
+  - 否则，如果 `slice_group_map_type` 等于 5，第 8.2.2.6 条中规定的 `mapUnitToSliceGroupMap` 的派生适用。
+  - 否则（`slice_group_map_type` 等于 6），第 8.2.2.7 条中规定的 `mapUnitToSliceGroupMap` 的派生适用。
+
+在派生 `mapUnitToSliceGroupMap` 之后，调用第 8.2.2.8 条中规定的过程将片组映射单元映射 `mapUnitToSliceGroupMap` 转换为宏块到片组映射 `MbToSliceGroupMap`。在按第 8.2.2.8 条派生宏块到片组映射之后，函数 `NextMbAddress( n )` 定义为变量 `nextMbAddress` 的值，按以下伪代码派生：
+
+```c
+i = n + 1
+while (i < PicSizeInMbs && MbToSliceGroupMap[i] != MbToSliceGroupMap[n])
+   i++;
+nextMbAddress = i
+```
+
+### 8.2.2.1 交错片组映射类型的规范
+
+当 `slice_group_map_type` 等于 0 时，适用本条款中的规范。
+
+片组映射单元映射按以下伪代码生成：
+
+```c
+i = 0
+do {
+  for (iGroup = 0; iGroup <= num_slice_groups_minus1 && i < PicSizeInMapUnits; i += run_length_minus1[iGroup++] + 1)
+    for (j = 0; j <= run_length_minus1[iGroup] && i + j < PicSizeInMapUnits; j++)
+      mapUnitToSliceGroupMap[i + j] = iGroup
+} while (i < PicSizeInMapUnits)
+```
+
+### 8.2.2.2 分散片组映射类型的规范
+
+当 `slice_group_map_type` 等于 1 时，适用本条款中的规范。
+
+片组映射单元映射按以下伪代码生成：
+
+```c
+for (i = 0; i < PicSizeInMapUnits; i++)
+  mapUnitToSliceGroupMap[i] = ((i % PicWidthInMbs) + (((i / PicWidthInMbs) * (num_slice_groups_minus1 + 1)) / 2)) % (num_slice_groups_minus1 + 1)
+```
+
+### 8.2.2.3 前景与剩余片组映射类型的规范
+
+当 `slice_group_map_type` 等于 2 时，适用本条款中的规范。
+
+片组映射单元映射按以下伪代码生成：
+
+```c
+for (i = 0; i < PicSizeInMapUnits; i++)
+  mapUnitToSliceGroupMap[i] = num_slice_groups_minus1
+for (iGroup = num_slice_groups_minus1 - 1; iGroup >= 0; iGroup--) {
+  yTopLeft = top_left[iGroup] / PicWidthInMbs
+  xTopLeft = top_left[iGroup] % PicWidthInMbs
+  yBottomRight = bottom_right[iGroup] / PicWidthInMbs
+  xBottomRight = bottom_right[iGroup] % PicWidthInMbs
+  for (y = yTopLeft; y <= yBottomRight; y++)
+    for (x = xTopLeft; x <= xBottomRight; x++)
+      mapUnitToSliceGroupMap[y * PicWidthInMbs + x] = iGroup
+}
+```
+
+  >**注** – 矩形可能会重叠。片组 0 包含在 `top_left[0]` 和 `bottom_right[0]` 指定的矩形内的宏块。片组 ID 大于 0 且小于 `num_slice_groups_minus1` 的片组包含在该片组指定的矩形内但不在任何片组 ID 较小的片组指定的矩形内的宏块。片组 ID 等于 `num_slice_groups_minus1` 的片组包含不在其他片组内的宏块。
+
+### 8.2.2.4 箱式片组映射类型的规范
+
+当 `slice_group_map_type` 等于 3 时，适用本条款中的规范。
+
+片组映射单元映射按以下伪代码生成：
+
+```c
+for (i = 0; i < PicSizeInMapUnits; i++)
+  mapUnitToSliceGroupMap[i] = 1
+
+x = (PicWidthInMbs - slice_group_change_direction_flag) / 2
+y = (PicHeightInMapUnits - slice_group_change_direction_flag) / 2
+(leftBound, topBound) = (x, y)
+(rightBound, bottomBound) = (x, y)
+(xDir, yDir) = (slice_group_change_direction_flag - 1, slice_group_change_direction_flag)
+
+for (k = 0; k < MapUnitsInSliceGroup0; k += mapUnitVacant) {
+  mapUnitVacant = (mapUnitToSliceGroupMap[y * PicWidthInMbs + x] == 1 )
+  if (mapUnitVacant)
+    mapUnitToSliceGroupMap[y * PicWidthInMbs + x] = 0
+
+  if (xDir == -1 && x == leftBound) {
+    leftBound = Max(leftBound - 1, 0)
+    x = leftBound
+    (xDir, yDir) = (0, 2 * slice_group_change_direction_flag - 1)
+  } else if (xDir == 1 && x == rightBound) {
+    rightBound = Min(rightBound + 1, PicWidthInMbs - 1)
+    x = rightBound
+    (xDir, yDir) = (0, 1 - 2 * slice_group_change_direction_flag)
+  } else if (yDir == -1 && y == topBound) {
+    topBound = Max(topBound - 1, 0)
+    y = topBound
+    (xDir, yDir) = (1 - 2 * slice_group_change_direction_flag, 0)
+  } else if (yDir == 1 && y == bottomBound) {
+    bottomBound = Min(bottomBound + 1, PicHeightInMapUnits - 1)
+    y = bottomBound
+    (xDir, yDir) = (2 * slice_group_change_direction_flag - 1, 0)
+  } else {
+    (x, y) = (x + xDir, y + yDir)
+  }
+}
+```
+
+[TODO] 8.2.2.5
