@@ -114,8 +114,10 @@ static void read_slice_data(struct seq_parameter_set *sps, struct pic_parameter_
                 data->mb_skip_run = ue_v();
                 prevMbSkipped = (data->mb_skip_run > 0);
                 // for (int i = 0; i < data->mb_skip_run; ++i)
-                    // CurrMbAddr = 
+                // CurrMbAddr =
             }
+
+        moreDataFlag = 0;
     }
     while (moreDataFlag);
 }
