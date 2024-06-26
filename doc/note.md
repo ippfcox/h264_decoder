@@ -355,6 +355,89 @@ Figure 7-1 略
 
 具有 **nal_unit_type** 在 20 到 23 范围内（含）的 NAL 单元不得在接入单元中主要编码图像的第一个 VCL NAL 单元之前。
 
+### 7.4.2 原始字节序列有效负载和 RBSP 尾随位语义
+
+#### 7.4.2.1 序列参数集 RBSP 语义
+
+##### 7.4.2.1.1 序列参数集数据语义
+
+- `profile_idc` 和 `level_idc` 表示编码视频序列符合的配置文件和级别。
+- `constraint_set0_flag` 等于 1 表示编码视频序列遵守第 A.2.1 条规定的所有约束。
+- `constraint_set0_flag` 等于 0 表示编码视频序列可能遵守或不遵守第 A.2.1 条规定的所有约束。
+- `constraint_set1_flag` 等于 1 表示编码视频序列遵守第 A.2.2 条规定的所有约束。
+- `constraint_set1_flag` 等于 0 表示编码视频序列可能遵守或不遵守第 A.2.2 条规定的所有约束。
+- `constraint_set2_flag` 等于 1 表示编码视频序列遵守第 A.2.3 条规定的所有约束。
+- `constraint_set2_flag` 等于 0 表示编码视频序列可能遵守或不遵守第 A.2.3 条规定的所有约束。
+  > **注 1** – 当一个或多个 `constraint_set0_flag`、`constraint_set1_flag` 或 `constraint_set2_flag` 等于 1 时，编码视频序列必须遵守第 A.2 条的所有指示的子条款的约束。当 `profile_idc` 等于 44、100、110、122 或 244 时，`constraint_set0_flag`、`constraint_set1_flag` 和 `constraint_set2_flag` 的值必须都等于 0。
+
+- `constraint_set3_flag` 的规定如下：
+  - 如果 `profile_idc` 等于 66、77 或 88 且 `level_idc` 等于 11，`constraint_set3_flag` 等于 1 表示编码视频序列遵守附录 A 中第 1b 级的所有约束，`constraint_set3_flag` 等于 0 表示编码视频序列遵守附录 A 中第 1.1 级的所有约束。
+  - 否则，如果 `profile_idc` 等于 100 或 110，`constraint_set3_flag` 等于 1 表示编码视频序列遵守附录 A 中 High 10 Intra 配置文件的所有约束，`constraint_set3_flag` 等于 0 表示编码视频序列可能遵守或不遵守这些相应的约束。
+  - 否则，如果 `profile_idc` 等于 122，`constraint_set3_flag` 等于 1 表示编码视频序列遵守附录 A 中 High 4:2:2 Intra 配置文件的所有约束，`constraint_set3_flag` 等于 0 表示编码视频序列可能遵守或不遵守这些相应的约束。
+  - 否则，如果 `profile_idc` 等于 44，`constraint_set3_flag` 应等于 1。当 `profile_idc` 等于 44 时，`constraint_set3_flag` 的值为 0 是禁止的。
+  - 否则，如果 `profile_idc` 等于 244，`constraint_set3_flag` 等于 1 表示编码视频序列遵守附录 A 中 High 4:4:4 Intra 配置文件的所有约束，`constraint_set3_flag` 等于 0 表示编码视频序列可能遵守或不遵守这些相应的约束。
+  - 否则（`profile_idc` 等于 66、77 或 88 且 `level_idc` 不等于 11，或 `profile_idc` 不等于 66、77、88、100、110、122、244 或 44），`constraint_set3_flag` 的值为 1 保留给 ITU-T | ISO/IEC 将来使用。在符合本建议书 | 国际标准的比特流中，`profile_idc` 等于 66、77 或 88 且 `level_idc` 不等于 11 以及 `profile_idc` 不等于 66、77、88、100、110、122、244 或 44 的编码视频序列的 `constraint_set3_flag` 应等于 0。当 `profile_idc` 等于 66、77 或 88 且 `level_idc` 不等于 11，或 `profile_idc` 不等于 66、77、88、100、110、122、244 或 44 时，解码器应忽略 `constraint_set3_flag` 的值。
+
+- `constraint_set4_flag` 的规定如下：
+  - 如果 `profile_idc` 等于 77、88、100 或 110，`constraint_set4_flag` 等于 1 表示 `frame_mbs_only_flag` 的值等于 1。`constraint_set4_flag` 等于 0 表示 `frame_mbs_only_flag` 的值可能等于或不等于 1。
+  - 否则，如果 `profile_idc` 等于 118、128 或 134，`constraint_set4_flag` 等于 1 表示编码视频序列遵守第 H.10.1.1 条规定的所有约束。`constraint_set4_flag` 等于 0 表示编码视频序列可能遵守或不遵守第 H.10.1.1 条规定的约束。
+  - 否则（`profile_idc` 不等于 77、88、100、110、118、128 或 134），`constraint_set4_flag` 的值为 1 保留给 ITU-T | ISO/IEC 将来使用。在符合本建议书 | 国际标准的比特流中，`profile_idc` 不等于 77、88、100、110、118、128 或 134 的编码视频序列的 `constraint_set4_flag` 应等于 0。当 `profile_idc` 不等于 77、88、100、110、118、128 或 134 时，解码器应忽略 `constraint_set4_flag` 的值。
+
+- `constraint_set5_flag` 的规定如下：
+  - 如果 `profile_idc` 等于 77、88 或 100，`constraint_set5_flag` 等于 1 表示编码视频序列中不存在 B 片类型。`constraint_set5_flag` 等于 0 表示编码视频序列中可能存在或不存在 B 片类型。
+  - 否则，如果 `profile_idc` 等于 118，`constraint_set5_flag` 等于 1 表示编码视频序列遵守第 H.10.1.2 条规定的所有约束。`constraint_set5_flag` 等于 0 表示编码视频序列可能遵守或不遵守第 H.10.1.2 条规定的约束。
+  - 否则（`profile_idc` 不等于 77、88、100 或 118），`constraint_set5_flag` 的值为 1 保留给 ITU-T | ISO/IEC 将来使用。在符合本建议书 | 国际标准的比特流中，`profile_idc` 不等于 77、88、100 或 118 的编码视频序列的 `constraint_set5_flag` 应等于 0。当 `profile_idc` 不等于 77、88、100 或 118 时，解码器应忽略 `constraint_set5_flag` 的值。
+  > **注 2** – 对于符合多视图高和立体高配置文件的编码视频序列，使用 `profile_idc` 等于 118 和 `constraint_set5_flag` 等于 1 的组合。
+
+- `reserved_zero_2bits` 应等于 0。其他值的 `reserved_zero_2bits` 可能在将来由 ITU-T | ISO/IEC 规定。解码器应忽略 `reserved_zero_2bits` 的值。
+
+- `seq_parameter_set_id` 标识由图像参数集引用的序列参数集。`seq_parameter_set_id` 的值应在 0 到 31 范围内。
+  > **注 3** – 当可行时，当其他序列参数集语法元素的值不同时，编码器应使用不同的 `seq_parameter_set_id` 值，而不是更改与特定 `seq_parameter_set_id` 值关联的语法元素的值。
+
+- `chroma_format_idc` 指定相对于亮度采样的色度采样，如第 6.2 条所述。`chroma_format_idc` 的值应在 0 到 3 范围内。当 `chroma_format_idc` 不存在时，推断其等于 1（4:2:0 色度格式）。
+
+- `separate_colour_plane_flag` 等于 1 表示 4:4:4 色度格式的三个颜色分量是分别编码的。`separate_colour_plane_flag` 等于 0 表示颜色分量不是分别编码的。当 `separate_colour_plane_flag` 不存在时，推断其等于 0。当 `separate_colour_plane_flag` 等于 1 时，主要编码图像由三个独立的分量组成，每个分量由一个颜色平面的编码样本组成（Y, Cb 或 Cr），每个分量使用单色编码语法。在这种情况下，每个颜色平面与特定的 `colour_plane_id` 值相关联。
+  > **注 4** – 不同 `colour_plane_id` 值的颜色平面之间的解码过程中没有依赖关系。例如，具有一个 `colour_plane_id` 值的单色图像的解码过程不使用具有不同 `colour_plane_id` 值的单色图像中的任何数据进行帧间预测。
+
+根据 `separate_colour_plane_flag` 的值，变量 `ChromaArrayType` 的值如下分配：
+
+- 如果 `separate_colour_plane_flag` 等于 0，`ChromaArrayType` 设置等于 `chroma_format_idc`。
+- 否则（`separate_colour_plane_flag` 等于 1），`ChromaArrayType` 设置等于 0。
+
+- `bit_depth_luma_minus8` 指定亮度阵列样本的位深度和亮度量化参数范围偏移量 `QpBdOffsetY` 的值，如下所示：
+  - `BitDepthY = 8 + bit_depth_luma_minus8` (7-3)
+  - `QpBdOffsetY = 6 * bit_depth_luma_minus8` (7-4)
+
+当 `bit_depth_luma_minus8` 不存在时，应推断其等于 0。`bit_depth_luma_minus8` 的值应在 0 到 6 的范围内。
+
+- `bit_depth_chroma_minus8` 指定色度阵列样本的位深度和色度量化参数范围偏移量 `QpBdOffsetC` 的值，如下所示：
+  - `BitDepthC = 8 + bit_depth_chroma_minus8` (7-5)
+  - `QpBdOffsetC = 6 * bit_depth_chroma_minus8` (7-6)
+
+当 `bit_depth_chroma_minus8` 不存在时，应推断其等于 0。`bit_depth_chroma_minus8` 的值应在 0 到 6 的范围内。
+  > **注 5** – 当 `ChromaArrayType` 等于 0 时，解码过程中不使用 `bit_depth_chroma_minus8` 的值。特别是当 `separate_colour_plane_flag` 等于 1 时，每个颜色平面作为单独的单色图像进行解码，使用亮度分量解码过程（除了选择缩放矩阵外），亮度位深度用于所有三个颜色分量。
+
+- 变量 `RawMbBits` 按如下派生：
+  - `RawMbBits = 256 * BitDepthY + 2 * MbWidthC * MbHeightC * BitDepthC` (7-7)
+
+- `qpprime_y_zero_transform_bypass_flag` 等于 1 表示当 `QP'Y` 等于 0 时，按照第 8.5 条的规定，在去块滤波过程之前对变换系数解码过程和图像构建过程应用变换旁路操作。`qpprime_y_zero_transform_bypass_flag` 等于 0 表示变换系数解码过程和图像构建过程在去块滤波过程之前不使用变换旁路操作。当 `qpprime_y_zero_transform_bypass_flag` 不存在时，应推断其等于 0。
+
+- `seq_scaling_matrix_present_flag` 等于 1 表示标志 `seq_scaling_list_present_flag[i]`（对于 `i = 0..7` 或 `i = 0..11`）存在。`seq_scaling_matrix_present_flag` 等于 0 表示这些标志不存在，并且对于 `i = 0..5` 推断为 `Flat_4x4_16` 指定的序列级缩放列表，对于 `i = 6..11` 推断为 `Flat_8x8_16` 指定的序列级缩放列表。当 `seq_scaling_matrix_present_flag` 不存在时，应推断其等于 0。
+
+- 缩放列表 `Flat_4x4_16` 和 `Flat_8x8_16` 规定如下：
+  - `Flat_4x4_16[k] = 16`，其中 `k = 0..15`，(7-8)
+  - `Flat_8x8_16[k] = 16`，其中 `k = 0..63`，(7-9)
+
+- `seq_scaling_list_present_flag[i]` 等于 1 表示缩放列表 `i` 的语法结构存在于序列参数集中。`seq_scaling_list_present_flag[i]` 等于 0 表示缩放列表 `i` 的语法结构不存在于序列参数集中，并且应使用表 7-2 中指定的缩放列表回退规则集 A 推断索引 `i` 的序列级缩放列表。
+
+Table 7-2
+表 7-3 指定了默认的缩放列表`Default_4x4_Intra`和`Default_4x4_Inter`, 表 7-4 指定了默认的缩放列表`Default_8x8_Intra`和`Default_8x8_Inter`
+Table 7-3
+Table 7-4
+Table 7-4 (continued)
+Table 7-4 (continued)
+Table 7-4 (continued)
+
 [TODO] 7.4.2
 [TODO] 7.4.3
 [TODO] 7.4.4

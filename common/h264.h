@@ -245,6 +245,9 @@ extern "C"
             // [TODO]
             uint8_t avc_3d_extension_flag : 1; // u(1)
             // [TODO]
+
+            bool IdrPicFlag;
+            bool DepthFlag;
         } header;
         size_t nalUnitHeaderBytes; // header size;
 

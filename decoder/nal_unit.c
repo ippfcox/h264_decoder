@@ -19,6 +19,7 @@ void read_nal_unit(struct NAL_unit *nal)
     // check forced 0
     nal->header.nal_ref_idc = read_bits(ptr, nal->NumBytesInNALunit, &bit_offset, 2);   // u(2)
     nal->header.nal_unit_type = read_bits(ptr, nal->NumBytesInNALunit, &bit_offset, 5); // u(5)
+    nal->header.IdrPicFlag = nal->header.nal_unit_type == H264_NAL_IDR_SLICE ? true : false;
 
     nal->NumBytesInRBSP = 0;
     nal->nalUnitHeaderBytes = 1;
@@ -32,6 +33,7 @@ void read_nal_unit(struct NAL_unit *nal)
         if (nal->header.nal_unit_type != H264_NAL_DEPTH_EXTEN_SLICE)
         {
             nal->header.svc_extension_flag = read_bits(ptr, nal->NumBytesInNALunit, &bit_offset, 1); // u(1)
+            // nal->header.DepthFlag
         }
         else
         {
