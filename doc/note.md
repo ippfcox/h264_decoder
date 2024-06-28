@@ -97,19 +97,19 @@
 
 **NumBytesInNALunit** 指定 NAL 单元的字节大小。此值是解码 NAL 单元所必需的。需要某种形式的 NAL 单元边界标记方法，以便推断 **NumBytesInNALunit**。其中一种标记方法在附录 B 中针对字节流格式进行了规定。其他标记方法可能在本建议书 | 国际标准之外进行规定。
 
-- **forbidden_zero_bit** 必须等于 0。
+**forbidden_zero_bit** 必须等于 0。
 
-- **nal_ref_idc** 不等于 0 表示 NAL 单元的内容包含序列参数集、序列参数集扩展、子集序列参数集、图像参数集、参考图像的一片、参考图像的一片数据分区或在参考图像的一片之前的前缀 NAL 单元。
+**nal_ref_idc** 不等于 0 表示 NAL 单元的内容包含序列参数集、序列参数集扩展、子集序列参数集、图像参数集、参考图像的一片、参考图像的一片数据分区或在参考图像的一片之前的前缀 NAL 单元。
 
 对于符合附录 A 中规定的一个或多个配置文件的编码视频序列，这些序列使用第 2 至第 9 条中规定的解码过程进行解码，当 NAL 单元包含一片或一片数据分区且 **nal_ref_idc** 等于 0 时，表示该片或片数据分区是非参考图像的一部分。
 
-- **nal_ref_idc** 对于序列参数集、序列参数集扩展、子集序列参数集或图像参数集 NAL 单元，不应等于 0。当一个 NAL 单元的 **nal_unit_type** 在 1 到 4（含）范围内时，其 **nal_ref_idc** 等于 0，那么对于该图像的所有 **nal_unit_type** 在 1 到 4（含）范围内的 NAL 单元，其 **nal_ref_idc** 都应等于 0。
+**nal_ref_idc** 对于序列参数集、序列参数集扩展、子集序列参数集或图像参数集 NAL 单元，不应等于 0。当一个 NAL 单元的 **nal_unit_type** 在 1 到 4（含）范围内时，其 **nal_ref_idc** 等于 0，那么对于该图像的所有 **nal_unit_type** 在 1 到 4（含）范围内的 NAL 单元，其 **nal_ref_idc** 都应等于 0。
 
-- **nal_ref_idc** 对于 **nal_unit_type** 等于 5 的 NAL 单元，不应等于 0。
+**nal_ref_idc** 对于 **nal_unit_type** 等于 5 的 NAL 单元，不应等于 0。
 
-- **nal_ref_idc** 对于 **nal_unit_type** 等于 6、9、10、11 或 12 的所有 NAL 单元，应等于 0。
+**nal_ref_idc** 对于 **nal_unit_type** 等于 6、9、10、11 或 12 的所有 NAL 单元，应等于 0。
 
-- **nal_unit_type** 指定 NAL 单元中包含的 RBSP 数据结构的类型，如表 7-1 所示。
+**nal_unit_type** 指定 NAL 单元中包含的 RBSP 数据结构的类型，如表 7-1 所示。
 
 表 7-1 中标记为“C”的列列出了 NAL 单元中可能存在的语法元素的类别。此外，根据 RBSP 数据结构的语法和语义，可能存在语法类别为“所有”的语法元素。特定类别语法元素的存在与否由相关 RBSP 数据结构的语法和语义决定。**nal_unit_type** 不应等于 3 或 4，除非在 RBSP 数据结构中至少存在一个语法元素，其语法元素类别值等于 **nal_unit_type** 的值并且未分类为“所有”。
 
@@ -132,9 +132,9 @@ Table 7-1略
   > **注 4** – 在本建议书 | 国际标准的早期版本中，**nal_unit_type** 为 13 到 15 和 19 到 20（或这些 NAL 单元类型的子集）是保留的，并且未规定这些 **nal_unit_type** 值的 NAL 单元的解码过程。在本建议书 | 国际标准的后续版本中，目前保留的 **nal_unit_type** 值可能会变为非保留，并且可能会规定这些 **nal_unit_type** 值的解码过程。编码器应考虑到在本建议书 | 国际标准的早期版本中保留的 **nal_unit_type** 值可能会被解码器忽略。
 
 在文本中，编码片 NAL 单元统称为非 IDR 图像的编码片 NAL 单元或 IDR 图像的编码片 NAL 单元。变量 **IdrPicFlag** 定义如下：
-```c
-IdrPicFlag = ((nal_unit_type == 5) ? 1 : 0)
-```
+$$
+\text{IdrPicFlag} = ((\text{nal\_unit\_type} == 5) ? 1 : 0) \tag{7-1}
+$$
 当包含某个特定图像的一片的 NAL 单元的 **nal_unit_type** 等于 5 时，该图像不应包含 **nal_unit_type** 在 1 到 4 范围内（含）的 NAL 单元。对于符合附录 A 中规定的一个或多个配置文件并使用第 2 至 9 条规定的解码过程进行解码的编码视频序列，这样的图像称为 IDR 图像。
   > **注 5** – IDR 图像不能使用片数据分区。
 
@@ -155,9 +155,9 @@ IdrPicFlag = ((nal_unit_type == 5) ? 1 : 0)
 当 **avc_3d_extension_flag** 未出现时，推断 **avc_3d_extension_flag** 的值等于 0。
 
 **DepthFlag** 的值规定如下：
-```c
-DepthFlag = (nal_unit_type != 21) ? 0 : (avc_3d_extension_flag ? depth_flag : 1)
-```
+$$
+\text{DepthFlag} = (\text{nal\_unit\_type} != 21) ? 0 : (\text{avc\_3d\_extension\_flag} ? \text{depth\_flag} : 1) \tag{7-2}
+$$
 对于符合附录 I 中规定的一个或多个配置文件的编码视频序列，**avc_3d_extension_flag** 的值应等于 0。符合附录 I 中规定的一个或多个配置文件的解码器应忽略（从比特流中移除并丢弃）**nal_unit_type** 等于 21 且 **avc_3d_extension_flag** 等于 1 的 NAL 单元。
 
 **rbsp_byte[i]** 是 RBSP 的第 i 个字节。RBSP 规定为如下顺序排列的字节序列。
@@ -405,28 +405,42 @@ Figure 7-1 略
 - 否则（`separate_colour_plane_flag` 等于 1），`ChromaArrayType` 设置等于 0。
 
 - `bit_depth_luma_minus8` 指定亮度阵列样本的位深度和亮度量化参数范围偏移量 `QpBdOffsetY` 的值，如下所示：
-  - `BitDepthY = 8 + bit_depth_luma_minus8` (7-3)
-  - `QpBdOffsetY = 6 * bit_depth_luma_minus8` (7-4)
+$$
+\text{BitDepthY} = 8 + \text{bit\_depth\_luma\_minus8}\tag{7-3}
+$$
+$$
+\text{QpBdOffsetY} = 6 * \text{bit\_depth\_luma\_minus8} \tag{7-4}
+$$
 
 当 `bit_depth_luma_minus8` 不存在时，应推断其等于 0。`bit_depth_luma_minus8` 的值应在 0 到 6 的范围内。
 
 - `bit_depth_chroma_minus8` 指定色度阵列样本的位深度和色度量化参数范围偏移量 `QpBdOffsetC` 的值，如下所示：
-  - `BitDepthC = 8 + bit_depth_chroma_minus8` (7-5)
-  - `QpBdOffsetC = 6 * bit_depth_chroma_minus8` (7-6)
+$$
+\text{BitDepthC} = 8 + \text{bit\_depth\_chroma\_minus8} \tag{7-5}
+$$
+$$
+\text{QpBdOffsetC} = 6 * \text{bit\_depth\_chroma\_minus8} \tag{7-6}
+$$
 
 当 `bit_depth_chroma_minus8` 不存在时，应推断其等于 0。`bit_depth_chroma_minus8` 的值应在 0 到 6 的范围内。
   > **注 5** – 当 `ChromaArrayType` 等于 0 时，解码过程中不使用 `bit_depth_chroma_minus8` 的值。特别是当 `separate_colour_plane_flag` 等于 1 时，每个颜色平面作为单独的单色图像进行解码，使用亮度分量解码过程（除了选择缩放矩阵外），亮度位深度用于所有三个颜色分量。
 
 - 变量 `RawMbBits` 按如下派生：
-  - `RawMbBits = 256 * BitDepthY + 2 * MbWidthC * MbHeightC * BitDepthC` (7-7)
+$$
+\text{RawMbBits} = 256 * \text{BitDepthY} + 2 * \text{MbWidthC} * \text{MbHeightC} * \text{BitDepthC} \tag{7-7}
+$$
 
 - `qpprime_y_zero_transform_bypass_flag` 等于 1 表示当 `QP'Y` 等于 0 时，按照第 8.5 条的规定，在去块滤波过程之前对变换系数解码过程和图像构建过程应用变换旁路操作。`qpprime_y_zero_transform_bypass_flag` 等于 0 表示变换系数解码过程和图像构建过程在去块滤波过程之前不使用变换旁路操作。当 `qpprime_y_zero_transform_bypass_flag` 不存在时，应推断其等于 0。
 
 - `seq_scaling_matrix_present_flag` 等于 1 表示标志 `seq_scaling_list_present_flag[i]`（对于 `i = 0..7` 或 `i = 0..11`）存在。`seq_scaling_matrix_present_flag` 等于 0 表示这些标志不存在，并且对于 `i = 0..5` 推断为 `Flat_4x4_16` 指定的序列级缩放列表，对于 `i = 6..11` 推断为 `Flat_8x8_16` 指定的序列级缩放列表。当 `seq_scaling_matrix_present_flag` 不存在时，应推断其等于 0。
 
 - 缩放列表 `Flat_4x4_16` 和 `Flat_8x8_16` 规定如下：
-  - `Flat_4x4_16[k] = 16`，其中 `k = 0..15`，(7-8)
-  - `Flat_8x8_16[k] = 16`，其中 `k = 0..63`，(7-9)
+$$
+\text{Flat\_4x4\_16[k]} = 16，其中k = 0..15\tag{7-8}
+$$
+$$
+\text{Flat\_8x8\_16[k]} = 16，其中k = 0..63\tag{7-9}
+$$
 
 - `seq_scaling_list_present_flag[i]` 等于 1 表示缩放列表 `i` 的语法结构存在于序列参数集中。`seq_scaling_list_present_flag[i]` 等于 0 表示缩放列表 `i` 的语法结构不存在于序列参数集中，并且应使用表 7-2 中指定的缩放列表回退规则集 A 推断索引 `i` 的序列级缩放列表。
 
@@ -437,6 +451,66 @@ Table 7-4
 Table 7-4 (continued)
 Table 7-4 (continued)
 Table 7-4 (continued)
+
+- `log2_max_frame_num_minus4` 指定变量 `MaxFrameNum` 的值，用于与 `frame_num` 相关的派生，如下所示：
+$$
+\text{MaxFrameNum} = 2^{(\text{log2\_max\_frame\_num\_minus4} + 4)}\tag{7-10}
+$$
+`log2_max_frame_num_minus4` 的值应在 0 到 12 的范围内。
+
+- `pic_order_cnt_type` 指定解码图片顺序计数的方法（如第 8.2.1 条所述）。`pic_order_cnt_type` 的值应在 0 到 2 的范围内。
+
+  - 在包含以下任一情况的编码视频序列中，`pic_order_cnt_type` 不应等于 2：
+    - 包含非参考帧的接入单元紧随包含非参考图片的接入单元之后，
+    - 两个接入单元每个包含一个场，这两个场一起形成一个互补的非参考场对，紧随其后是包含非参考图片的接入单元，
+    - 包含非参考场的接入单元紧随另一个非参考图片的接入单元之后，该图片不与这两个接入单元中的第一个形成互补的非参考场对。
+
+- `log2_max_pic_order_cnt_lsb_minus4` 指定变量 `MaxPicOrderCntLsb` 的值，用于解码过程中的图片顺序计数，如下所示：
+  - `MaxPicOrderCntLsb = 2^( log2_max_pic_order_cnt_lsb_minus4 + 4 )` (7-11)
+  - `log2_max_pic_order_cnt_lsb_minus4` 的值应在 0 到 12 的范围内。
+
+- `delta_pic_order_always_zero_flag` 等于 1 表示在序列的片头中 `delta_pic_order_cnt[0]` 和 `delta_pic_order_cnt[1]` 不存在，应推断为 0。`delta_pic_order_always_zero_flag` 等于 0 表示在序列的片头中 `delta_pic_order_cnt[0]` 存在，`delta_pic_order_cnt[1]` 可能存在。
+
+- `offset_for_non_ref_pic` 用于计算非参考图片的图片顺序计数，如第 8.2.1 条所述。`offset_for_non_ref_pic` 的值应在 -2^31 + 1 到 2^31 - 1 的范围内。
+
+- `offset_for_top_to_bottom_field` 用于计算底场的图片顺序计数，如第 8.2.1 条所述。`offset_for_top_to_bottom_field` 的值应在 -2^31 + 1 到 2^31 - 1 的范围内。
+
+- `num_ref_frames_in_pic_order_cnt_cycle` 用于解码过程中的图片顺序计数，如第 8.2.1 条所述。`num_ref_frames_in_pic_order_cnt_cycle` 的值应在 0 到 255 的范围内。
+
+- `offset_for_ref_frame[i]` 是 `num_ref_frames_in_pic_order_cnt_cycle` 个值的列表中的一个元素，用于解码过程中的图片顺序计数，如第 8.2.1 条所述。`offset_for_ref_frame[i]` 的值应在 -2^31 + 1 到 2^31 - 1 的范围内。
+
+  - 当 `pic_order_cnt_type` 等于 1 时，变量 `ExpectedDeltaPerPicOrderCntCycle` 按如下派生：
+    ```c
+    ExpectedDeltaPerPicOrderCntCycle = 0
+    for (i = 0; i < num_ref_frames_in_pic_order_cnt_cycle; i++)
+      ExpectedDeltaPerPicOrderCntCycle += offset_for_ref_frame[i]
+    ``` (7-12)
+
+- `max_num_ref_frames` 指定解码过程在编码视频序列中的任意图片的帧间预测中可能使用的短期和长期参考帧、互补参考场对以及非配对参考场的最大数量。`max_num_ref_frames` 还决定了滑动窗口操作的大小，如第 8.2.5.3 条所述。`max_num_ref_frames` 的值应在 0 到 `MaxDpbFrames`（如第 A.3.1 或 A.3.2 条所述）的范围内。
+
+- `gaps_in_frame_num_value_allowed_flag` 指定第 7.4.3 条规定的 `frame_num` 的允许值以及在推断的 `frame_num` 值之间存在间隙时的解码过程，如第 8.2.5.2 条所述。
+
+- `pic_width_in_mbs_minus1` 加 1 指定每个解码图片的宽度（以宏块为单位）。
+  - 变量 `PicWidthInMbs` 按如下派生：
+    - `PicWidthInMbs = pic_width_in_mbs_minus1 + 1` (7-13)
+  - 亮度分量的图片宽度变量按如下派生：
+    - `PicWidthInSamplesL = PicWidthInMbs * 16` (7-14)
+  - 色度分量的图片宽度变量按如下派生：
+    - `PicWidthInSamplesC = PicWidthInMbs * MbWidthC` (7-15)
+
+- `pic_height_in_map_units_minus1` 加 1 指定解码帧或场的切片组映射单元的高度。
+  - 变量 `PicHeightInMapUnits` 和 `PicSizeInMapUnits` 按如下派生：
+    - `PicHeightInMapUnits = pic_height_in_map_units_minus1 + 1` (7-16)
+    - `PicSizeInMapUnits = PicWidthInMbs * PicHeightInMapUnits` (7-17)
+
+- `frame_mbs_only_flag` 等于 0 表示编码视频序列的编码图片可能是编码场或编码帧。`frame_mbs_only_flag` 等于 1 表示编码视频序列中的每个编码图片都是仅包含帧宏块的编码帧。
+  - `pic_width_in_mbs_minus1`、`pic_height_in_map_units_minus1` 和 `frame_mbs_only_flag` 的允许值范围由附录 A 中的约束规定。
+  - 根据 `frame_mbs_only_flag`，为 `pic_height_in_map_units_minus1` 分配语义如下：
+    - 如果 `frame_mbs_only_flag` 等于 0，`pic_height_in_map_units_minus1` 加 1 是一个场的高度（以宏块为单位）。
+    - 否则（`frame_mbs_only_flag` 等于 1），`pic_height_in_map_units_minus1` 加 1 是一个帧的高度（以宏块为单位）。
+  - 变量 `FrameHeightInMbs` 按如下派生：
+    - `FrameHeightInMbs = ( 2 − frame_mbs_only_flag ) * PicHeightInMapUnits` (7-18)
+
 
 [TODO] 7.4.2
 [TODO] 7.4.3
