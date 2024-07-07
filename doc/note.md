@@ -361,42 +361,45 @@ Figure 7-1 略
 
 ##### 7.4.2.1.1 序列参数集数据语义
 
-- `profile_idc` 和 `level_idc` 表示编码视频序列符合的配置文件和级别。
-- `constraint_set0_flag` 等于 1 表示编码视频序列遵守第 A.2.1 条规定的所有约束。
-- `constraint_set0_flag` 等于 0 表示编码视频序列可能遵守或不遵守第 A.2.1 条规定的所有约束。
-- `constraint_set1_flag` 等于 1 表示编码视频序列遵守第 A.2.2 条规定的所有约束。
-- `constraint_set1_flag` 等于 0 表示编码视频序列可能遵守或不遵守第 A.2.2 条规定的所有约束。
-- `constraint_set2_flag` 等于 1 表示编码视频序列遵守第 A.2.3 条规定的所有约束。
-- `constraint_set2_flag` 等于 0 表示编码视频序列可能遵守或不遵守第 A.2.3 条规定的所有约束。
+`profile_idc` 和 `level_idc` 表示编码视频序列符合的配置文件和级别。
+`constraint_set0_flag` 等于 1 表示编码视频序列遵守第 A.2.1 条规定的所有约束。
+`constraint_set0_flag` 等于 0 表示编码视频序列可能遵守或不遵守第 A.2.1 条规定的所有约束。
+`constraint_set1_flag` 等于 1 表示编码视频序列遵守第 A.2.2 条规定的所有约束。
+`constraint_set1_flag` 等于 0 表示编码视频序列可能遵守或不遵守第 A.2.2 条规定的所有约束。
+`constraint_set2_flag` 等于 1 表示编码视频序列遵守第 A.2.3 条规定的所有约束。
+`constraint_set2_flag` 等于 0 表示编码视频序列可能遵守或不遵守第 A.2.3 条规定的所有约束。
   > **注 1** – 当一个或多个 `constraint_set0_flag`、`constraint_set1_flag` 或 `constraint_set2_flag` 等于 1 时，编码视频序列必须遵守第 A.2 条的所有指示的子条款的约束。当 `profile_idc` 等于 44、100、110、122 或 244 时，`constraint_set0_flag`、`constraint_set1_flag` 和 `constraint_set2_flag` 的值必须都等于 0。
 
-- `constraint_set3_flag` 的规定如下：
-  - 如果 `profile_idc` 等于 66、77 或 88 且 `level_idc` 等于 11，`constraint_set3_flag` 等于 1 表示编码视频序列遵守附录 A 中第 1b 级的所有约束，`constraint_set3_flag` 等于 0 表示编码视频序列遵守附录 A 中第 1.1 级的所有约束。
-  - 否则，如果 `profile_idc` 等于 100 或 110，`constraint_set3_flag` 等于 1 表示编码视频序列遵守附录 A 中 High 10 Intra 配置文件的所有约束，`constraint_set3_flag` 等于 0 表示编码视频序列可能遵守或不遵守这些相应的约束。
-  - 否则，如果 `profile_idc` 等于 122，`constraint_set3_flag` 等于 1 表示编码视频序列遵守附录 A 中 High 4:2:2 Intra 配置文件的所有约束，`constraint_set3_flag` 等于 0 表示编码视频序列可能遵守或不遵守这些相应的约束。
-  - 否则，如果 `profile_idc` 等于 44，`constraint_set3_flag` 应等于 1。当 `profile_idc` 等于 44 时，`constraint_set3_flag` 的值为 0 是禁止的。
-  - 否则，如果 `profile_idc` 等于 244，`constraint_set3_flag` 等于 1 表示编码视频序列遵守附录 A 中 High 4:4:4 Intra 配置文件的所有约束，`constraint_set3_flag` 等于 0 表示编码视频序列可能遵守或不遵守这些相应的约束。
-  - 否则（`profile_idc` 等于 66、77 或 88 且 `level_idc` 不等于 11，或 `profile_idc` 不等于 66、77、88、100、110、122、244 或 44），`constraint_set3_flag` 的值为 1 保留给 ITU-T | ISO/IEC 将来使用。在符合本建议书 | 国际标准的比特流中，`profile_idc` 等于 66、77 或 88 且 `level_idc` 不等于 11 以及 `profile_idc` 不等于 66、77、88、100、110、122、244 或 44 的编码视频序列的 `constraint_set3_flag` 应等于 0。当 `profile_idc` 等于 66、77 或 88 且 `level_idc` 不等于 11，或 `profile_idc` 不等于 66、77、88、100、110、122、244 或 44 时，解码器应忽略 `constraint_set3_flag` 的值。
+`constraint_set3_flag` 的规定如下：
 
-- `constraint_set4_flag` 的规定如下：
-  - 如果 `profile_idc` 等于 77、88、100 或 110，`constraint_set4_flag` 等于 1 表示 `frame_mbs_only_flag` 的值等于 1。`constraint_set4_flag` 等于 0 表示 `frame_mbs_only_flag` 的值可能等于或不等于 1。
-  - 否则，如果 `profile_idc` 等于 118、128 或 134，`constraint_set4_flag` 等于 1 表示编码视频序列遵守第 H.10.1.1 条规定的所有约束。`constraint_set4_flag` 等于 0 表示编码视频序列可能遵守或不遵守第 H.10.1.1 条规定的约束。
-  - 否则（`profile_idc` 不等于 77、88、100、110、118、128 或 134），`constraint_set4_flag` 的值为 1 保留给 ITU-T | ISO/IEC 将来使用。在符合本建议书 | 国际标准的比特流中，`profile_idc` 不等于 77、88、100、110、118、128 或 134 的编码视频序列的 `constraint_set4_flag` 应等于 0。当 `profile_idc` 不等于 77、88、100、110、118、128 或 134 时，解码器应忽略 `constraint_set4_flag` 的值。
+- 如果 `profile_idc` 等于 66、77 或 88 且 `level_idc` 等于 11，`constraint_set3_flag` 等于 1 表示编码视频序列遵守附录 A 中第 1b 级的所有约束，`constraint_set3_flag` 等于 0 表示编码视频序列遵守附录 A 中第 1.1 级的所有约束。
+- 否则，如果 `profile_idc` 等于 100 或 110，`constraint_set3_flag` 等于 1 表示编码视频序列遵守附录 A 中 High 10 Intra 配置文件的所有约束，`constraint_set3_flag` 等于 0 表示编码视频序列可能遵守或不遵守这些相应的约束。
+- 否则，如果 `profile_idc` 等于 122，`constraint_set3_flag` 等于 1 表示编码视频序列遵守附录 A 中 High 4:2:2 Intra 配置文件的所有约束，`constraint_set3_flag` 等于 0 表示编码视频序列可能遵守或不遵守这些相应的约束。
+- 否则，如果 `profile_idc` 等于 44，`constraint_set3_flag` 应等于 1。当 `profile_idc` 等于 44 时，`constraint_set3_flag` 的值为 0 是禁止的。
+- 否则，如果 `profile_idc` 等于 244，`constraint_set3_flag` 等于 1 表示编码视频序列遵守附录 A 中 High 4:4:4 Intra 配置文件的所有约束，`constraint_set3_flag` 等于 0 表示编码视频序列可能遵守或不遵守这些相应的约束。
+- 否则（`profile_idc` 等于 66、77 或 88 且 `level_idc` 不等于 11，或 `profile_idc` 不等于 66、77、88、100、110、122、244 或 44），`constraint_set3_flag` 的值为 1 保留给 ITU-T | ISO/IEC 将来使用。在符合本建议书 | 国际标准的比特流中，`profile_idc` 等于 66、77 或 88 且 `level_idc` 不等于 11 以及 `profile_idc` 不等于 66、77、88、100、110、122、244 或 44 的编码视频序列的 `constraint_set3_flag` 应等于 0。当 `profile_idc` 等于 66、77 或 88 且 `level_idc` 不等于 11，或 `profile_idc` 不等于 66、77、88、100、110、122、244 或 44 时，解码器应忽略 `constraint_set3_flag` 的值。
 
-- `constraint_set5_flag` 的规定如下：
-  - 如果 `profile_idc` 等于 77、88 或 100，`constraint_set5_flag` 等于 1 表示编码视频序列中不存在 B 片类型。`constraint_set5_flag` 等于 0 表示编码视频序列中可能存在或不存在 B 片类型。
-  - 否则，如果 `profile_idc` 等于 118，`constraint_set5_flag` 等于 1 表示编码视频序列遵守第 H.10.1.2 条规定的所有约束。`constraint_set5_flag` 等于 0 表示编码视频序列可能遵守或不遵守第 H.10.1.2 条规定的约束。
-  - 否则（`profile_idc` 不等于 77、88、100 或 118），`constraint_set5_flag` 的值为 1 保留给 ITU-T | ISO/IEC 将来使用。在符合本建议书 | 国际标准的比特流中，`profile_idc` 不等于 77、88、100 或 118 的编码视频序列的 `constraint_set5_flag` 应等于 0。当 `profile_idc` 不等于 77、88、100 或 118 时，解码器应忽略 `constraint_set5_flag` 的值。
+`constraint_set4_flag` 的规定如下：
+
+- 如果 `profile_idc` 等于 77、88、100 或 110，`constraint_set4_flag` 等于 1 表示 `frame_mbs_only_flag` 的值等于 1。`constraint_set4_flag` 等于 0 表示 `frame_mbs_only_flag` 的值可能等于或不等于 1。
+- 否则，如果 `profile_idc` 等于 118、128 或 134，`constraint_set4_flag` 等于 1 表示编码视频序列遵守第 H.10.1.1 条规定的所有约束。`constraint_set4_flag` 等于 0 表示编码视频序列可能遵守或不遵守第 H.10.1.1 条规定的约束。
+- 否则（`profile_idc` 不等于 77、88、100、110、118、128 或 134），`constraint_set4_flag` 的值为 1 保留给 ITU-T | ISO/IEC 将来使用。在符合本建议书 | 国际标准的比特流中，`profile_idc` 不等于 77、88、100、110、118、128 或 134 的编码视频序列的 `constraint_set4_flag` 应等于 0。当 `profile_idc` 不等于 77、88、100、110、118、128 或 134 时，解码器应忽略 `constraint_set4_flag` 的值。
+
+`constraint_set5_flag` 的规定如下：
+
+- 如果 `profile_idc` 等于 77、88 或 100，`constraint_set5_flag` 等于 1 表示编码视频序列中不存在 B 片类型。`constraint_set5_flag` 等于 0 表示编码视频序列中可能存在或不存在 B 片类型。
+- 否则，如果 `profile_idc` 等于 118，`constraint_set5_flag` 等于 1 表示编码视频序列遵守第 H.10.1.2 条规定的所有约束。`constraint_set5_flag` 等于 0 表示编码视频序列可能遵守或不遵守第 H.10.1.2 条规定的约束。
+- 否则（`profile_idc` 不等于 77、88、100 或 118），`constraint_set5_flag` 的值为 1 保留给 ITU-T | ISO/IEC 将来使用。在符合本建议书 | 国际标准的比特流中，`profile_idc` 不等于 77、88、100 或 118 的编码视频序列的 `constraint_set5_flag` 应等于 0。当 `profile_idc` 不等于 77、88、100 或 118 时，解码器应忽略 `constraint_set5_flag` 的值。
   > **注 2** – 对于符合多视图高和立体高配置文件的编码视频序列，使用 `profile_idc` 等于 118 和 `constraint_set5_flag` 等于 1 的组合。
 
-- `reserved_zero_2bits` 应等于 0。其他值的 `reserved_zero_2bits` 可能在将来由 ITU-T | ISO/IEC 规定。解码器应忽略 `reserved_zero_2bits` 的值。
+`reserved_zero_2bits` 应等于 0。其他值的 `reserved_zero_2bits` 可能在将来由 ITU-T | ISO/IEC 规定。解码器应忽略 `reserved_zero_2bits` 的值。
 
-- `seq_parameter_set_id` 标识由图像参数集引用的序列参数集。`seq_parameter_set_id` 的值应在 0 到 31 范围内。
+`seq_parameter_set_id` 标识由图像参数集引用的序列参数集。`seq_parameter_set_id` 的值应在 0 到 31 范围内。
   > **注 3** – 当可行时，当其他序列参数集语法元素的值不同时，编码器应使用不同的 `seq_parameter_set_id` 值，而不是更改与特定 `seq_parameter_set_id` 值关联的语法元素的值。
 
-- `chroma_format_idc` 指定相对于亮度采样的色度采样，如第 6.2 条所述。`chroma_format_idc` 的值应在 0 到 3 范围内。当 `chroma_format_idc` 不存在时，推断其等于 1（4:2:0 色度格式）。
+`chroma_format_idc` 指定相对于亮度采样的色度采样，如第 6.2 条所述。`chroma_format_idc` 的值应在 0 到 3 范围内。当 `chroma_format_idc` 不存在时，推断其等于 1（4:2:0 色度格式）。
 
-- `separate_colour_plane_flag` 等于 1 表示 4:4:4 色度格式的三个颜色分量是分别编码的。`separate_colour_plane_flag` 等于 0 表示颜色分量不是分别编码的。当 `separate_colour_plane_flag` 不存在时，推断其等于 0。当 `separate_colour_plane_flag` 等于 1 时，主要编码图像由三个独立的分量组成，每个分量由一个颜色平面的编码样本组成（Y, Cb 或 Cr），每个分量使用单色编码语法。在这种情况下，每个颜色平面与特定的 `colour_plane_id` 值相关联。
+`separate_colour_plane_flag` 等于 1 表示 4:4:4 色度格式的三个颜色分量是分别编码的。`separate_colour_plane_flag` 等于 0 表示颜色分量不是分别编码的。当 `separate_colour_plane_flag` 不存在时，推断其等于 0。当 `separate_colour_plane_flag` 等于 1 时，主要编码图像由三个独立的分量组成，每个分量由一个颜色平面的编码样本组成（Y, Cb 或 Cr），每个分量使用单色编码语法。在这种情况下，每个颜色平面与特定的 `colour_plane_id` 值相关联。
   > **注 4** – 不同 `colour_plane_id` 值的颜色平面之间的解码过程中没有依赖关系。例如，具有一个 `colour_plane_id` 值的单色图像的解码过程不使用具有不同 `colour_plane_id` 值的单色图像中的任何数据进行帧间预测。
 
 根据 `separate_colour_plane_flag` 的值，变量 `ChromaArrayType` 的值如下分配：
@@ -404,7 +407,7 @@ Figure 7-1 略
 - 如果 `separate_colour_plane_flag` 等于 0，`ChromaArrayType` 设置等于 `chroma_format_idc`。
 - 否则（`separate_colour_plane_flag` 等于 1），`ChromaArrayType` 设置等于 0。
 
-- `bit_depth_luma_minus8` 指定亮度阵列样本的位深度和亮度量化参数范围偏移量 `QpBdOffsetY` 的值，如下所示：
+`bit_depth_luma_minus8` 指定亮度阵列样本的位深度和亮度量化参数范围偏移量 `QpBdOffsetY` 的值，如下所示：
 $$
 \text{BitDepthY} = 8 + \text{bit\_depth\_luma\_minus8}\tag{7-3}
 $$
@@ -414,7 +417,7 @@ $$
 
 当 `bit_depth_luma_minus8` 不存在时，应推断其等于 0。`bit_depth_luma_minus8` 的值应在 0 到 6 的范围内。
 
-- `bit_depth_chroma_minus8` 指定色度阵列样本的位深度和色度量化参数范围偏移量 `QpBdOffsetC` 的值，如下所示：
+`bit_depth_chroma_minus8` 指定色度阵列样本的位深度和色度量化参数范围偏移量 `QpBdOffsetC` 的值，如下所示：
 $$
 \text{BitDepthC} = 8 + \text{bit\_depth\_chroma\_minus8} \tag{7-5}
 $$
@@ -425,16 +428,16 @@ $$
 当 `bit_depth_chroma_minus8` 不存在时，应推断其等于 0。`bit_depth_chroma_minus8` 的值应在 0 到 6 的范围内。
   > **注 5** – 当 `ChromaArrayType` 等于 0 时，解码过程中不使用 `bit_depth_chroma_minus8` 的值。特别是当 `separate_colour_plane_flag` 等于 1 时，每个颜色平面作为单独的单色图像进行解码，使用亮度分量解码过程（除了选择缩放矩阵外），亮度位深度用于所有三个颜色分量。
 
-- 变量 `RawMbBits` 按如下派生：
+变量 `RawMbBits` 按如下派生：
 $$
 \text{RawMbBits} = 256 * \text{BitDepthY} + 2 * \text{MbWidthC} * \text{MbHeightC} * \text{BitDepthC} \tag{7-7}
 $$
 
-- `qpprime_y_zero_transform_bypass_flag` 等于 1 表示当 `QP'Y` 等于 0 时，按照第 8.5 条的规定，在去块滤波过程之前对变换系数解码过程和图像构建过程应用变换旁路操作。`qpprime_y_zero_transform_bypass_flag` 等于 0 表示变换系数解码过程和图像构建过程在去块滤波过程之前不使用变换旁路操作。当 `qpprime_y_zero_transform_bypass_flag` 不存在时，应推断其等于 0。
+`qpprime_y_zero_transform_bypass_flag` 等于 1 表示当 `QP'Y` 等于 0 时，按照第 8.5 条的规定，在去块滤波过程之前对变换系数解码过程和图像构建过程应用变换旁路操作。`qpprime_y_zero_transform_bypass_flag` 等于 0 表示变换系数解码过程和图像构建过程在去块滤波过程之前不使用变换旁路操作。当 `qpprime_y_zero_transform_bypass_flag` 不存在时，应推断其等于 0。
 
-- `seq_scaling_matrix_present_flag` 等于 1 表示标志 `seq_scaling_list_present_flag[i]`（对于 `i = 0..7` 或 `i = 0..11`）存在。`seq_scaling_matrix_present_flag` 等于 0 表示这些标志不存在，并且对于 `i = 0..5` 推断为 `Flat_4x4_16` 指定的序列级缩放列表，对于 `i = 6..11` 推断为 `Flat_8x8_16` 指定的序列级缩放列表。当 `seq_scaling_matrix_present_flag` 不存在时，应推断其等于 0。
+`seq_scaling_matrix_present_flag` 等于 1 表示标志 `seq_scaling_list_present_flag[i]`（对于 `i = 0..7` 或 `i = 0..11`）存在。`seq_scaling_matrix_present_flag` 等于 0 表示这些标志不存在，并且对于 `i = 0..5` 推断为 `Flat_4x4_16` 指定的序列级缩放列表，对于 `i = 6..11` 推断为 `Flat_8x8_16` 指定的序列级缩放列表。当 `seq_scaling_matrix_present_flag` 不存在时，应推断其等于 0。
 
-- 缩放列表 `Flat_4x4_16` 和 `Flat_8x8_16` 规定如下：
+缩放列表 `Flat_4x4_16` 和 `Flat_8x8_16` 规定如下：
 $$
 \text{Flat\_4x4\_16[k]} = 16，其中k = 0..15\tag{7-8}
 $$
@@ -442,7 +445,7 @@ $$
 \text{Flat\_8x8\_16[k]} = 16，其中k = 0..63\tag{7-9}
 $$
 
-- `seq_scaling_list_present_flag[i]` 等于 1 表示缩放列表 `i` 的语法结构存在于序列参数集中。`seq_scaling_list_present_flag[i]` 等于 0 表示缩放列表 `i` 的语法结构不存在于序列参数集中，并且应使用表 7-2 中指定的缩放列表回退规则集 A 推断索引 `i` 的序列级缩放列表。
+`seq_scaling_list_present_flag[i]` 等于 1 表示缩放列表 `i` 的语法结构存在于序列参数集中。`seq_scaling_list_present_flag[i]` 等于 0 表示缩放列表 `i` 的语法结构不存在于序列参数集中，并且应使用表 7-2 中指定的缩放列表回退规则集 A 推断索引 `i` 的序列级缩放列表。
 
 Table 7-2
 表 7-3 指定了默认的缩放列表`Default_4x4_Intra`和`Default_4x4_Inter`, 表 7-4 指定了默认的缩放列表`Default_8x8_Intra`和`Default_8x8_Inter`
@@ -452,65 +455,400 @@ Table 7-4 (continued)
 Table 7-4 (continued)
 Table 7-4 (continued)
 
-- `log2_max_frame_num_minus4` 指定变量 `MaxFrameNum` 的值，用于与 `frame_num` 相关的派生，如下所示：
+`log2_max_frame_num_minus4` 指定变量 `MaxFrameNum` 的值，用于与 `frame_num` 相关的派生，如下所示：
 $$
 \text{MaxFrameNum} = 2^{(\text{log2\_max\_frame\_num\_minus4} + 4)}\tag{7-10}
 $$
 `log2_max_frame_num_minus4` 的值应在 0 到 12 的范围内。
 
-- `pic_order_cnt_type` 指定解码图片顺序计数的方法（如第 8.2.1 条所述）。`pic_order_cnt_type` 的值应在 0 到 2 的范围内。
+`pic_order_cnt_type` 指定解码图片顺序计数的方法（如第 8.2.1 条所述）。`pic_order_cnt_type` 的值应在 0 到 2 的范围内。
 
-  - 在包含以下任一情况的编码视频序列中，`pic_order_cnt_type` 不应等于 2：
-    - 包含非参考帧的接入单元紧随包含非参考图片的接入单元之后，
-    - 两个接入单元每个包含一个场，这两个场一起形成一个互补的非参考场对，紧随其后是包含非参考图片的接入单元，
-    - 包含非参考场的接入单元紧随另一个非参考图片的接入单元之后，该图片不与这两个接入单元中的第一个形成互补的非参考场对。
+在包含以下任一情况的编码视频序列中，`pic_order_cnt_type` 不应等于 2：
 
-- `log2_max_pic_order_cnt_lsb_minus4` 指定变量 `MaxPicOrderCntLsb` 的值，用于解码过程中的图片顺序计数，如下所示：
-  - `MaxPicOrderCntLsb = 2^( log2_max_pic_order_cnt_lsb_minus4 + 4 )` (7-11)
-  - `log2_max_pic_order_cnt_lsb_minus4` 的值应在 0 到 12 的范围内。
+- 包含非参考帧的接入单元紧随包含非参考图片的接入单元之后，
+- 两个接入单元每个包含一个场，这两个场一起形成一个互补的非参考场对，紧随其后是包含非参考图片的接入单元，
+- 包含非参考场的接入单元紧随另一个非参考图片的接入单元之后，该图片不与这两个接入单元中的第一个形成互补的非参考场对。
 
-- `delta_pic_order_always_zero_flag` 等于 1 表示在序列的片头中 `delta_pic_order_cnt[0]` 和 `delta_pic_order_cnt[1]` 不存在，应推断为 0。`delta_pic_order_always_zero_flag` 等于 0 表示在序列的片头中 `delta_pic_order_cnt[0]` 存在，`delta_pic_order_cnt[1]` 可能存在。
+`log2_max_pic_order_cnt_lsb_minus4` 指定变量 `MaxPicOrderCntLsb` 的值，用于解码过程中的图片顺序计数，如下所示：
+$$
+\text{MaxPicOrderCntLsb} = 2^{(\text{log2\_max\_pic\_order\_cnt\_lsb\_minus4} + 4)} \tag{7-11}
+$$
 
-- `offset_for_non_ref_pic` 用于计算非参考图片的图片顺序计数，如第 8.2.1 条所述。`offset_for_non_ref_pic` 的值应在 -2^31 + 1 到 2^31 - 1 的范围内。
+`log2_max_pic_order_cnt_lsb_minus4` 的值应在 0 到 12 的范围内。
 
-- `offset_for_top_to_bottom_field` 用于计算底场的图片顺序计数，如第 8.2.1 条所述。`offset_for_top_to_bottom_field` 的值应在 -2^31 + 1 到 2^31 - 1 的范围内。
+`delta_pic_order_always_zero_flag` 等于 1 表示在序列的片头中 `delta_pic_order_cnt[0]` 和 `delta_pic_order_cnt[1]` 不存在，应推断为 0。`delta_pic_order_always_zero_flag` 等于 0 表示在序列的片头中 `delta_pic_order_cnt[0]` 存在，`delta_pic_order_cnt[1]` 可能存在。
 
-- `num_ref_frames_in_pic_order_cnt_cycle` 用于解码过程中的图片顺序计数，如第 8.2.1 条所述。`num_ref_frames_in_pic_order_cnt_cycle` 的值应在 0 到 255 的范围内。
+`offset_for_non_ref_pic` 用于计算非参考图片的图片顺序计数，如第 8.2.1 条所述。`offset_for_non_ref_pic` 的值应在 -2^31 + 1 到 2^31 - 1 的范围内。
 
-- `offset_for_ref_frame[i]` 是 `num_ref_frames_in_pic_order_cnt_cycle` 个值的列表中的一个元素，用于解码过程中的图片顺序计数，如第 8.2.1 条所述。`offset_for_ref_frame[i]` 的值应在 -2^31 + 1 到 2^31 - 1 的范围内。
+`offset_for_top_to_bottom_field` 用于计算底场的图片顺序计数，如第 8.2.1 条所述。`offset_for_top_to_bottom_field` 的值应在 -2^31 + 1 到 2^31 - 1 的范围内。
 
-  - 当 `pic_order_cnt_type` 等于 1 时，变量 `ExpectedDeltaPerPicOrderCntCycle` 按如下派生：
-    ```c
+`num_ref_frames_in_pic_order_cnt_cycle` 用于解码过程中的图片顺序计数，如第 8.2.1 条所述。`num_ref_frames_in_pic_order_cnt_cycle` 的值应在 0 到 255 的范围内。
+
+`offset_for_ref_frame[i]` 是 `num_ref_frames_in_pic_order_cnt_cycle` 个值的列表中的一个元素，用于解码过程中的图片顺序计数，如第 8.2.1 条所述。`offset_for_ref_frame[i]` 的值应在 -2^31 + 1 到 2^31 - 1 的范围内。
+
+当 `pic_order_cnt_type` 等于 1 时，变量 `ExpectedDeltaPerPicOrderCntCycle` 按如下派生：
+    
+```c
     ExpectedDeltaPerPicOrderCntCycle = 0
     for (i = 0; i < num_ref_frames_in_pic_order_cnt_cycle; i++)
-      ExpectedDeltaPerPicOrderCntCycle += offset_for_ref_frame[i]
-    ``` (7-12)
+      ExpectedDeltaPerPicOrderCntCycle += offset_for_ref_frame[i](7-12)
+```
 
-- `max_num_ref_frames` 指定解码过程在编码视频序列中的任意图片的帧间预测中可能使用的短期和长期参考帧、互补参考场对以及非配对参考场的最大数量。`max_num_ref_frames` 还决定了滑动窗口操作的大小，如第 8.2.5.3 条所述。`max_num_ref_frames` 的值应在 0 到 `MaxDpbFrames`（如第 A.3.1 或 A.3.2 条所述）的范围内。
 
-- `gaps_in_frame_num_value_allowed_flag` 指定第 7.4.3 条规定的 `frame_num` 的允许值以及在推断的 `frame_num` 值之间存在间隙时的解码过程，如第 8.2.5.2 条所述。
+`max_num_ref_frames` 指定解码过程在编码视频序列中的任意图片的帧间预测中可能使用的短期和长期参考帧、互补参考场对以及非配对参考场的最大数量。`max_num_ref_frames` 还决定了滑动窗口操作的大小，如第 8.2.5.3 条所述。`max_num_ref_frames` 的值应在 0 到 `MaxDpbFrames`（如第 A.3.1 或 A.3.2 条所述）的范围内。
 
-- `pic_width_in_mbs_minus1` 加 1 指定每个解码图片的宽度（以宏块为单位）。
-  - 变量 `PicWidthInMbs` 按如下派生：
-    - `PicWidthInMbs = pic_width_in_mbs_minus1 + 1` (7-13)
-  - 亮度分量的图片宽度变量按如下派生：
-    - `PicWidthInSamplesL = PicWidthInMbs * 16` (7-14)
-  - 色度分量的图片宽度变量按如下派生：
-    - `PicWidthInSamplesC = PicWidthInMbs * MbWidthC` (7-15)
+`gaps_in_frame_num_value_allowed_flag` 指定第 7.4.3 条规定的 `frame_num` 的允许值以及在推断的 `frame_num` 值之间存在间隙时的解码过程，如第 8.2.5.2 条所述。
 
-- `pic_height_in_map_units_minus1` 加 1 指定解码帧或场的切片组映射单元的高度。
-  - 变量 `PicHeightInMapUnits` 和 `PicSizeInMapUnits` 按如下派生：
-    - `PicHeightInMapUnits = pic_height_in_map_units_minus1 + 1` (7-16)
-    - `PicSizeInMapUnits = PicWidthInMbs * PicHeightInMapUnits` (7-17)
+`pic_width_in_mbs_minus1` 加 1 指定每个解码图片的宽度（以宏块为单位）。
 
-- `frame_mbs_only_flag` 等于 0 表示编码视频序列的编码图片可能是编码场或编码帧。`frame_mbs_only_flag` 等于 1 表示编码视频序列中的每个编码图片都是仅包含帧宏块的编码帧。
-  - `pic_width_in_mbs_minus1`、`pic_height_in_map_units_minus1` 和 `frame_mbs_only_flag` 的允许值范围由附录 A 中的约束规定。
-  - 根据 `frame_mbs_only_flag`，为 `pic_height_in_map_units_minus1` 分配语义如下：
-    - 如果 `frame_mbs_only_flag` 等于 0，`pic_height_in_map_units_minus1` 加 1 是一个场的高度（以宏块为单位）。
-    - 否则（`frame_mbs_only_flag` 等于 1），`pic_height_in_map_units_minus1` 加 1 是一个帧的高度（以宏块为单位）。
-  - 变量 `FrameHeightInMbs` 按如下派生：
-    - `FrameHeightInMbs = ( 2 − frame_mbs_only_flag ) * PicHeightInMapUnits` (7-18)
+变量 `PicWidthInMbs` 按如下派生：
+$$
+\text{PicWidthInMbs}=\text{pic\_width\_in\_mbs\_minus1}+1\tag{7-13}
+$$
+亮度分量的图片宽度变量按如下派生：
+$$
+\text{PicWidthInSamplesL}=\text{PicWidthInMbs} * 16\tag{7-14}
+$$
+色度分量的图片宽度变量按如下派生：
+$$
+\text{PicWidthInSamplesC}=\text{PicWidthInMbs} * \text{MbWidthC}\tag{7-15}
+$$
 
+`pic_height_in_map_units_minus1` 加 1 指定解码帧或场的切片组映射单元的高度。
+
+变量 `PicHeightInMapUnits` 和 `PicSizeInMapUnits` 按如下派生：
+$$
+\text{PicHeightInMapUnits}=\text{pic\_height\_in\_map\_units\_minus1}+1\tag{7-16}
+$$
+$$
+\text{PicSizeInMapUnits}=\text{PicWidthInMbs}*\text{PicHeightInMapUnits}\tag{7-17}
+$$
+
+`frame_mbs_only_flag` 等于 0 表示编码视频序列的编码图片可能是编码场或编码帧。`frame_mbs_only_flag` 等于 1 表示编码视频序列中的每个编码图片都是仅包含帧宏块的编码帧。
+
+`pic_width_in_mbs_minus1`、`pic_height_in_map_units_minus1` 和 `frame_mbs_only_flag` 的允许值范围由附录 A 中的约束规定。
+
+根据 `frame_mbs_only_flag`，为 `pic_height_in_map_units_minus1` 分配语义如下：
+
+- 如果 `frame_mbs_only_flag` 等于 0，`pic_height_in_map_units_minus1` 加 1 是一个场的高度（以宏块为单位）。
+- 否则（`frame_mbs_only_flag` 等于 1），`pic_height_in_map_units_minus1` 加 1 是一个帧的高度（以宏块为单位）。
+
+变量 `FrameHeightInMbs` 按如下派生：
+$$
+\text{FrameHeightInMbs}=(2-\text{frame\_mbs\_only\_flag})*\text{PicHeightInMapUnits}\tag{7-18}
+$$
+
+`mb_adaptive_frame_field_flag` 等于 0 表示在一个图像中不进行帧和场宏块之间的切换。`mb_adaptive_frame_field_flag` 等于 1 表示在帧内可能进行帧和场宏块之间的切换。当 `mb_adaptive_frame_field_flag` 不存在时，应推断其等于 0。
+
+`direct_8x8_inference_flag` 指定在第 8.4.1.2 条所述的推导过程中用于 B_Skip、B_Direct_16x16 和 B_Direct_8x8 的亮度运动矢量的方法。当 `frame_mbs_only_flag` 等于 0 时，`direct_8x8_inference_flag` 应等于 1。
+
+`frame_cropping_flag` 等于 1 表示帧裁剪偏移参数紧接在序列参数集之后。`frame_cropping_flag` 等于 0 表示帧裁剪偏移参数不存在。
+
+`frame_crop_left_offset`、`frame_crop_right_offset`、`frame_crop_top_offset`、`frame_crop_bottom_offset` 指定在解码过程中输出的编码视频序列中图片的样本，按输出的帧坐标指定的矩形区域。
+
+变量 `CropUnitX` 和 `CropUnitY` 的派生如下：
+
+- 如果 `ChromaArrayType` 等于 0，`CropUnitX` 和 `CropUnitY` 按如下派生：
+$$
+\text{CropUnitX}=1\tag{7-19}
+$$
+$$
+\text{CropUnitY}=2-\text{frame\_mbs\_only\_flag}\tag{7-20}
+$$
+
+- 否则（`ChromaArrayType` 等于 1、2 或 3），`CropUnitX` 和 `CropUnitY` 按如下派生：
+$$
+\text{CropUnitX}=\text{SubWidthC}\tag{7-21}
+$$
+$$
+\text{CropUnitY}=\text{SubHeightC}*(2-\text{frame\_mbs\_only\_flag})\tag{7-22}
+$$
+
+帧裁剪矩形包含的亮度样本的水平帧坐标从 `CropUnitX * frame_crop_left_offset` 到 `PicWidthInSamplesL − (CropUnitX * frame_crop_right_offset + 1)`，垂直帧坐标从 `CropUnitY * frame_crop_top_offset` 到 `(16 * FrameHeightInMbs) − (CropUnitY * frame_crop_bottom_offset + 1)`，两者均包括在内。`frame_crop_left_offset` 的值应在 0 到 `(PicWidthInSamplesL / CropUnitX) − (frame_crop_right_offset + 1)` 的范围内，包括该范围；`frame_crop_top_offset` 的值应在 0 到 `(16 * FrameHeightInMbs / CropUnitY) − (frame_crop_bottom_offset + 1)` 的范围内，包括该范围。
+
+当 `frame_cropping_flag` 等于 0 时，`frame_crop_left_offset`、`frame_crop_right_offset`、`frame_crop_top_offset` 和 `frame_crop_bottom_offset` 的值应推断为 0。
+
+当 `ChromaArrayType` 不等于 0 时，两色度阵列的相应样本是具有帧坐标 `(x / SubWidthC, y / SubHeightC)` 的样本，其中 `(x, y)` 是指定的亮度样本的帧坐标。
+对于解码场，解码场的指定样本是在帧坐标中指定的矩形内的样本。
+`vui_parameters_present_flag` 等于 1 表示存在附录 E 中指定的 `vui_parameters()` 语法结构。`vui_parameters_present_flag` 等于 0 表示不存在附录 E 中指定的 `vui_parameters()` 语法结构。
+
+###### 7.4.2.1.1.1 缩放列表语义
+
+`delta_scale` 用于派生缩放列表中第 j 个元素，其中 j 的范围是 0 到 `sizeOfScalingList − 1`（含）。`delta_scale` 的值应在 -128 到 +127 之间（含）。
+当 `useDefaultScalingMatrixFlag` 派生为 1 时，缩放列表应推断为表 7-2 中指定的默认缩放列表。
+
+##### 7.4.2.1.2 序列参数集扩展 RBSP 语义
+
+`seq_parameter_set_id` 标识与序列参数集扩展相关联的序列参数集。`seq_parameter_set_id` 的值应在 0 到 31 之间（含）。
+
+`aux_format_idc` 等于 0 表示编码视频序列中没有辅助编码图片。`aux_format_idc` 等于 1 表示每个接入单元中存在一个辅助编码图片，并且在解码过程后的显示过程中，出于 alpha 混合目的，每个接入单元中与其关联的主编码图片的解码样本应乘以该接入单元中辅助编码图片的解释样本值。`aux_format_idc` 等于 2 表示每个接入单元中存在一个辅助编码图片，并且出于 alpha 混合目的，在解码过程后的显示过程中，每个接入单元中与其关联的主编码图片的解码样本不应乘以该接入单元中辅助编码图片的解释样本值。`aux_format_idc` 等于 3 表示每个接入单元中存在一个辅助编码图片，但未指定辅助编码图片的用途。`aux_format_idc` 的值应在 0 到 3 之间（含）。`aux_format_idc` 大于 3 的值保留用于将来由 ITU-T | ISO/IEC 指定的其他目的。当 `aux_format_idc` 不存在时，应推断为 0。
+  **注 1**：解码器不需要解码辅助编码图片。
+
+`bit_depth_aux_minus8` 指定辅助编码图片样本数组的样本位深度。`bit_depth_aux_minus8` 的值应在 0 到 4 之间（含）。
+
+`alpha_incr_flag` 等于 0 表示每个解码辅助编码图片样本值的解释样本值等于解码辅助编码图片样本值，用于 alpha 混合目的。`alpha_incr_flag` 等于 1 表示，对于 alpha 混合目的，在解码辅助编码图片样本后，任何大于 `Min(alpha_opaque_value, alpha_transparent_value)` 的辅助编码图片样本值应增加 1 以获得辅助编码图片样本的解释样本值，任何小于或等于 `Min(alpha_opaque_value, alpha_transparent_value)` 的辅助编码图片样本值应未经更改地用作解码辅助编码图片样本值的解释样本值。
+
+`alpha_opaque_value` 指定辅助编码图片样本的解释样本值，对于同一接入单元中与其关联的亮度和色度样本，出于 alpha 混合目的，视为不透明。`alpha_opaque_value` 语法元素的表示所用的位数为 `bit_depth_aux_minus8 + 9` 位。
+
+`alpha_transparent_value` 指定辅助编码图片样本的解释样本值，对于同一接入单元中与其关联的亮度和色度样本，出于 alpha 混合目的，视为透明。`alpha_transparent_value` 语法元素的表示所用的位数为 `bit_depth_aux_minus8 + 9` 位。
+
+当 `alpha_incr_flag` 等于 1 时，`alpha_transparent_value` 不应等于 `alpha_opaque_value`，并且 `Log2(Abs(alpha_opaque_value − alpha_transparent_value))` 应具有整数值。`alpha_transparent_value` 等于 `alpha_opaque_value` 表示辅助编码图片不打算用于 alpha 混合目的。
+
+  **注 2**：出于 alpha 混合目的，`alpha_opaque_value` 可能大于 `alpha_transparent_value`，也可能小于 `alpha_transparent_value`。解释样本值应截取在 `alpha_opaque_value` 到 `alpha_transparent_value`（含）范围内。
+
+  序列参数集扩展的解码和辅助编码图片的解码不是符合此推荐标准的要求。
+
+每个辅助编码图片的编码切片的语法应遵守与冗余图片编码切片相同的约束，以下约束差异除外：
+  - 关于主编码图片是否为 IDR 图片，以下适用：
+    - 如果主编码图片是 IDR 图片，辅助编码切片语法应对应于具有 `nal_unit_type` 等于 5（IDR 图片的切片）的切片。
+    - 否则（主编码图片不是 IDR 图片），辅助编码切片语法应对应于具有 `nal_unit_type` 等于 1（非 IDR 图片的切片）的切片。
+  - 辅助编码图片的切片（如果存在）应包含与主编码图片对应的所有宏块。
+  - 在所有辅助编码切片中，`redundant_pic_cnt` 应等于 0。
+
+辅助编码图片的（可选）解码过程与当前编码视频流中主编码图片不同，辅助编码图片作为单独编码视频流中的主编码图片的解码过程如下：
+  - 辅助编码图片的 IDR 或非 IDR 状态应推断为与同一接入单元中的主图片的 IDR 或非 IDR 状态相同，而不是从 `nal_unit_type` 值中推断。
+  - 用于辅助编码图片解码的 `chroma_format_idc` 和 `ChromaArrayType` 值应推断为 0。
+  - 用于辅助编码图片解码的 `bit_depth_luma_minus8` 值应推断为 `bit_depth_aux_minus8`。
+  **注 3**：Alpha 混合合成通常使用背景图片 B、前景图片 F 和解码的辅助编码图片 A，三者大小相同。假设为了示例说明，B 和 F 的色度分辨率已上采样到与亮度相同的分辨率。用 b、f 和 a 分别表示 B、F 和 A 的对应样本。用下标 Y、Cb 和 Cr 表示亮度和色度样本。
+
+定义变量 `alphaRange`、`alphaFwt` 和 `alphaBwt` 如下：
+
+```c
+    alphaRange = Abs(alpha_opaque_value − alpha_transparent_value)
+    alphaFwt = Abs(a − alpha_transparent_value)
+    alphaBwt = Abs(a − alpha_opaque_value)
+```
+
+然后，在 alpha 混合合成中，显示图片 D 的样本 d 可按如下计算：
+```c
+    dY = (alphaFwt * fY + alphaBwt * bY + alphaRange / 2) / alphaRange
+    dCb = (alphaFwt * fCb + alphaBwt * bCb + alphaRange / 2) / alphaRange
+    dCr = (alphaFwt * fCr + alphaBwt * bCr + alphaRange / 2) / alphaRange
+```
+
+图片 D、F 和 B 的样本也可以表示红、绿和蓝分量值（参见第 E.2.1 条）。这里我们假设 Y、Cb 和 Cr 分量值。为示例说明假设每个分量（例如 Y）在图片 D、F 和 B 中具有相同的位深度。然而，在这个例子中，不同的分量（例如 Y 和 Cb）不需要具有相同的位深度。
+
+当 `aux_format_idc` 等于 1 时，F 将是从解码的亮度和色度获得的解码图片，A 将是从解码的辅助编码图片获得的解码图片。在这种情况下，所示的示例 alpha 混合合成涉及将 F 的样本乘以从 A 的样本获得的因子。
+
+一种用于编辑或直接观看的常用图片格式称为预乘黑视频。如果前景图片是 F，那么预乘黑视频 S 由以下公式给出：
+```c
+    sY = (alphaFwt * fY) / alphaRange
+    sCb = (alphaFwt * fCb) / alphaRange
+    sCr = (alphaFwt * fCr) / alphaRange
+```
+预乘黑视频的特点是如果在黑色背景上显示，图片 S 将显示正确。对于非黑色背景 B，显示图片 D 的合成可按如下计算：
+```c
+    dY = sY + (alphaBwt * bY + alphaRange / 2) / alphaRange
+    dCb = sCb + (alphaBwt * bCb + alphaRange / 2) / alphaRange
+    dCr = sCr + (alphaBwt * bCr + alphaRange / 2) / alphaRange
+```
+
+当 `aux_format_idc` 等于 2 时，S 将是从解码的亮度和色度获得的解码图片，A 仍然是从解码的辅助编码图片获得的解码图片。在这种情况下，alpha 混合合成不涉及将 S 的样本乘以从 A 的样本获得的因子。
+
+`additional_extension_flag` 等于 0 表示在序列参数集扩展语法结构内，在 RBSP 尾随位之前没有附加数据。`additional_extension_flag` 的值应等于 0。`additional_extension_flag` 的值为 1 保留用于将来由 ITU-T | ISO/IEC 指定的用途。解码器应忽略序列参数集扩展 NAL 单元中 `additional_extension_flag` 值为 1 后的所有数据。
+
+##### 7.4.2.1.3 子集序列参数集 RBSP 语义
+
+`svc_vui_parameters_present_flag` 等于 0 表示语法结构 `svc_vui_parameters_extension( )` 不存在。`svc_vui_parameters_present_flag` 等于 1 表示语法结构 `svc_vui_parameters_extension( )` 存在。
+
+`bit_equal_to_one` 应等于 1。
+
+`mvc_vui_parameters_present_flag` 等于 0 表示语法结构 `mvc_vui_parameters_extension( )` 不存在。`mvc_vui_parameters_present_flag` 等于 1 表示语法结构 `mvc_vui_parameters_extension( )` 存在。
+
+`additional_extension2_flag` 等于 0 表示在子集序列参数集 RBSP 语法结构中不存在 `additional_extension2_data_flag` 语法元素。符合本建议 | 国际标准的比特流中，`additional_extension2_flag` 应等于 0。`additional_extension2_flag` 的值为 1 保留供 ITU-T | ISO/IEC 将来使用。解码器应忽略子集序列参数集 NAL 单元中 `additional_extension2_flag` 值为 1 后的所有数据。
+
+`additional_extension2_data_flag` 可以是任意值。它不应影响附录 A、G、H 或 I 中指定的配置文件的符合性。
+
+#### 7.4.2.2 图像参数集 RBSP 语义
+
+`pic_parameter_set_id` 用于标识在切片头中引用的图像参数集。`pic_parameter_set_id` 的值应在 0 到 255 的范围内（包括 0 和 255）。
+
+`seq_parameter_set_id` 用于指示活动的序列参数集。`seq_parameter_set_id` 的值应在 0 到 31 的范围内（包括 0 和 31）。
+
+`entropy_coding_mode_flag` 用于选择对语法元素应用的熵解码方法，语法表中会出现两个描述符，如下所示：
+- 如果 `entropy_coding_mode_flag` 等于 0，则应用语法表中左侧描述符指定的方法（Exp-Golomb 编码，见第 9.1 节或 CAVLC，见第 9.2 节）。
+- 否则（`entropy_coding_mode_flag` 等于 1），应用语法表中右侧描述符指定的方法（CABAC，见第 9.3 节）。
+
+`bottom_field_pic_order_in_frame_present_flag` 等于 1 表示在切片头中存在与编码帧底场的图像顺序计数相关的语法元素 `delta_pic_order_cnt_bottom`（当 `pic_order_cnt_type` 等于 0 时）或 `delta_pic_order_cnt[ 1 ]`（当 `pic_order_cnt_type` 等于 1 时），这些元素在第 7.3.3 节中有所规定。`bottom_field_pic_order_in_frame_present_flag` 等于 0 表示在切片头中不存在 `delta_pic_order_cnt_bottom` 和 `delta_pic_order_cnt[ 1 ]` 语法元素。
+
+`num_slice_groups_minus1` 加 1 用于指定图像的切片组数量。当 `num_slice_groups_minus1` 等于 0 时，图像的所有切片都属于同一个切片组。`num_slice_groups_minus1` 的允许范围在附录 A 中有规定。
+
+`slice_group_map_type` 指定切片组映射单元到切片组的编码方式。`slice_group_map_type` 的值应在 0 到 6 的范围内（包括 0 和 6）。
+
+- `slice_group_map_type` 等于 0 指定交错的切片组。
+- `slice_group_map_type` 等于 1 指定分散的切片组映射。
+- `slice_group_map_type` 等于 2 指定一个或多个“前景”切片组和一个“剩余”切片组。
+
+`slice_group_map_type` 的值为 3、4 和 5 指定了变化的切片组。当 `num_slice_groups_minus1` 不等于 1 时，`slice_group_map_type` 不应等于 3、4 或 5。
+
+- `slice_group_map_type` 等于 6 指定对每个切片组映射单元的显式切片组分配。
+
+切片组映射单元的定义如下：
+- 如果 `frame_mbs_only_flag` 等于 0 且 `mb_adaptive_frame_field_flag` 等于 1 且编码图像是帧，则切片组映射单元是宏块对单元。
+- 否则，如果 `frame_mbs_only_flag` 等于 1 或编码图像是场，则切片组映射单元是宏块单元。
+- 否则（`frame_mbs_only_flag` 等于 0 且 `mb_adaptive_frame_field_flag` 等于 0 且编码图像是帧），切片组映射单元是两个在帧中垂直相邻的宏块单元（如 MBAFF 帧的宏块对）。
+
+`run_length_minus1[ i ]` 用于指定在切片组映射单元的栅格扫描顺序中，分配给第 i 个切片组的连续切片组映射单元数量。`run_length_minus1[ i ]` 的值应在 0 到 `PicSizeInMapUnits − 1` 的范围内（包括 0 和 `PicSizeInMapUnits − 1`）。
+
+`top_left[ i ]` 和 `bottom_right[ i ]` 分别指定一个矩形的左上角和右下角。`top_left[ i ]` 和 `bottom_right[ i ]` 是切片组映射单元在图像中栅格扫描的位置信息。对于每个矩形 i，`top_left[ i ]` 和 `bottom_right[ i ]` 的语法元素值必须满足以下约束：
+- `top_left[ i ]` 必须小于或等于 `bottom_right[ i ]`，并且 `bottom_right[ i ]` 必须小于 `PicSizeInMapUnits`。
+- (`top_left[ i ] % PicWidthInMbs`) 必须小于或等于 (`bottom_right[ i ] % PicWidthInMbs`) 的值。
+
+`slice_group_change_direction_flag` 与 `slice_group_map_type` 一起用于指定当 `slice_group_map_type` 为 3、4 或 5 时的精细化映射类型。
+
+`slice_group_change_rate_minus1` 用于指定变化的 `SliceGroupChangeRate`。`SliceGroupChangeRate` 指定了从一帧到下一帧切片组的大小可以变化的切片组映射单元数量倍数。`slice_group_change_rate_minus1` 的值应在 0 到 `PicSizeInMapUnits − 1` 的范围内（包括 0 和 `PicSizeInMapUnits − 1`）。`SliceGroupChangeRate` 变量定义如下：
+
+$$
+\text{SliceGroupChangeRate} = \text{slice\_group\_change\_rate\_minus1} + 1  \tag{7-23}
+$$
+
+`pic_size_in_map_units_minus1` 用于指定图像中切片组映射单元的数量。`pic_size_in_map_units_minus1` 应等于 `PicSizeInMapUnits − 1`。
+
+`slice_group_id[ i ]` 标识在栅格扫描顺序中第 i 个切片组映射单元所属的切片组。`slice_group_id[ i ]` 语法元素的长度为 `Ceil( Log2( num_slice_groups_minus1 + 1 ) )` 比特。`slice_group_id[ i ]` 的值应在 0 到 `num_slice_groups_minus1` 的范围内（包括 0 和 `num_slice_groups_minus1`）。
+
+`num_ref_idx_l0_default_active_minus1` 指定 `num_ref_idx_l0_active_minus1` 的推断方式，当 `num_ref_idx_active_override_flag` 等于 0 时适用于 P、SP 和 B 切片。`num_ref_idx_l0_default_active_minus1` 的值应在 0 到 31 的范围内（包括 0 和 31）。
+
+`num_ref_idx_l1_default_active_minus1` 指定 `num_ref_idx_l1_active_minus1` 的推断方式，当 `num_ref_idx_active_override_flag` 等于 0 时适用于 B 切片。`num_ref_idx_l1_default_active_minus1` 的值应在 0 到 31 的范围内（包括 0 和 31）。
+
+`weighted_pred_flag` 等于 0 指定默认加权预测应应用于 P 和 SP 切片。`weighted_pred_flag` 等于 1 指定显式加权预测应应用于 P 和 SP 切片。
+
+`weighted_bipred_idc` 等于 0 指定默认加权预测应应用于 B 切片。`weighted_bipred_idc` 等于 1 指定显式加权预测应应用于 B 切片。`weighted_bipred_idc` 等于 2 指定隐式加权预测应应用于 B 切片。`weighted_bipred_idc` 的值应在 0 到 2 的范围内（包括 0 和 2）。
+
+`pic_init_qp_minus26` 指定每个切片的 `SliceQPY` 初始值减去 26。该初始值在切片层当解码到非零值的 `slice_qp_delta` 时会被修改，在宏块层当解码到非零值的 `mb_qp_delta` 时会进一步修改。`pic_init_qp_minus26` 的值应在 `−(26 + QpBdOffsetY )` 到 +25 的范围内（包括 `−(26 + QpBdOffsetY )` 和 +25）。
+
+`pic_init_qs_minus26` 指定 SP 或 SI 切片中所有宏块的 `SliceQSY` 初始值减去 26。该初始值在切片层当解码到非零值的 `slice_qs_delta` 时会被修改。`pic_init_qs_minus26` 的值应在 `−26` 到 `+25` 的范围内（包括 `−26` 和 `+25`）。
+
+`chroma_qp_index_offset` 指定应添加到 `QPY` 和 `QSY` 的偏移量，用于地址指定 Cb 色度分量的 `QPC` 值表。`chroma_qp_index_offset` 的值应在 `−12` 到 `+12` 的范围内（包括 `−12` 和 `+12`）。
+
+`deblocking_filter_control_present_flag` 等于 1 指定在切片头中存在控制去块滤波器特性的语法元素集合。`deblocking_filter_control_present_flag` 等于 0 指定在切片头中不存在控制去块滤波器特性的语法元素集合，并且其推断值有效。
+
+`constrained_intra_pred_flag` 等于 0 指定帧内预测允许使用残差数据和相邻宏块的解码样本，这些宏块使用帧间宏块预测模式编码，用于帧内宏块预测模式编码的宏块的预测。`constrained_intra_pred_flag` 等于 1 指定受限帧内预测，在这种情况下，帧内宏块预测模式编码的宏块的预测仅使用来自 I 或 SI 宏块类型的残差数据和解码样本。
+
+`redundant_pic_cnt_present_flag` 等于 0 指定在引用（直接或通过与相应的编码切片数据分区 A NAL 单元关联）图像参数集的切片头、编码切片数据分区 B NAL 单元和编码切片数据分区 C NAL 单元中不存在 `redundant_pic_cnt` 语法元素。`redundant_pic_cnt_present_flag` 等于 1 指定在引用（直接或通过与相应的编码切片数据分区 A NAL 单元关联）图像参数集的所有切片头、编码切片数据分区 B NAL 单元和编码切片数据分区 C NAL 单元中存在 `redundant_pic_cnt` 语法元素。
+
+`transform_8x8_mode_flag` 等于 1 指定 8x8 变换解码过程可能在使用中（见第 8.5 节）。`transform_8x8_mode_flag` 等于 0 指定 8x8 变换解码过程未在使用中。当 `transform_8x8_mode_flag` 不存在时，应推断其为 0。
+
+`pic_scaling_matrix_present_flag` 等于 1 指定存在用于修改序列参数集中指定的缩放列表的参数。`pic_scaling_matrix_present_flag` 等于 0 指定用于图像的缩放列表应推断为等于序列参数集中指定的缩放列表。当 `pic_scaling_matrix_present_flag` 不存在时，应推断其为 0。
+
+`pic_scaling_list_present_flag[ i ]` 等于 1 指定存在缩放列表语法结构，以指定索引 `i` 的缩放列表。`pic_scaling_list_present_flag[ i ]` 等于 0 指定图像参数集中不存在索引 `i` 的缩放列表语法结构，并且根据 `seq_scaling_matrix_present_flag` 的值，适用以下规则：
+- 如果 `seq_scaling_matrix_present_flag` 等于 0，则使用表 7-2 中指定的缩放列表回退规则集 A 来推导图像级缩放列表。
+- 否则（`seq_scaling_matrix_present_flag` 等于 1），使用表 7-2 中指定的缩放列表回退规则集 B 来推导图像级缩放列表。
+
+`second_chroma_qp_index_offset` 指定应添加到 `QPY` 和 `QSY` 的偏移量，用于地址指定 Cr 色度分量的 `QPc` 值表。`second_chroma_qp_index_offset` 的值应在 −12 到 +12 的范围内（包括 −12 和 +12）。
+
+当 `second_chroma_qp_index_offset` 不存在时，应推断其等于 `chroma_qp_index_offset`。
+
+**注意** – 当 `ChromaArrayType` 等于 0 时，`bit_depth_chroma_minus8`、`chroma_qp_index_offset` 和 `second_chroma_qp_index_offset` 的值在解码过程中不使用。特别是当 `separate_colour_plane_flag` 等于 1 时，每个颜色平面都被解码为独立的单色图像，使用亮度分量解码过程（除了选择缩放矩阵外），包括应用亮度量化参数推导过程，但不应用偏移量来解码 `colour_plane_id` 不等于 0 的图像。
+
+#### 7.4.2.3 补充增强信息 RBSP 语义
+
+补充增强信息（SEI）包含不需要从 VCL NAL 单元解码编码图像样本的信息。
+
+##### 7.4.2.3.1 补充增强信息消息语义
+
+一个 SEI RBSP 包含一个或多个 SEI 消息。每个 SEI 消息由指定 SEI 负载类型 `payloadType` 和 SEI 负载大小 `payloadSize` 的变量组成。SEI 负载在附录 D 中指定。派生的 SEI 负载大小 `payloadSize` 以字节为单位，应等于 SEI 负载中 RBSP 字节的数量。
+
+**注意** – 包含 SEI 消息的 NAL 单元字节序列可能包括一个或多个仿真防止字节（由 `emulation_prevention_three_byte` 语法元素表示）。由于 SEI 消息的负载大小以 RBSP 字节表示，因此仿真防止字节的数量不包括在 SEI 负载的 `payloadSize` 大小中。
+
+`ff_byte` 是一个字节，等于 0xFF，标识需要更长表示的语法结构。
+
+`last_payload_type_byte` 是 SEI 消息负载类型的最后一个字节。
+
+`last_payload_size_byte` 是 SEI 消息负载大小的最后一个字节。
+
+#### 7.4.2.4 访问单元分隔符 RBSP 语义
+
+访问单元分隔符可用于指示主要编码图像中存在的切片类型，并简化访问单元边界的检测。与访问单元分隔符相关的解码过程没有规范要求。
+
+`primary_pic_type` 指示主要编码图像所有切片的 `slice_type` 值属于表 7-5 中给定 `primary_pic_type` 值的集合。
+
+**注意** – `primary_pic_type` 的值适用于主要编码图像所有切片头中的 `slice_type` 值，包括所有 NAL 单元中 `nal_unit_type` 等于 1、2 或 5 的 `slice_type` 语法元素。
+
+Table 7-5 – Meaning of primary_pic_type
+
+### 7.4.2.5 序列结束 RBSP 语义
+
+序列结束 RBSP 指定比特流中解码顺序上的下一个访问单元（如果有的话）应为 IDR 访问单元。序列结束 RBSP 的 SODB 和 RBSP 的语法内容为空。序列结束 RBSP 没有规定规范的解码过程。
+
+### 7.4.2.6 流结束 RBSP 语义
+
+流结束 RBSP 表示在解码顺序上没有附加的 NAL 单元会出现在流结束 RBSP 之后。流结束 RBSP 的 SODB 和 RBSP 的语法内容为空。流结束 RBSP 没有规定规范的解码过程。
+  
+**注意** – 当存在流结束 NAL 单元时，比特流被认为结束（就本推荐 | 国际标准的范围而言）。在某些系统环境中，另一个比特流可能在结束的比特流之后跟随，可能是立即或者稍后，可能在同一个通信通道内。在这种情况下，本推荐 | 国际标准的范围仅适用于每个独立比特流的处理。对于这种比特流之间的转换（例如在时间、缓冲操作等方面），本文未规定任何要求。
+
+### 7.4.2.7 填充数据 RBSP 语义
+
+填充数据 RBSP 包含零个或多个字节。填充数据 RBSP 没有规定规范的解码过程。
+
+`ff_byte` 是一个字节。比特流符合性的要求是 `ff_byte` 的值应等于 0xFF。
+
+### 7.4.2.8 无分区切片层 RBSP 语义
+
+无分区切片层 RBSP 由切片头和切片数据组成。
+
+### 7.4.2.9 切片数据分区 RBSP 语义
+
+#### 7.4.2.9.1 切片数据分区 A RBSP 语义
+
+当使用切片数据分区时，一个切片的编码数据被分为三个独立的分区。切片数据分区 A 包含所有类别 2 的语法元素。类别 2 语法元素包括切片头和切片数据语法结构中的所有语法元素，除了 `residual( )` 语法结构中的语法元素。
+
+`slice_id` 标识与切片数据分区相关的切片。`slice_id` 的值受以下约束：
+
+- 如果 `separate_colour_plane_flag` 等于 0，以下规则适用：
+  - 如果不允许任意切片顺序（如附录 A 中规定），则编码图像的第一个切片（按解码顺序）应具有 `slice_id` 等于 0，并且每个后续切片的 `slice_id` 按解码顺序递增 1。
+  - 否则（允许任意切片顺序），每个切片在编码图像的切片集中应具有唯一的 `slice_id` 值。
+
+- 否则（`separate_colour_plane_flag` 等于 1），以下规则适用：
+  - 如果不允许任意切片顺序（如附录 A 中规定），则每个颜色平面的编码图像的第一个切片（按解码顺序）应具有 `slice_id` 等于 0，并且每个后续切片（具有相同 `colour_plane_id` 值）的 `slice_id` 按解码顺序递增 1。
+  - 否则（允许任意切片顺序），每个切片在具有相同 `colour_plane_id` 值的编码图像的切片集中应具有唯一的 `slice_id` 值。
+
+`slice_id` 的范围如下：
+- 如果 `MbaffFrameFlag` 等于 0，`slice_id` 应在 0 到 `PicSizeInMbs − 1` 的范围内（包括 0 和 `PicSizeInMbs − 1`）。
+- 否则（`MbaffFrameFlag` 等于 1），`slice_id` 应在 0 到 `PicSizeInMbs / 2 − 1` 的范围内（包括 0 和 `PicSizeInMbs / 2 − 1`）。
+
+### 7.4.2.9.2 切片数据分区 B RBSP 语义
+
+当使用切片数据分区时，一个切片的编码数据被分为一到三个独立的分区。切片数据分区 B 包含所有类别 3 的语法元素。
+
+类别 3 语法元素包括 `residual()` 语法结构和在该语法结构中使用的所有语法元素，适用于表 7-10 中指定的集体宏块类型 I 和 SI。
+
+`slice_id` 具有与第 7.4.2.9.1 节中规定相同的语义。
+
+`colour_plane_id` 指定当 `separate_colour_plane_flag` 等于 1 时，与当前切片 RBSP 相关的颜色平面。`colour_plane_id` 的值应在 0 到 2 的范围内，包括 0 和 2。`colour_plane_id` 等于 0、1 和 2 分别对应于 Y、Cb 和 Cr 平面。
+  
+**注意** – 在具有不同 `colour_plane_id` 值的图像的解码过程中没有依赖关系。
+
+`redundant_pic_cnt` 对于属于主编码图像的编码切片和编码切片数据分区，应等于 0。对于冗余编码图像中的编码切片和编码切片数据分区，`redundant_pic_cnt` 应大于 0。当 `redundant_pic_cnt` 不存在时，其值应推定为 0。`redundant_pic_cnt` 的值应在 0 到 127 的范围内，包括 0 和 127。
+
+切片数据分区 B RBSP 的存在如下规定：
+- 如果切片数据分区 A RBSP 的语法元素指示在切片数据中存在任何类别 3 的语法元素，则应存在一个具有与切片数据分区 A RBSP 相同的 `slice_id` 和 `redundant_pic_cnt` 的切片数据分区 B RBSP。
+- 否则（切片数据分区 A RBSP 的语法元素未指示在切片数据中存在任何类别 3 的语法元素），不应存在具有与切片数据分区 A RBSP 相同的 `slice_id` 和 `redundant_pic_cnt` 的切片数据分区 B RBSP。
+
+### 7.4.2.9.3 切片数据分区 C RBSP 语义
+
+当使用切片数据分区时，一个切片的编码数据被分为三个独立的分区。切片数据分区 C 包含所有类别 4 的语法元素。
+
+类别 4 语法元素包括 `residual()` 语法结构和在该语法结构中使用的所有语法元素，适用于表 7-10 中指定的集体宏块类型 P 和 B。
+
+`slice_id` 具有与第 7.4.2.9.1 节中规定相同的语义。
+
+`colour_plane_id` 具有与第 7.4.2.9.2 节中规定相同的语义。
+
+`redundant_pic_cnt` 具有与第 7.4.2.9.2 节中规定相同的语义。
+
+切片数据分区 C RBSP 的存在如下规定：
+- 如果切片数据分区 A RBSP 的语法元素指示在切片数据中存在任何类别 4 的语法元素，则应存在一个具有与切片数据分区 A RBSP 相同的 `slice_id` 和 `redundant_pic_cnt` 的切片数据分区 C RBSP。
+- 否则（切片数据分区 A RBSP 的语法元素未指示在切片数据中存在任何类别 4 的语法元素），不应存在具有与切片数据分区 A RBSP 相同的 `slice_id` 和 `redundant_pic_cnt` 的切片数据分区 C RBSP。
+
+### 7.4.2.10 RBSP 切片尾随比特语义
+
+`cabac_zero_word` 是一个字节对齐的两个字节序列，等于 0x0000。
+
+令 `NumBytesInVclNALunits` 为所有编码图像的 VCL NAL 单元的 `NumBytesInNALunit` 值之和。
+
+令 `BinCountsInNALunits` 为解码所有编码图像的 VCL NAL 单元的内容时调用解析过程函数 `DecodeBin()` 的次数，如第 9.3.3.2 节所规定。当 `entropy_coding_mode_flag` 等于 1 时，比特流符合性的要求是 `BinCountsInNALunits` 不应超过 `(32 ÷ 3) * NumBytesInVclNALunits + (RawMbBits * PicSizeInMbs) ÷ 32`。
+  
+**注意** – 可以通过插入若干 `cabac_zero_word` 语法元素来增加 `NumBytesInVclNALunits` 的值，从而满足从切片层 NAL 单元解码内容得到的最大 bin 数量约束。每个 `cabac_zero_word` 由 NAL 单元中的三字节序列 0x000003 表示（由于 NAL 单元内容的约束，需要包含每个 `cabac_zero_word` 的 `emulation_prevention_three_byte`）。
 
 [TODO] 7.4.2
 [TODO] 7.4.3
