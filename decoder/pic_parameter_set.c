@@ -79,6 +79,8 @@ void read_pic_paramster_set_rbsp(struct NAL_unit *nal)
         }
         pps->second_chroma_qp_index_offset = se_v();
     }
+
+    pps->SliceGroupChangeRate = pps->slice_group_change_rate_minus1 + 1;
 }
 
 void dump_pic_parameter_set(FILE *fp, struct NAL_unit *nal)

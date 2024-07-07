@@ -1,7 +1,25 @@
 #include <stdlib.h>
+#include <math.h>
 #include "seq_parameter_set.h"
 #include "common/misc.h"
 #include "common/log.h"
+
+struct chroma_format
+{
+    uint32_t chroma_format_idc;
+    uint8_t separate_colour_plane_flag;
+    enum CHROMA_FORMAT chroma_format;
+    uint8_t SubWidthC;
+    uint8_t SubHeightC;
+};
+
+struct chroma_format chroma_formats[] = {
+    {0, 0, CHROMA_MONOCHROME, -1, -1},
+    {1, 0, CHROMA_420, 2, 2},
+    {2, 0, CHROMA_422, 2, 1},
+    {3, 0, CHROMA_444, 1, 1},
+    {3, 1, CHROMA_444, -1, -1},
+};
 
 #define u_n(n) read_bits(nal->rbsp_byte, nal->NumBytesInRBSP, bit_offset, (n))
 #define ue_v() read_ue_v(nal->rbsp_byte, nal->NumBytesInRBSP, bit_offset)
@@ -169,6 +187,51 @@ static void read_seq_parameter_set(struct NAL_unit *nal, int *bit_offset)
     if (sps->vui_parameters_present_flag)
     {
         read_vui_parameters(nal, bit_offset);
+    }
+
+    if (sps->chroma_format_idc != 0 && sps->separate_colour_plane_flag != 1)
+    {
+        sps->SubWidthC = chroma_formats[sps->chroma_format_idc].SubWidthC;
+        sps->SubHeightC = chroma_formats[sps->chroma_format_idc].SubHeightC;
+    }
+    // [TODO] check SubWidthC and SubHeightC
+    sps->MbWidthC = 16 / sps->SubWidthC;
+    sps->MbHeightC = 16 / sps->SubHeightC;
+    if (sps->separate_colour_plane_flag == 0)
+    {
+        sps->ChromaArrayType = sps->chroma_format_idc;
+    }
+    else if (sps->separate_colour_plane_flag == 1)
+    {
+        sps->ChromaArrayType = 0;
+    }
+    sps->BitDepthY = 8 + sps->bit_depth_luma_minus8;
+    sps->QpBdOffsetY = 6 * sps->bit_depth_luma_minus8;
+    sps->BitDepthC = 8 + sps->bit_depth_chroma_minus8;
+    sps->QpBdOffsetC = 6 * sps->bit_depth_chroma_minus8;
+    sps->RawMbBits = 256 * sps->BitDepthY + 2 * sps->MbWidthC * sps->MbHeightC * sps->BitDepthC;
+    sps->MaxFrameNum = pow(2, sps->log2_max_frame_num_minus4 + 4);
+    sps->MaxPicOrderCntLsb = pow(2, sps->log2_max_pic_order_cnt_lsb_minus4 + 4);
+    sps->ExpectedDeltaPerPicOrderCntCycle = 0;
+    for (int i = 0; i < sps->num_ref_frames_in_pic_order_cnt_cycle; ++i)
+    {
+        sps->ExpectedDeltaPerPicOrderCntCycle += sps->offset_for_ref_frame[i];
+    }
+    sps->PicWidthInMbs = sps->pic_width_in_mbs_minus1 + 1;
+    sps->PicWidthInSamplesL = sps->PicWidthInMbs * 16;
+    sps->PicWidthInSamplesC = sps->PicWidthInMbs * sps->MbWidthC;
+    sps->PicHeightInMapUnits = sps->pic_height_in_map_units_minus1 + 1;
+    sps->PicSizeInMapUnits = sps->PicWidthInMbs * sps->PicHeightInMapUnits;
+    sps->PicHeightInMapUnits = (2 - sps->frame_mbs_only_flag) * sps->PicHeightInMapUnits;
+    if (sps->ChromaArrayType == 0)
+    {
+        sps->CropUnitX = 1;
+        sps->CropUnitY = 2 - sps->frame_mbs_only_flag;
+    }
+    else if (sps->ChromaArrayType == 1 || sps->ChromaArrayType == 2 || sps->ChromaArrayType == 3)
+    {
+        sps->CropUnitX = sps->SubWidthC;
+        sps->CropUnitY = sps->SubHeightC * (2 - sps->frame_mbs_only_flag);
     }
 }
 

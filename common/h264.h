@@ -60,6 +60,14 @@ extern "C"
         H264_SLICE_SI2 = 9,
     };
 
+    enum CHROMA_FORMAT
+    {
+        CHROMA_MONOCHROME,
+        CHROMA_420,
+        CHROMA_422,
+        CHROMA_444,
+    };
+
     struct video_usability_information
     {
         uint8_t aspect_ratio_info_present_flag : 1;          // u(1)
@@ -137,6 +145,33 @@ extern "C"
         uint32_t frame_crop_bottom_offset;                // ue(v)
         uint8_t vui_parameters_present_flag : 1;          // u(1)
         struct video_usability_information *vui;
+
+        // TODO move to ext
+
+        uint8_t SubWidthC;  // (Table 6-1)
+        uint8_t SubHeightC; // (Table 6-1)
+        uint8_t MbWidthC;   // (6-1)
+        uint8_t MbHeightC;  // (6-2)
+
+        uint8_t ChromaArrayType;                   // 7.4.2.1.1
+        uint32_t BitDepthY;                        // (7-3)
+        uint32_t QpBdOffsetY;                      // (7-4)
+        uint32_t BitDepthC;                        // (7-5)
+        uint32_t QpBdOffsetC;                      // (7-6)
+        uint32_t RawMbBits;                        // (7-7)
+        uint8_t Flat_4x4_16[16];                   // (7-8)
+        uint8_t Flat_8x8_16[64];                   // (7-9)
+        uint64_t MaxFrameNum;                      // (7-10)
+        uint64_t MaxPicOrderCntLsb;                // (7-11)
+        uint64_t ExpectedDeltaPerPicOrderCntCycle; // (7-12)
+        uint32_t PicWidthInMbs;                    // (7-13)
+        uint32_t PicWidthInSamplesL;               // (7-14)
+        uint32_t PicWidthInSamplesC;               // (7-15)
+        uint32_t PicHeightInMapUnits;              // (7-16)
+        uint32_t PicSizeInMapUnits;                // (7-17)
+        uint32_t FrameHeightInMbs;                 // (7-18)
+        uint32_t CropUnitX;                        // (7-19)(7-21)
+        uint32_t CropUnitY;                        // (7-20)(7-22)
     };
 
     struct pic_parameter_set
@@ -168,6 +203,9 @@ extern "C"
         uint8_t pic_scaling_matrix_present_flag : 1;              // u(1)
         uint8_t *pic_scaling_list_present_flag;                   // u(1)
         int32_t second_chroma_qp_index_offset;                    // se(v)
+
+        uint32_t SliceGroupChangeRate;    // (7-23)
+        uint32_t UnusedShortTermFrameNum; // (7-24)
     };
 
     struct sei_message
@@ -246,8 +284,8 @@ extern "C"
             uint8_t avc_3d_extension_flag : 1; // u(1)
             // [TODO]
 
-            bool IdrPicFlag;
-            bool DepthFlag;
+            bool IdrPicFlag; // (7-1)
+            bool DepthFlag;  // (7-2)
         } header;
         size_t nalUnitHeaderBytes; // header size;
 
@@ -260,6 +298,7 @@ extern "C"
         {
             union
             {
+                // [TODO] multi sps/pps and id
                 struct seq_parameter_set sps;
                 struct pic_parameter_set pps;
                 struct sei sei;
