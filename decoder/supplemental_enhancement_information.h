@@ -5,11 +5,7 @@ extern "C"
 {
 #endif // __cplusplus
 
-#include "common/h264.h"
-
-    void read_sei_rbsp(struct NAL_unit *nal);
-
-    void dump_sei_rbsp(FILE *fp, struct NAL_unit *nal);
+#include "h264.h"
 
 #ifdef __cplusplus
 }
