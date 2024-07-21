@@ -5,17 +5,11 @@ extern "C"
 {
 #endif // __cplusplus
 
-#include "slice_header.h"
-#include "slice_data.h"
-
-    // 7.3.2.8 Slice layer without partitioning RBSP syntax
-    // 7.4.2.8 Slice layer without partitioning RBSP semantics
-    struct slice_layer_without_partitioning_t
-    {
-        struct slice_header_t sh;
-        struct slice_data_t sd;
-        // rbsp_trailing
-    };
+#include "bit_stream.h"
+#include "slice_common.h"
+#include "nal_unit.h"
+#include "seq_parameter_set.h"
+#include "pic_parameter_set.h"
 
     void slice_layer_without_partitioning_rbsp(
         struct slice_layer_without_partitioning_t *slwp,

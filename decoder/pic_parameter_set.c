@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include "Exp-Golomb.h"
 #include "pic_parameter_set.h"
 #include "misc.h"
 #include "common/log.h"
@@ -7,20 +8,20 @@
 // pic_parameter_set_rbsp()
 void pic_paramster_set_rbsp(struct pic_parameter_set_rbsp_t *ppsr, struct bit_stream *bs)
 {
-    ppsr->pic_parameter_set_id = bs_ue(bs);
-    ppsr->seq_parameter_set_id = bs_ue(bs);
+    ppsr->pic_parameter_set_id = exp_golomb_ue(bs);
+    ppsr->seq_parameter_set_id = exp_golomb_ue(bs);
     ppsr->entropy_coding_mode_flag = bs_u(bs, 1);
     ppsr->bottom_field_pic_order_in_frame_present_flag = bs_u(bs, 1);
-    ppsr->num_slice_groups_minus1 = bs_ue(bs);
+    ppsr->num_slice_groups_minus1 = exp_golomb_ue(bs);
     if (ppsr->num_slice_groups_minus1 > 0)
     {
-        ppsr->slice_group_map_type = bs_ue(bs);
+        ppsr->slice_group_map_type = exp_golomb_ue(bs);
         if (ppsr->slice_group_map_type == 0)
         {
             ppsr->run_length_minus1 = calloc(ppsr->num_slice_groups_minus1, sizeof(uint64_t));
             for (int iGroup = 0; iGroup <= ppsr->num_slice_groups_minus1; ++iGroup)
             {
-                ppsr->run_length_minus1[iGroup] = bs_ue(bs);
+                ppsr->run_length_minus1[iGroup] = exp_golomb_ue(bs);
             }
         }
         else if (ppsr->slice_group_map_type == 2)
@@ -29,8 +30,8 @@ void pic_paramster_set_rbsp(struct pic_parameter_set_rbsp_t *ppsr, struct bit_st
             ppsr->bottom_right = calloc(ppsr->num_slice_groups_minus1, sizeof(uint64_t));
             for (int iGroup = 0; iGroup <= ppsr->num_slice_groups_minus1; ++iGroup)
             {
-                ppsr->top_left[iGroup] = bs_ue(bs);
-                ppsr->bottom_right[iGroup] = bs_ue(bs);
+                ppsr->top_left[iGroup] = exp_golomb_ue(bs);
+                ppsr->bottom_right[iGroup] = exp_golomb_ue(bs);
             }
         }
         else if (ppsr->slice_group_map_type == 3 ||
@@ -38,26 +39,26 @@ void pic_paramster_set_rbsp(struct pic_parameter_set_rbsp_t *ppsr, struct bit_st
                  ppsr->slice_group_map_type == 5)
         {
             ppsr->slice_group_change_direction_flag = bs_u(bs, 1);
-            ppsr->slice_group_change_rate_minus1 = bs_ue(bs);
+            ppsr->slice_group_change_rate_minus1 = exp_golomb_ue(bs);
         }
         else if (ppsr->slice_group_map_type == 6)
         {
-            ppsr->pic_size_in_map_units_minus1 = bs_ue(bs);
+            ppsr->pic_size_in_map_units_minus1 = exp_golomb_ue(bs);
             int v = get_log2(ppsr->num_slice_groups_minus1 + 1);
-            ppsr->slice_group_id = calloc(ppsr->pic_size_in_map_units_minus1, sizeof(uint32_t));
-            for (int i = 0; i < ppsr->pic_size_in_map_units_minus1; ++i)
+            ppsr->slice_group_id = calloc(ppsr->pic_size_in_map_units_minus1 + 1, sizeof(uint32_t));
+            for (int i = 0; i <= ppsr->pic_size_in_map_units_minus1; ++i)
             {
                 ppsr->slice_group_id[i] = bs_u(bs, v);
             }
         }
     }
-    ppsr->num_ref_idx_l0_default_active_minus1 = bs_ue(bs);
-    ppsr->num_ref_idx_l1_default_active_minus1 = bs_ue(bs);
+    ppsr->num_ref_idx_l0_default_active_minus1 = exp_golomb_ue(bs);
+    ppsr->num_ref_idx_l1_default_active_minus1 = exp_golomb_ue(bs);
     ppsr->weighted_pred_flag = bs_u(bs, 1);
     ppsr->weighted_bipred_idc = bs_u(bs, 2);
-    ppsr->pic_init_qp_minus26 = bs_se(bs);
-    ppsr->pic_init_qs_minus26 = bs_se(bs);
-    ppsr->chroma_qp_index_offset = bs_se(bs);
+    ppsr->pic_init_qp_minus26 = exp_golomb_se(bs);
+    ppsr->pic_init_qs_minus26 = exp_golomb_se(bs);
+    ppsr->chroma_qp_index_offset = exp_golomb_se(bs);
     ppsr->deblocking_filter_control_present_flag = bs_u(bs, 1);
     ppsr->constrained_intra_pred_flag = bs_u(bs, 1);
     ppsr->redundant_pic_cnt_present_flag = bs_u(bs, 1);
@@ -70,7 +71,7 @@ void pic_paramster_set_rbsp(struct pic_parameter_set_rbsp_t *ppsr, struct bit_st
             // [TODO]
             // uint8_t *pic_scaling_list_present_flag  // u(1)
         }
-        ppsr->second_chroma_qp_index_offset = bs_se(bs);
+        ppsr->second_chroma_qp_index_offset = exp_golomb_se(bs);
     }
 
     ppsr->SliceGroupChangeRate = ppsr->slice_group_change_rate_minus1 + 1;
@@ -94,46 +95,44 @@ void free_pic_parameter_set(struct pic_parameter_set_rbsp_t *ppsr)
 
 void dump_pic_paramster_set_rbsp(FILE *fp, struct pic_parameter_set_rbsp_t *ppsr)
 {
-#define dump(indents, name, placeholder) fprintf(fp, "%s%s: %" placeholder "\n", make_indents(indents), #name, ppsr->name)
+#define dv(indents, placeholder, member) dump_value(indents, placeholder, *ppsr, member)
+#define da(indents, placeholder, member, count) dump_array(indents, placeholder, *ppsr, member, count)
 
-    dump(1, pic_parameter_set_id, "u");
-    dump(1, seq_parameter_set_id, "u");
-    dump(1, entropy_coding_mode_flag, "u");
-    dump(1, bottom_field_pic_order_in_frame_present_flag, "u");
-    dump(1, num_slice_groups_minus1, "u");
-    dump(2, slice_group_map_type, "u");
-    if (ppsr->run_length_minus1)
-        for (int iGroup = 0; iGroup <= ppsr->num_slice_groups_minus1; ++iGroup)
-            dump(4, run_length_minus1[iGroup], "u");
-    if (ppsr->top_left && ppsr->bottom_right)
-        for (int iGroup = 0; iGroup <= ppsr->num_slice_groups_minus1; ++iGroup)
-        {
-            dump(4, top_left[iGroup], "u");
-            dump(4, bottom_right[iGroup], "u");
-        }
-    dump(3, slice_group_change_direction_flag, "u");
-    dump(3, slice_group_change_rate_minus1, "u");
-    dump(3, pic_size_in_map_units_minus1, "u");
-    if (ppsr->slice_group_id)
-        for (int i = 0; i < ppsr->pic_size_in_map_units_minus1; ++i)
-            dump(4, slice_group_id[i], "u");
-    dump(1, num_ref_idx_l0_default_active_minus1, "u");
-    dump(1, num_ref_idx_l1_default_active_minus1, "u");
-    dump(1, weighted_pred_flag, "u");
-    dump(1, weighted_bipred_idc, "u");
-    dump(1, pic_init_qp_minus26, "d");
-    dump(1, pic_init_qs_minus26, "d");
-    dump(1, chroma_qp_index_offset, "d");
-    dump(1, deblocking_filter_control_present_flag, "u");
-    dump(1, constrained_intra_pred_flag, "u");
-    dump(1, redundant_pic_cnt_present_flag, "u");
-    dump(2, transform_8x8_mode_flag, "u");
-    dump(2, pic_scaling_matrix_present_flag, "u");
+    dv(1, "u", pic_parameter_set_id);
+    dv(1, "u", seq_parameter_set_id);
+    dv(1, "u", entropy_coding_mode_flag);
+    dv(1, "u", bottom_field_pic_order_in_frame_present_flag);
+    dv(1, "u", num_slice_groups_minus1);
+    dv(2, "u", slice_group_map_type);
+    da(4, "u", run_length_minus1, ppsr->num_slice_groups_minus1);
+    da(4, "u", top_left, ppsr->num_slice_groups_minus1);
+    da(4, "u", bottom_right, ppsr->num_slice_groups_minus1);
+    dv(3, "u", slice_group_change_direction_flag);
+    dv(3, "u", slice_group_change_rate_minus1);
+    dv(3, "u", pic_size_in_map_units_minus1);
+    da(4, "u", slice_group_id, ppsr->pic_size_in_map_units_minus1);
+    dv(1, "u", num_ref_idx_l0_default_active_minus1);
+    dv(1, "u", num_ref_idx_l1_default_active_minus1);
+    dv(1, "u", weighted_pred_flag);
+    dv(1, "u", weighted_bipred_idc);
+    dv(1, "d", pic_init_qp_minus26);
+    dv(1, "d", pic_init_qs_minus26);
+    dv(1, "d", chroma_qp_index_offset);
+    dv(1, "u", deblocking_filter_control_present_flag);
+    dv(1, "u", constrained_intra_pred_flag);
+    dv(1, "u", redundant_pic_cnt_present_flag);
+    dv(2, "u", transform_8x8_mode_flag);
+    dv(2, "u", pic_scaling_matrix_present_flag);
     if (ppsr->pic_scaling_list_present_flag)
     {
         // uint8_t *pic_scaling_list_present_flag;
     }
-    dump(2, second_chroma_qp_index_offset, "d");
+    dv(2, "d", second_chroma_qp_index_offset);
+
+    dv(1, "u", SliceGroupChangeRate);
+    dv(1, "u", UnusedShortTermFrameNum);
+#undef da
+#undef dv
 
     fprintf(fp, "\n");
 }

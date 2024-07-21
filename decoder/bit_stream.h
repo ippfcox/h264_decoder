@@ -25,14 +25,11 @@ extern "C"
     uint64_t bs_read_bits(struct bit_stream *bs, int n);
     uint64_t bs_ae(struct bit_stream *bs);
     uint8_t bs_b8(struct bit_stream *bs);
+    uint64_t bs_ce(struct bit_stream *bs);
     uint64_t bs_f(struct bit_stream *bs, int n);
     int32_t bs_i(struct bit_stream *bs, int n);
-    uint64_t bs_me(struct bit_stream *bs);
-    int32_t bs_se(struct bit_stream *bs);
     int32_t bs_st(struct bit_stream *bs);
-    int32_t bs_te(struct bit_stream *bs);
     int32_t bs_u(struct bit_stream *bs, int n);
-    int32_t bs_ue(struct bit_stream *bs);
 
 #ifdef __cplusplus
 }

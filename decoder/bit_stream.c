@@ -1,5 +1,7 @@
+#include "h264.h"
 #include "bit_stream.h"
 #include "misc.h"
+#include "common/log.h"
 
 bool bs_byte_aligned(struct bit_stream *bs)
 {
@@ -12,10 +14,26 @@ bool bs_more_data_in_byte_stream(struct bit_stream *bs)
     return false;
 }
 
+// 7.2 Specification of syntax functions, categories, and descriptors 
 bool bs_more_rbsp_data(struct bit_stream *bs)
 {
-    // [TODO]
-    return false;
+    if (bs->size * 8 <= bs->bit_offset)
+        return false;
+    // find last non-zero byte
+    size_t non_zero_byte_index = bs->size - 1;
+    while (*(uint8_t *)(bs->data + non_zero_byte_index) == 0)
+        --non_zero_byte_index;
+    // find last 1 bit
+    uint8_t non_zero_bit_index = 7;
+    while (((*(uint8_t *)(bs->data + non_zero_byte_index) >> (7 - non_zero_bit_index)) & 0x01) == 0)
+        --non_zero_bit_index;
+
+    loginfo("%ld vs %d", non_zero_byte_index * 8 + non_zero_bit_index , bs->bit_offset);
+
+    if (non_zero_byte_index * 8 + non_zero_bit_index <= bs->bit_offset)
+        return false;
+
+    return true;
 }
 
 // bool bs_more_rbsp_trailing_data();
@@ -74,6 +92,7 @@ uint64_t bs_read_bits(struct bit_stream *bs, int n)
 // This process is invoked when parsing syntax elements with descriptor ae(v) in clauses 7.3.4 and 7.3.5 when entropy_coding_mode_flag is equal to 1.
 uint64_t bs_ae(struct bit_stream *bs)
 {
+    logfatal("cabac is not supported for now");
     // [TODO]
     return 0;
 }
@@ -83,41 +102,19 @@ uint8_t bs_b8(struct bit_stream *bs)
     return bs_read_bits(bs, 8);
 }
 
+// 9.2?
+uint64_t bs_ce(struct bit_stream *bs);
+
 uint64_t bs_f(struct bit_stream *bs, int n)
 {
     return bs_read_bits(bs, n);
 }
 
 int32_t bs_i(struct bit_stream *bs, int n);
-uint64_t bs_me(struct bit_stream *bs);
-
-// 9.1.1 Mapping process for signed Exp-Golomb codes
-// Table 9-3
-int32_t bs_se(struct bit_stream *bs)
-{
-    uint64_t codeNum = bs_ue(bs);
-
-    return codeNum % 2 == 0 ? -1 * (codeNum >> 1) : (codeNum + 1) >> 1; // ceil when odd
-}
 
 int32_t bs_st(struct bit_stream *bs);
-int32_t bs_te(struct bit_stream *bs);
 
 int32_t bs_u(struct bit_stream *bs, int n)
 {
     return bs_read_bits(bs, n);
-}
-
-// 9.1 Parsing process for Exp-Golomb codes
-// (9-1)
-// (9-2)
-// Table 9-1
-// Table 9-2
-int32_t bs_ue(struct bit_stream *bs)
-{
-    int leadingZeroBits = -1;
-    for (uint8_t b = 0; !b; leadingZeroBits++)
-        b = bs_read_bits(bs, 1);
-
-    return (1 << leadingZeroBits) - 1 + bs_read_bits(bs, leadingZeroBits);
 }

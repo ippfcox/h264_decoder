@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <math.h>
+#include "Exp-Golomb.h"
 #include "seq_parameter_set.h"
 #include "misc.h"
 #include "common/log.h"
@@ -34,7 +35,7 @@ static void seq_parameter_set_data(struct seq_parameter_set_data_t *spsd, struct
     spsd->constraint_set5_flag = bs_u(bs, 1);
     spsd->reserved_zero_2bits = bs_u(bs, 2);
     spsd->level_idc = bs_u(bs, 8);
-    spsd->seq_parameter_set_id = bs_ue(bs);
+    spsd->seq_parameter_set_id = exp_golomb_ue(bs);
     // 7.4.2.1.1 Sequence parameter set data semantics
     // When chroma_format_idc is not present, it shall be inferred to be equal to 1 (4:2:0 chroma format).
     spsd->chroma_format_idc = 1;
@@ -44,13 +45,13 @@ static void seq_parameter_set_data(struct seq_parameter_set_data_t *spsd, struct
         spsd->profile_idc == 128 || spsd->profile_idc == 138 || spsd->profile_idc == 139 ||
         spsd->profile_idc == 134 || spsd->profile_idc == 135)
     {
-        spsd->chroma_format_idc = bs_ue(bs);
+        spsd->chroma_format_idc = exp_golomb_ue(bs);
         if (spsd->chroma_format_idc == 3)
         {
             spsd->separate_colour_plane_flag = bs_u(bs, 1);
         }
-        spsd->bit_depth_luma_minus8 = bs_ue(bs);
-        spsd->bit_depth_chroma_minus8 = bs_ue(bs);
+        spsd->bit_depth_luma_minus8 = exp_golomb_ue(bs);
+        spsd->bit_depth_chroma_minus8 = exp_golomb_ue(bs);
         spsd->qpprime_y_zero_transform_bypass_flag = bs_u(bs, 1);
         spsd->seq_scaling_matrix_present_flag = bs_u(bs, 1);
         if (spsd->seq_scaling_matrix_present_flag)
@@ -73,29 +74,29 @@ static void seq_parameter_set_data(struct seq_parameter_set_data_t *spsd, struct
             }
         }
     }
-    spsd->log2_max_frame_num_minus4 = bs_ue(bs);
-    spsd->pic_order_cnt_type = bs_ue(bs);
+    spsd->log2_max_frame_num_minus4 = exp_golomb_ue(bs);
+    spsd->pic_order_cnt_type = exp_golomb_ue(bs);
     if (spsd->pic_order_cnt_type == 0)
     {
-        spsd->log2_max_pic_order_cnt_lsb_minus4 = bs_ue(bs);
+        spsd->log2_max_pic_order_cnt_lsb_minus4 = exp_golomb_ue(bs);
     }
     else if (spsd->pic_order_cnt_type == 1)
     {
         spsd->delta_pic_order_always_zero_flag = bs_u(bs, 1);
-        spsd->offset_for_non_ref_pic = bs_se(bs);
-        spsd->offset_for_top_to_bottom_field = bs_se(bs);
-        spsd->num_ref_frames_in_pic_order_cnt_cycle = bs_ue(bs);
+        spsd->offset_for_non_ref_pic = exp_golomb_se(bs);
+        spsd->offset_for_top_to_bottom_field = exp_golomb_se(bs);
+        spsd->num_ref_frames_in_pic_order_cnt_cycle = exp_golomb_ue(bs);
         spsd->offset_for_ref_frame = calloc(spsd->num_ref_frames_in_pic_order_cnt_cycle, sizeof(int32_t));
         for (int i = 0; i < spsd->num_ref_frames_in_pic_order_cnt_cycle; ++i)
         {
-            spsd->offset_for_ref_frame[i] = bs_se(bs);
+            spsd->offset_for_ref_frame[i] = exp_golomb_se(bs);
         }
     }
 
-    spsd->max_num_ref_frames = bs_ue(bs);
+    spsd->max_num_ref_frames = exp_golomb_ue(bs);
     spsd->gaps_in_frame_num_value_allowed_flag = bs_u(bs, 1);
-    spsd->pic_width_in_mbs_minus1 = bs_ue(bs);
-    spsd->pic_height_in_map_units_minus1 = bs_ue(bs);
+    spsd->pic_width_in_mbs_minus1 = exp_golomb_ue(bs);
+    spsd->pic_height_in_map_units_minus1 = exp_golomb_ue(bs);
     spsd->frame_mbs_only_flag = bs_u(bs, 1);
     if (!spsd->frame_mbs_only_flag)
         spsd->mb_adaptive_frame_field_flag = bs_u(bs, 1);
@@ -103,10 +104,10 @@ static void seq_parameter_set_data(struct seq_parameter_set_data_t *spsd, struct
     spsd->frame_cropping_flag = bs_u(bs, 1);
     if (spsd->frame_cropping_flag)
     {
-        spsd->frame_crop_left_offset = bs_ue(bs);
-        spsd->frame_crop_right_offset = bs_ue(bs);
-        spsd->frame_crop_top_offset = bs_ue(bs);
-        spsd->frame_crop_bottom_offset = bs_ue(bs);
+        spsd->frame_crop_left_offset = exp_golomb_ue(bs);
+        spsd->frame_crop_right_offset = exp_golomb_ue(bs);
+        spsd->frame_crop_top_offset = exp_golomb_ue(bs);
+        spsd->frame_crop_bottom_offset = exp_golomb_ue(bs);
     }
     spsd->vui_parameters_present_flag = bs_u(bs, 1);
     if (spsd->vui_parameters_present_flag)
@@ -179,77 +180,75 @@ void free_seq_parameter_set(struct seq_parameter_set_rbsp_t *spsr)
 
 void dump_seq_parameter_set_rbsp(FILE *fp, struct seq_parameter_set_rbsp_t *spsr)
 {
-#define dump(indents, name, placeholder) fprintf(fp, "%s%s: %" placeholder "\n", make_indents(indents), #name, spsr->spsd.name)
+#define dv(indents, placeholder, member) dump_value(indents, placeholder, spsr->spsd, member)
+#define da(indents, placeholder, member, count) dump_array(indents, placeholder, spsr->spsd, member, count)
 
-    dump(1, profile_idc, "u");
-    dump(1, constraint_set0_flag, "u");
-    dump(1, constraint_set1_flag, "u");
-    dump(1, constraint_set2_flag, "u");
-    dump(1, constraint_set3_flag, "u");
-    dump(1, constraint_set4_flag, "u");
-    dump(1, constraint_set5_flag, "u");
-    dump(1, reserved_zero_2bits, "u");
-    dump(1, level_idc, "u");
-    dump(1, seq_parameter_set_id, "u");
-    dump(2, chroma_format_idc, "u");
-    dump(3, separate_colour_plane_flag, "u");
-    dump(2, bit_depth_luma_minus8, "u");
-    dump(2, bit_depth_chroma_minus8, "u");
-    dump(2, qpprime_y_zero_transform_bypass_flag, "u");
-    dump(2, seq_scaling_matrix_present_flag, "u");
-    if (spsr->spsd.seq_scaling_list_present_flag)
-        for (int i = 0; i < (spsr->spsd.chroma_format_idc != 3 ? 8 : 12); ++i)
-            dump(4, seq_scaling_list_present_flag[i], "u");
-    dump(1, log2_max_frame_num_minus4, "u");
-    dump(1, pic_order_cnt_type, "u");
-    dump(2, log2_max_pic_order_cnt_lsb_minus4, "u");
-    dump(2, delta_pic_order_always_zero_flag, "u");
-    dump(2, offset_for_non_ref_pic, "d");
-    dump(2, offset_for_top_to_bottom_field, "d");
-    dump(2, num_ref_frames_in_pic_order_cnt_cycle, "u");
-    if (spsr->spsd.offset_for_ref_frame)
-        for (int i = 0; i < spsr->spsd.num_ref_frames_in_pic_order_cnt_cycle; ++i)
-            dump(4, offset_for_ref_frame[i], "d");
-    dump(1, max_num_ref_frames, "u");
-    dump(1, gaps_in_frame_num_value_allowed_flag, "u");
-    dump(1, pic_width_in_mbs_minus1, "u");
-    dump(1, pic_height_in_map_units_minus1, "u");
-    dump(1, frame_mbs_only_flag, "u");
-    dump(2, mb_adaptive_frame_field_flag, "u");
-    dump(1, direct_8x8_inference_flag, "u");
-    dump(1, frame_cropping_flag, "u");
-    dump(2, frame_crop_left_offset, "u");
-    dump(2, frame_crop_right_offset, "u");
-    dump(2, frame_crop_top_offset, "u");
-    dump(2, frame_crop_bottom_offset, "u");
-    dump(1, vui_parameters_present_flag, "u");
-    if (spsr->spsd.vui_parameters_present_flag)
-        dump_video_usability_information(fp, &spsr->spsd.vui);
+    dv(1, "u", profile_idc);
+    dv(1, "u", constraint_set0_flag);
+    dv(1, "u", constraint_set1_flag);
+    dv(1, "u", constraint_set2_flag);
+    dv(1, "u", constraint_set3_flag);
+    dv(1, "u", constraint_set4_flag);
+    dv(1, "u", constraint_set5_flag);
+    dv(1, "u", reserved_zero_2bits);
+    dv(1, "u", level_idc);
+    dv(1, "u", seq_parameter_set_id);
+    dv(2, "u", chroma_format_idc);
+    dv(3, "u", separate_colour_plane_flag);
+    dv(2, "u", bit_depth_luma_minus8);
+    dv(2, "u", bit_depth_chroma_minus8);
+    dv(2, "u", qpprime_y_zero_transform_bypass_flag);
+    dv(2, "u", seq_scaling_matrix_present_flag);
+    if (spsr->spsd.seq_scaling_matrix_present_flag)
+        da(4, "u", seq_scaling_list_present_flag, (spsr->spsd.chroma_format_idc != 3 ? 8 : 12));
+    dv(1, "u", log2_max_frame_num_minus4);
+    dv(1, "u", pic_order_cnt_type);
+    dv(2, "u", log2_max_pic_order_cnt_lsb_minus4);
+    dv(2, "u", delta_pic_order_always_zero_flag);
+    dv(2, "d", offset_for_non_ref_pic);
+    dv(2, "d", offset_for_top_to_bottom_field);
+    dv(2, "u", num_ref_frames_in_pic_order_cnt_cycle);
+    da(4, "d", offset_for_ref_frame, spsr->spsd.num_ref_frames_in_pic_order_cnt_cycle);
+    dv(1, "u", max_num_ref_frames);
+    dv(1, "u", gaps_in_frame_num_value_allowed_flag);
+    dv(1, "u", pic_width_in_mbs_minus1);
+    dv(1, "u", pic_height_in_map_units_minus1);
+    dv(1, "u", frame_mbs_only_flag);
+    dv(2, "u", mb_adaptive_frame_field_flag);
+    dv(1, "u", direct_8x8_inference_flag);
+    dv(1, "u", frame_cropping_flag);
+    dv(2, "u", frame_crop_left_offset);
+    dv(2, "u", frame_crop_right_offset);
+    dv(2, "u", frame_crop_top_offset);
+    dv(2, "u", frame_crop_bottom_offset);
+    dv(1, "u", vui_parameters_present_flag);
+    dump_video_usability_information(fp, &spsr->spsd.vui);
 
-    dump(1, SubWidthC, "u");
-    dump(1, SubHeightC, "u");
-    dump(1, MbWidthC, "u");
-    dump(1, MbHeightC, "u");
-    dump(1, ChromaArrayType, "u");
-    dump(1, BitDepthY, "u");
-    dump(1, QpBdOffsetY, "u");
-    dump(1, BitDepthC, "u");
-    dump(1, QpBdOffsetC, "u");
-    dump(1, RawMbBits, "u");
-    // uint8_t Flat_4x4_16[16];
-    // uint8_t Flat_8x8_16[64];
-    dump(1, MaxFrameNum, "lu");
-    dump(1, MaxPicOrderCntLsb, "lu");
-    dump(1, ExpectedDeltaPerPicOrderCntCycle, "lu");
-    dump(1, PicWidthInMbs, "u");
-    dump(1, PicWidthInSamplesL, "u");
-    dump(1, PicWidthInSamplesC, "u");
-    dump(1, PicHeightInMapUnits, "u");
-    dump(1, PicSizeInMapUnits, "u");
-    dump(1, FrameHeightInMbs, "u");
-    dump(1, CropUnitX, "u");
-    dump(1, CropUnitY, "u");
-#undef dump
+    dv(1, "u", SubWidthC);
+    dv(1, "u", SubHeightC);
+    dv(1, "u", MbWidthC);
+    dv(1, "u", MbHeightC);
+    dv(1, "u", ChromaArrayType);
+    dv(1, "u", BitDepthY);
+    dv(1, "u", QpBdOffsetY);
+    dv(1, "u", BitDepthC);
+    dv(1, "u", QpBdOffsetC);
+    dv(1, "u", RawMbBits);
+    da(1, "u", Flat_4x4_16, 16);
+    da(1, "u", Flat_8x8_16, 64);
+    dv(1, "lu", MaxFrameNum);
+    dv(1, "lu", MaxPicOrderCntLsb);
+    dv(1, "lu", ExpectedDeltaPerPicOrderCntCycle);
+    dv(1, "u", PicWidthInMbs);
+    dv(1, "u", PicWidthInSamplesL);
+    dv(1, "u", PicWidthInSamplesC);
+    dv(1, "u", PicHeightInMapUnits);
+    dv(1, "u", PicSizeInMapUnits);
+    dv(1, "u", FrameHeightInMbs);
+    dv(1, "u", CropUnitX);
+    dv(1, "u", CropUnitY);
+#undef da
+#undef dv
 
     fprintf(fp, "\n");
 }

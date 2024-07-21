@@ -1,3 +1,4 @@
+#include "Exp-Golomb.h"
 #include "video_usability_information.h"
 #include "misc.h"
 
@@ -32,8 +33,8 @@ void vui_parameters(struct video_usability_information *vui, struct bit_stream *
     vui->chroma_loc_info_present_flag = bs_u(bs, 1);
     if (vui->chroma_loc_info_present_flag)
     {
-        vui->chroma_sample_loc_type_top_field = bs_ue(bs);
-        vui->chroma_sample_loc_type_bottom_field = bs_ue(bs);
+        vui->chroma_sample_loc_type_top_field = exp_golomb_ue(bs);
+        vui->chroma_sample_loc_type_bottom_field = exp_golomb_ue(bs);
     }
     vui->timing_info_present_flag = bs_u(bs, 1);
     if (vui->timing_info_present_flag)
@@ -59,49 +60,50 @@ void vui_parameters(struct video_usability_information *vui, struct bit_stream *
     if (vui->bitstream_restriction_flag)
     {
         vui->motion_vectors_over_pic_boundaries_flag = bs_u(bs, 1);
-        vui->max_bytes_per_pic_denom = bs_ue(bs);
-        vui->max_bits_per_mb_denom = bs_ue(bs);
-        vui->log2_max_mv_length_horizontal = bs_ue(bs);
-        vui->log2_max_mv_length_vertical = bs_ue(bs);
-        vui->max_num_reorder_frames = bs_ue(bs);
-        vui->max_dec_frame_buffering = bs_ue(bs);
+        vui->max_bytes_per_pic_denom = exp_golomb_ue(bs);
+        vui->max_bits_per_mb_denom = exp_golomb_ue(bs);
+        vui->log2_max_mv_length_horizontal = exp_golomb_ue(bs);
+        vui->log2_max_mv_length_vertical = exp_golomb_ue(bs);
+        vui->max_num_reorder_frames = exp_golomb_ue(bs);
+        vui->max_dec_frame_buffering = exp_golomb_ue(bs);
     }
 }
 
 void dump_video_usability_information(FILE *fp, struct video_usability_information *vui)
 {
-#define dump(indents, name, placeholder) fprintf(fp, "%s%s: %" placeholder "\n", make_indents(indents), #name, vui->name)
-    dump(2, aspect_ratio_info_present_flag, "u");
-    dump(3, aspect_ratio_idc, "u");
-    dump(4, sar_width, "u");
-    dump(4, sar_height, "u");
-    dump(2, overscan_info_present_flag, "u");
-    dump(3, overscan_appropriate_flag, "u");
-    dump(2, video_signal_type_present_flag, "u");
-    dump(3, video_format, "u");
-    dump(3, video_full_range_flag, "u");
-    dump(3, colour_description_present_flag, "u");
-    dump(4, colour_primaries, "u");
-    dump(4, transfer_characteristics, "u");
-    dump(4, matrix_coefficients, "u");
-    dump(2, chroma_loc_info_present_flag, "u");
-    dump(3, chroma_sample_loc_type_top_field, "u");
-    dump(3, chroma_sample_loc_type_bottom_field, "u");
-    dump(2, timing_info_present_flag, "u");
-    dump(3, num_units_in_tick, "u");
-    dump(3, time_scale, "u");
-    dump(3, fixed_frame_rate_flag, "u");
-    dump(2, nal_hrd_parameters_present_flag, "u");
-    dump(2, vcl_hrd_parameters_present_flag, "u");
-    dump(3, low_delay_hrd_flag, "u");
-    dump(2, pic_struct_present_flag, "u");
-    dump(2, bitstream_restriction_flag, "u");
-    dump(3, motion_vectors_over_pic_boundaries_flag, "u");
-    dump(3, max_bytes_per_pic_denom, "u");
-    dump(3, max_bits_per_mb_denom, "u");
-    dump(3, log2_max_mv_length_horizontal, "u");
-    dump(3, log2_max_mv_length_vertical, "u");
-    dump(3, max_num_reorder_frames, "u");
-    dump(3, max_dec_frame_buffering, "u");
-#undef dump
+#define dv(indents, placeholder, member) dump_value(indents, placeholder, *vui, member)
+
+    dv(2, "u", aspect_ratio_info_present_flag);
+    dv(3, "u", aspect_ratio_idc);
+    dv(4, "u", sar_width);
+    dv(4, "u", sar_height);
+    dv(2, "u", overscan_info_present_flag);
+    dv(3, "u", overscan_appropriate_flag);
+    dv(2, "u", video_signal_type_present_flag);
+    dv(3, "u", video_format);
+    dv(3, "u", video_full_range_flag);
+    dv(3, "u", colour_description_present_flag);
+    dv(4, "u", colour_primaries);
+    dv(4, "u", transfer_characteristics);
+    dv(4, "u", matrix_coefficients);
+    dv(2, "u", chroma_loc_info_present_flag);
+    dv(3, "u", chroma_sample_loc_type_top_field);
+    dv(3, "u", chroma_sample_loc_type_bottom_field);
+    dv(2, "u", timing_info_present_flag);
+    dv(3, "u", num_units_in_tick);
+    dv(3, "u", time_scale);
+    dv(3, "u", fixed_frame_rate_flag);
+    dv(2, "u", nal_hrd_parameters_present_flag);
+    dv(2, "u", vcl_hrd_parameters_present_flag);
+    dv(3, "u", low_delay_hrd_flag);
+    dv(2, "u", pic_struct_present_flag);
+    dv(2, "u", bitstream_restriction_flag);
+    dv(3, "u", motion_vectors_over_pic_boundaries_flag);
+    dv(3, "u", max_bytes_per_pic_denom);
+    dv(3, "u", max_bits_per_mb_denom);
+    dv(3, "u", log2_max_mv_length_horizontal);
+    dv(3, "u", log2_max_mv_length_vertical);
+    dv(3, "u", max_num_reorder_frames);
+    dv(3, "u", max_dec_frame_buffering);
+#undef dv
 }

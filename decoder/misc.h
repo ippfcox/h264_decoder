@@ -9,9 +9,6 @@ extern "C"
 #include <stdint.h>
 #include "h264.h"
 
-#define max(_a, _b) ((_a) > (_b) ? (_a) : (_b))
-#define min(_a, _b) ((_a) < (_b) ? (_a) : (_b))
-#define clip(_min, _max, _val) min(max((_min), (_val)), (_max))
 #define align_up(_val, _align) (((_val) + (_align) - 1) / (_align) * (_align))
 #define align_down(_val, _align) ((_val) / (_align) * (_align))
 
@@ -21,6 +18,17 @@ extern "C"
     extern char spaces64[];
 // 16 tab indent
 #define make_indents(n) spaces64 + (64 - 4 * (n))
+
+#define dump_value(indents, placeholder, name, member) fprintf(fp, "%s%s: %" placeholder "\n", make_indents(indents), #member, (name).member)
+#define dump_array(indents, placeholder, name, member, count)             \
+    do                                                                    \
+    {                                                                     \
+        fprintf(fp, "%s%s[%d]: ", make_indents(indents), #member, count); \
+        for (int i = 0; i < count; ++i)                                   \
+            fprintf(fp, "%" placeholder " ", (name).member[i]);           \
+        fprintf(fp, "\n");                                                \
+    }                                                                     \
+    while (0)
 
     const char *nal_type_name(enum H264_NAL_TYPE type);
 
